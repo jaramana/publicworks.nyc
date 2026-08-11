@@ -407,6 +407,7 @@ function select(id, focus) {
     <p class="sub">${p.category} &middot; ${p.year}</p>
     <dl>
       <dt>Keywords</dt><dd>${p.keywords.join(', ')}</dd>
+      ${p.built ? `<dt>Built with</dt><dd>${p.built}</dd>` : ''}
       ${p.source ? `<dt>Source</dt><dd><a href="${p.source}">repository</a></dd>` : ''}
     </dl>
     <a class="go" href="${p.url}">Open &#8599;</a>`;

@@ -16,6 +16,11 @@
      category  Data, Map, Essay, Analysis, Site, Tools
      year      four digits, as a number. The year of the current version.
      keywords  up to five short words, lowercase
+     built     what the thing was actually made with, listed plainly, in the
+               same house style the project READMEs already use. Claude is
+               listed exactly like R or MapLibre, because it was a tool like
+               R or MapLibre. Projects that predate it simply do not list it,
+               which is what makes the field worth reading. null hides the row.
      shot      file in media/, or null for no screenshot
      source    optional repository link, shown as a small secondary link.
                Leave null when url already points at the repository.
@@ -40,6 +45,7 @@ const PROJECTS = [
     category: "Data",
     year: 2026,
     keywords: ["payroll", "open data", "r", "salaries"],
+    built: "R, dplyr, Claude",
     shot: "media/thepaygap.png",
     source: "https://github.com/jaramana/thepaygap.nyc"
   },
@@ -50,6 +56,7 @@ const PROJECTS = [
     category: "Data",
     year: 2026,
     keywords: ["exams", "job titles", "open data", "python"],
+    built: "Python, JavaScript, Claude",
     shot: "media/civilservice.png",
     source: "https://github.com/jaramana/civilservice.nyc"
   },
@@ -60,6 +67,7 @@ const PROJECTS = [
     category: "Data",
     year: 2026,
     keywords: ["schools", "nycps", "python", "statistics"],
+    built: "Python, Claude",
     shot: null,
     source: null
   },
@@ -71,6 +79,7 @@ const PROJECTS = [
     category: "Data",
     year: 2020,
     keywords: ["covid", "dohmh", "charts", "archived"],
+    built: "JavaScript, R",
     shot: null,
     source: null
   },
@@ -83,6 +92,7 @@ const PROJECTS = [
     category: "Map",
     year: 2026,
     keywords: ["3d", "maplibre", "open data", "buildings"],
+    built: "Python, MapLibre, Claude",
     shot: "media/staten-island.png",
     source: "https://github.com/jaramana/staten-island-data-viewer"
   },
@@ -93,6 +103,7 @@ const PROJECTS = [
     category: "Map",
     year: 2026,
     keywords: ["buses", "gtfs", "a coruña", "maplibre"],
+    built: "MapLibre, GTFS, Claude",
     shot: null,
     source: "https://github.com/Coruna-Labs/bus-works"
   },
@@ -103,6 +114,7 @@ const PROJECTS = [
     category: "Map",
     year: 2026,
     keywords: ["income", "inequality", "ine", "a coruña"],
+    built: "MapLibre, INE data, Claude",
     shot: null,
     source: "https://github.com/Coruna-Labs/adrh-mapper"
   },
@@ -113,6 +125,7 @@ const PROJECTS = [
     category: "Map",
     year: 2026,
     keywords: ["schools", "catchments", "galiza", "xunta"],
+    built: "MapLibre, Claude",
     shot: null,
     source: "https://github.com/Coruna-Labs/zonas-escolares"
   },
@@ -123,6 +136,7 @@ const PROJECTS = [
     category: "Map",
     year: 2020,
     keywords: ["acs", "language", "leaflet", "houston"],
+    built: "Leaflet, JavaScript",
     shot: null,
     source: null
   },
@@ -133,6 +147,7 @@ const PROJECTS = [
     category: "Map",
     year: 2020,
     keywords: ["commuting", "leaflet", "transit"],
+    built: "Leaflet, JavaScript",
     shot: null,
     source: null
   },
@@ -143,6 +158,7 @@ const PROJECTS = [
     category: "Map",
     year: 2020,
     keywords: ["census", "municipios", "leaflet"],
+    built: "Leaflet, JavaScript",
     shot: null,
     source: null
   },
@@ -155,6 +171,7 @@ const PROJECTS = [
     category: "Essay",
     year: 2026,
     keywords: ["migration", "archive", "maps", "spanish"],
+    built: "HTML, MapLibre, Claude",
     shot: "media/arabsincuba.png",
     source: "https://github.com/jaramana/arabsincuba.com"
   },
@@ -165,6 +182,7 @@ const PROJECTS = [
     category: "Essay",
     year: 2026,
     keywords: ["migration", "galiza", "schools", "galician"],
+    built: "HTML, MapLibre, Claude",
     shot: "media/galiciansincuba.png",
     source: "https://github.com/jaramana/galiciansincuba.com"
   },
@@ -177,6 +195,7 @@ const PROJECTS = [
     category: "Analysis",
     year: 2026,
     keywords: ["tlc", "accessibility", "r", "trip records"],
+    built: "R, arrow, dplyr, Claude",
     shot: "media/wav.png",
     source: null
   },
@@ -187,6 +206,7 @@ const PROJECTS = [
     category: "Analysis",
     year: 2026,
     keywords: ["gini", "inequality", "census", "r"],
+    built: null,
     shot: null,
     source: null
   },
@@ -199,6 +219,7 @@ const PROJECTS = [
     category: "Site",
     year: 2026,
     keywords: ["civic tech", "astro", "trilingual", "galiza"],
+    built: "Astro, Claude",
     shot: "media/corunalabs.png",
     source: "https://github.com/Coruna-Labs/website"
   },
@@ -212,6 +233,7 @@ const PROJECTS = [
     category: "Site",
     year: 2026,
     keywords: ["one page", "static", "css"],
+    built: null,
     shot: "media/allenshaibani.png",
     source: "https://github.com/jaramana/allenshaibani.com"
   },
@@ -224,6 +246,7 @@ const PROJECTS = [
     category: "Tools",
     year: 2026,
     keywords: ["maplibre", "boilerplate", "static"],
+    built: null,
     shot: null,
     source: null
   },
@@ -234,6 +257,7 @@ const PROJECTS = [
     category: "Tools",
     year: 2022,
     keywords: ["geocoding", "r", "dcp", "api"],
+    built: "R",
     shot: null,
     source: null
   },
@@ -244,6 +268,7 @@ const PROJECTS = [
     category: "Tools",
     year: 2020,
     keywords: ["r", "hiring", "lag"],
+    built: "R",
     shot: null,
     source: null
   },
@@ -254,6 +279,7 @@ const PROJECTS = [
     category: "Tools",
     year: 2019,
     keywords: ["r", "routing", "distance"],
+    built: "R",
     shot: null,
     source: null
   },
@@ -264,6 +290,7 @@ const PROJECTS = [
     category: "Tools",
     year: 2019,
     keywords: ["r", "sf", "geometry"],
+    built: "R",
     shot: null,
     source: null
   },
@@ -274,6 +301,7 @@ const PROJECTS = [
     category: "Tools",
     year: 2019,
     keywords: ["r", "dplyr", "reshape"],
+    built: "R",
     shot: null,
     source: null
   },
@@ -284,6 +312,7 @@ const PROJECTS = [
     category: "Tools",
     year: 2019,
     keywords: ["arcpy", "python", "export"],
+    built: "Python, ArcPy",
     shot: null,
     source: null
   }
