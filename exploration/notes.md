@@ -67,7 +67,10 @@ commit.** thepaygap.nyc reads 2026, not 2020.
 | `Enter` | Opens the held project |
 | Shift-click a tab, or Shift-Enter | Opens the repository instead of the site |
 | Type `1999` | The stylesheet switches off for five seconds. Times New Roman, blue underlined links, a bare `<ul>`. Any key or click returns early |
-| Leave it 90 seconds | The card fades and drifts, the selected tab lets go, and the drawer closes itself. Any movement reopens it |
+
+Idle drift was built and then cut before launch. Leaving the page alone for 90
+seconds used to fade the card out and release the selected tab, with any
+movement reopening it. It is in the history if it is ever wanted back.
 | Find the bottle | 11 by 22 pixels, on the rail spine below the last tab, at zero opacity. Clicking it is after five |
 
 ### The bottle
