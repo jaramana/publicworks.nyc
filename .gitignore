@@ -2,3 +2,6 @@
 *.log
 .vscode/
 .idea/
+
+# Working documents. Kept local, not published.
+exploration/brief/
