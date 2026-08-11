@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>publicworks.nyc</title>
+<style>
+/* ---------------------------------------------------------------------------
+   C / MAXIMAL
+   Identical structure, identical content, every surface made up.
+   Grain over the whole page, glass and bevel on every tab, a bloom behind the
+   selected one, chromatic fringe on its title, an iridescent border rotating
+   around the card, a specular sweep that follows the pointer, and parallax on
+   the screenshot.
+
+   The paper underneath is still white and the list is still a list. Turn all
+   of it off and concept C is exactly what remains.
+--------------------------------------------------------------------------- */
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --rule: #d6d6d6;
+  --quiet: #6b6b6b;
+  --indent: 22px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+
+  /* make-up */
+  --grain: .045;          /* film grain opacity over everything */
+  --bloom: .55;           /* colour bloom behind the selected tab */
+  --fringe: .55;          /* chromatic aberration on the selected title */
+  --iris-speed: 14s;      /* iridescent card border rotation */
+  --spec: .5;             /* specular sweep strength on the card */
+  --parallax: 10px;       /* screenshot drift under the pointer */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0; padding: 44px 20px 80px;
+  color: var(--ink);
+  font: 15px/1.45 Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(1200px 700px at 78% -10%, #eef3ff 0%, rgba(255,255,255,0) 60%),
+    radial-gradient(900px 600px at 5% 110%, #fff0f6 0%, rgba(255,255,255,0) 62%),
+    var(--paper);
+  min-height: 100vh;
+}
+
+/* Film grain, laid over the entire page. */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 99; pointer-events: none;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'>\
+<filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter>\
+<rect width='160' height='160' filter='url(%23n)'/></svg>");
+}
+
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+.wrap { max-width: 980px; margin: 0 auto; position: relative; z-index: 1;
+        display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 34px; align-items: start; }
+
+/* ---- the rail ---------------------------------------------------------- */
+/* The spine is a slow liquid gradient rather than a hairline. */
+.rail { position: relative; padding-left: 2px; }
+.rail::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #9ec1ff, #d9b8ff, #ffc9e0, #9ec1ff);
+  background-size: 100% 400%;
+  animation: spine 18s linear infinite;
+}
+@keyframes spine { to { background-position: 0 -400%; } }
+
+.folder {
+  position: relative;
+  font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  color: #4a4a4a;
+  padding: 6px 14px 5px;
+  display: inline-block;
+  margin: 18px 0 5px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, #ffffff, #e9e9ef);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 rgba(0,0,0,.10),
+    inset -1px 0 0 rgba(0,0,0,.06),
+    0 2px 5px -3px rgba(0,0,0,.5);
+  text-shadow: 0 1px 0 #fff;
+}
+.rail > .group:first-child .folder { margin-top: 0; }
+
+.group ul { list-style: none; margin: 0; padding: 0 0 0 var(--indent); }
+.group li { margin: 0 0 4px; position: relative; }
+
+.tab {
+  position: relative;
+  display: block; width: 100%;
+  font: inherit; font-size: 13px; text-align: left;
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,.85);
+  border-radius: 0 6px 6px 0;
+  color: var(--quiet);
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.34));
+  backdrop-filter: blur(10px) saturate(1.8);
+  -webkit-backdrop-filter: blur(10px) saturate(1.8);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 -1px 0 rgba(255,255,255,.45),
+    inset 1px 0 0 rgba(255,255,255,.6),
+    0 6px 14px -10px rgba(30,20,60,.65);
+  transition: transform 220ms var(--ease), color 220ms var(--ease),
+              box-shadow 220ms var(--ease);
+}
+.tab:hover { color: var(--ink); transform: translateX(6px); }
+.tab:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* The bloom sits behind the tab, not on it, so the text stays clean. */
+.group li::before {
+  content: ""; position: absolute; inset: -8px -14px -8px 0; z-index: -1;
+  border-radius: 14px;
+  background:
+    radial-gradient(60% 120% at 15% 50%, rgba(120,160,255,.9), rgba(120,160,255,0) 70%),
+    radial-gradient(60% 120% at 85% 50%, rgba(255,150,210,.9), rgba(255,150,210,0) 70%);
+  filter: blur(12px);
+  opacity: 0;
+  transition: opacity 260ms var(--ease);
+}
+.group li:has(.tab[aria-selected="true"])::before { opacity: var(--bloom); }
+
+.tab[aria-selected="true"] {
+  color: var(--ink);
+  transform: translateX(13px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(255,255,255,.6),
+    0 10px 22px -12px rgba(40,20,90,.8);
+}
+/* Chromatic fringe: the selected title separates very slightly into channels. */
+.tab[aria-selected="true"] .nm {
+  text-shadow:
+    calc(-0.6px * var(--fringe)) 0 0 rgba(0,190,255,.85),
+    calc( 0.6px * var(--fringe)) 0 0 rgba(255,0,140,.75);
+}
+.tab .yr { float: right; color: var(--quiet); font-variant-numeric: tabular-nums; }
+
+/* ---- the held card ----------------------------------------------------- */
+/* Iridescent border: a frame the card sits inside, hue-cycling in place.
+   A rotating conic gradient escapes its own clip, so this does it flat. */
+.cardframe {
+  position: sticky; top: 44px;
+  padding: 1.5px; border-radius: 15px;
+  background: conic-gradient(from 210deg,
+    #9ec1ff, #d9b8ff, #ffc9e0, #ffe9b0, #b8f0e0, #9ec1ff);
+  animation: iris var(--iris-speed) linear infinite;
+  box-shadow: 0 30px 60px -34px rgba(30,20,70,.75);
+}
+@keyframes iris { to { filter: hue-rotate(360deg); } }
+
+.card {
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.44);
+  backdrop-filter: blur(20px) saturate(1.9) brightness(1.05);
+  -webkit-backdrop-filter: blur(20px) saturate(1.9) brightness(1.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(255,255,255,.6);
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Specular sweep, following the pointer. */
+.card::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  border-radius: 14px;
+  background: radial-gradient(240px 180px at var(--mx, 50%) var(--my, 0%),
+              rgba(255,255,255,calc(.75 * var(--spec))), rgba(255,255,255,0) 70%);
+  mix-blend-mode: screen;
+}
+
+.shotwrap { overflow: hidden; border-radius: 8px; border: 1px solid rgba(255,255,255,.8);
+            box-shadow: 0 12px 26px -20px rgba(0,0,0,.9); background: #efefef; }
+.card img {
+  width: 100%; aspect-ratio: 3/2; object-fit: cover; object-position: top left;
+  display: block;
+  transform: translate3d(calc(var(--px, 0) * var(--parallax)), calc(var(--py, 0) * var(--parallax)), 0) scale(1.04);
+  transition: transform 120ms linear;
+}
+.card .noshot { width: 100%; aspect-ratio: 3/2; display: grid; place-items: center;
+                color: var(--quiet); font-size: 11px; }
+
+.card h2 { font-size: 24px; margin: 16px 0 2px; }
+.card h2 a { color: var(--ink); text-decoration: none; border-bottom: 3px solid transparent; }
+.card h2 a:hover, .card h2 a:focus-visible { border-bottom-color: var(--ink); }
+.card h2 a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.card .sub { color: var(--quiet); font-size: 12px; margin: 0 0 12px; letter-spacing: .04em; }
+.card dl { margin: 0; font-size: 12px; color: var(--quiet);
+           display: grid; grid-template-columns: 84px minmax(0,1fr); row-gap: 3px; }
+.card dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+.card dd a { color: var(--ink); }
+.card .go {
+  display: inline-block; margin-top: 16px; font-weight: bold; font-size: 14px;
+  color: var(--ink); text-decoration: none;
+  padding: 7px 14px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.9);
+  background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.4));
+  box-shadow: inset 0 1px 0 #fff, 0 8px 18px -12px rgba(30,20,70,.9);
+}
+
+@media (max-width: 760px) {
+  .wrap { grid-template-columns: minmax(0,1fr); gap: 18px; }
+  .rail { min-width: 0; display: flex; gap: 18px; overflow-x: auto; padding: 0 0 8px; }
+  .rail::before { display: none; }
+  .group { flex: none; }
+  .folder { margin: 0 0 6px; border-radius: 4px; }
+  .group ul { display: flex; gap: 8px; padding: 0; }
+  .group li { flex: none; }
+  .tab { white-space: nowrap; border-radius: 6px; }
+  .tab[aria-selected="true"] { transform: none; }
+  .tab .yr { float: none; margin-left: 8px; }
+  .cardframe { position: static; }
+}
+
+/* Every bit of make-up comes off on request. */
+@media (prefers-reduced-motion: reduce) {
+  .rail::before, .cardframe { animation: none; }
+  .tab, .card img, .group li::before { transition: none; }
+  .card img { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .tab, .card { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  body::after { display: none; }
+  .card::after { display: none; }
+}
+</style>
+</head>
+<body>
+
+<h1 class="vh">publicworks.nyc</h1>
+
+<div class="wrap">
+  <div class="rail" id="rail"></div>
+  <div class="cardframe">
+    <section class="card" id="card" role="tabpanel" aria-live="polite"></section>
+  </div>
+</div>
+
+<script src="../projects.js"></script>
+<script>
+const rail = document.getElementById('rail');
+const card = document.getElementById('card');
+
+const groups = [];
+PROJECTS.forEach(p => {
+  let g = groups.find(x => x.name === p.category);
+  if (!g) groups.push(g = { name: p.category, items: [] });
+  g.items.push(p);
+});
+
+rail.innerHTML = groups.map(g => `
+  <div class="group">
+    <div class="folder" id="folder-${g.name}">${g.name}</div>
+    <ul role="tablist" aria-labelledby="folder-${g.name}">
+      ${g.items.map(p => `
+        <li role="presentation">
+          <button class="tab" role="tab" type="button" id="tab-${p.id}"
+                  data-id="${p.id}" aria-selected="false" tabindex="-1">
+            <span class="nm">${p.title}</span><span class="yr">${p.year}</span>
+          </button>
+        </li>`).join('')}
+    </ul>
+  </div>`).join('');
+
+const tabs = [...rail.querySelectorAll('.tab')];
+
+function select(id, focus) {
+  const p = PROJECTS.find(x => x.id === id) || PROJECTS[0];
+  tabs.forEach(t => {
+    const on = t.dataset.id === p.id;
+    t.setAttribute('aria-selected', String(on));
+    t.tabIndex = on ? 0 : -1;
+    if (on && focus) t.focus();
+  });
+  card.setAttribute('aria-labelledby', 'tab-' + p.id);
+  card.innerHTML = `
+    <div class="shotwrap">
+      ${p.shot ? `<img src="../${p.shot}" alt="" loading="lazy">`
+               : `<div class="noshot">no screenshot</div>`}
+    </div>
+    <h2><a href="${p.url}">${p.title}</a></h2>
+    <p class="sub">${p.category} &middot; ${p.year}</p>
+    <dl>
+      <dt>Keywords</dt><dd>${p.keywords.join(', ')}</dd>
+      ${p.source ? `<dt>Source</dt><dd><a href="${p.source}">repository</a></dd>` : ''}
+    </dl>
+    <a class="go" href="${p.url}">Open &#8599;</a>`;
+  history.replaceState(null, '', '?p=' + p.id);
+}
+
+rail.addEventListener('click', e => {
+  const t = e.target.closest('.tab'); if (!t) return;
+  const p = PROJECTS.find(x => x.id === t.dataset.id);
+  if (e.shiftKey && p && p.source) { window.open(p.source, '_blank', 'noopener'); return; }
+  select(t.dataset.id);
+});
+
+let buffer = '', bufferTimer = null;
+rail.addEventListener('keydown', e => {
+  const i = tabs.indexOf(document.activeElement);
+  if (i < 0) return;
+  const horizontal = window.matchMedia('(max-width: 760px)').matches;
+  const fwd  = horizontal ? 'ArrowRight' : 'ArrowDown';
+  const back = horizontal ? 'ArrowLeft'  : 'ArrowUp';
+  if (e.key === fwd  || e.key === 'ArrowDown') { e.preventDefault(); select(tabs[(i + 1) % tabs.length].dataset.id, true); return; }
+  if (e.key === back || e.key === 'ArrowUp')   { e.preventDefault(); select(tabs[(i - 1 + tabs.length) % tabs.length].dataset.id, true); return; }
+  if (e.key === 'Home') { e.preventDefault(); select(tabs[0].dataset.id, true); return; }
+  if (e.key === 'End')  { e.preventDefault(); select(tabs[tabs.length - 1].dataset.id, true); return; }
+  if (e.key === 'Enter') {
+    const p = PROJECTS.find(x => x.id === tabs[i].dataset.id);
+    if (p) location.href = e.shiftKey && p.source ? p.source : p.url;
+    return;
+  }
+  if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
+    buffer += e.key.toLowerCase();
+    clearTimeout(bufferTimer);
+    bufferTimer = setTimeout(() => buffer = '', 800);
+    const hit = PROJECTS.find(p => p.title.toLowerCase().startsWith(buffer))
+             || PROJECTS.find(p => p.title.toLowerCase().includes(buffer));
+    if (hit) { e.preventDefault(); select(hit.id, true); }
+  }
+});
+
+/* Specular sweep and parallax follow the pointer across the card. */
+if (window.matchMedia('(hover: hover)').matches &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  card.addEventListener('pointermove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    card.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+    card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+    const img = card.querySelector('img');
+    if (img) {
+      img.style.setProperty('--px', (0.5 - x).toFixed(3));
+      img.style.setProperty('--py', (0.5 - y).toFixed(3));
+    }
+  });
+}
+
+select(new URLSearchParams(location.search).get('p') || PROJECTS[0].id);
+</script>
+</body>
+</html>

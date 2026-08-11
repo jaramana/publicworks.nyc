@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study 3 — Wear (wildcard)</title>
+<style>
+/* ---------------------------------------------------------------------------
+   STUDY 3 — WEAR  (the wildcard)
+
+   The proposal: take the oldest idea on the web, a:visited, and let it behave
+   like paper instead of like a colour swap.
+
+   A file you open often shows it. The tab sits a little proud of the others,
+   its edge softens, and a faint smudge collects where a thumb would have been.
+   Nothing reorders, nothing is recommended, no count is displayed. The index
+   stays exactly as filed. Only its surface ages, and the ageing is generated
+   rather than drawn, which is the fluid layer doing something quiet and
+   slightly untrustworthy under an otherwise ordinary list.
+
+   State lives in localStorage under one key. Clearing it restores a new file.
+--------------------------------------------------------------------------- */
+
+:root {
+  --wear-max: 6;          /* opens after which a project looks fully handled */
+  --wear-lift: 7px;       /* how far a fully handled tab stands proud */
+  --wear-smudge: .10;     /* peak smudge alpha */
+  --wear-soften: 1.1px;   /* peak blur on the tab's own rule */
+
+  --ink: #000; --paper: #fff; --rule: #d0d0d0; --quiet: #6b6b6b;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; padding: 36px 20px 90px; background: var(--paper); color: var(--ink);
+       font: 15px/1.45 Arial, Helvetica, sans-serif; }
+.wrap { max-width: 760px; margin: 0 auto; }
+h1 { font-size: 15px; margin: 0 0 4px; }
+.note { color: var(--quiet); font-size: 13px; margin: 0 0 24px; max-width: 62ch; }
+
+ul { list-style: none; margin: 0; padding: 0; }
+
+li {
+  position: relative;
+  padding: 14px 0;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  /* w is 0 at unopened, 1 at fully handled. Set per item by the script. */
+  transform: translateX(calc(var(--wear-lift) * var(--w, 0)));
+  transition: transform 300ms cubic-bezier(.22,.61,.36,1);
+}
+
+/* The rule is drawn separately so it can soften without blurring the text. */
+li::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--rule);
+  filter: blur(calc(var(--wear-soften) * var(--w, 0)));
+  opacity: calc(1 - .35 * var(--w, 0));
+}
+
+/* The smudge: a soft, generated mark at a position fixed per project. */
+li::before {
+  content: ""; position: absolute; z-index: 0; pointer-events: none;
+  left: calc(var(--sx, 40%) - 85px); top: 50%;
+  width: 170px; height: 56px; transform: translateY(-50%) rotate(var(--sr, -8deg));
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0,0,0,.85), rgba(0,0,0,0) 78%);
+  opacity: calc(var(--wear-smudge) * var(--w, 0));
+  filter: blur(10px);
+}
+
+li > * { position: relative; z-index: 1; }
+
+a { color: var(--ink); font-weight: bold; font-size: 19px; text-decoration: none;
+    border-bottom: 2px solid transparent; }
+a:hover, a:focus-visible { border-bottom-color: var(--ink); }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.meta { color: var(--quiet); font-size: 12px; white-space: nowrap; }
+
+.bar { display: flex; gap: 10px; align-items: center; margin: 26px 0 0;
+       font-size: 12px; color: var(--quiet); }
+.bar button { font: inherit; font-size: 12px; padding: 4px 10px; border: 1px solid var(--rule);
+              border-radius: 999px; background: #fff; cursor: pointer; color: var(--quiet); }
+.bar button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.desk { margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 16px;
+        font-size: 12px; color: var(--quiet); }
+.desk label { display: grid; grid-template-columns: 130px 1fr 46px; gap: 10px;
+              align-items: center; margin-bottom: 6px; }
+.desk output { font-variant-numeric: tabular-nums; color: var(--ink); }
+.desk input[type=range] { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) { li { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Study 3 &mdash; Wear <span style="font-weight:normal;color:#6b6b6b">(wildcard)</span></h1>
+  <p class="note">Open a few projects, come back, and the file shows it. Handled tabs stand a
+  little proud, their rules soften, and a faint smudge collects. Nothing reorders and no
+  count is shown. Use <em>simulate handling</em> to age the file without opening ten tabs.</p>
+
+  <ul id="index"></ul>
+
+  <div class="bar">
+    <button type="button" id="age">Simulate handling</button>
+    <button type="button" id="reset">New file</button>
+    <span id="status" aria-live="polite"></span>
+  </div>
+
+  <section class="desk">
+    <p><strong>Tuning.</strong> These map onto the custom properties at the top of the file.</p>
+    <div id="knobs"></div>
+  </section>
+</div>
+
+<script src="../projects.js"></script>
+<script>
+const KEY = 'publicworks.wear.v1';
+const index = document.getElementById('index');
+const status = document.getElementById('status');
+
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
+const save = o  => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch {} };
+
+/* A stable pseudo-random position per project, so a smudge never jumps. */
+function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h); }
+
+index.innerHTML = PROJECTS.map(p => {
+  const h = hash(p.id);
+  return `
+  <li data-id="${p.id}" style="--sx:${28 + (h % 42)}%; --sr:${-14 + (h % 24)}deg">
+    <a href="${p.url}">${p.title}</a>
+    <span class="meta">${p.category} &middot; ${p.year}</span>
+  </li>`;
+}).join('');
+
+function paint() {
+  const opens = load();
+  const max = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--wear-max'));
+  let handled = 0;
+  [...index.children].forEach(li => {
+    const n = opens[li.dataset.id] || 0;
+    if (n) handled++;
+    li.style.setProperty('--w', Math.min(1, n / max).toFixed(3));
+  });
+  status.textContent = handled ? `${handled} of ${PROJECTS.length} handled` : 'a new file';
+}
+paint();
+
+/* Opening a project is what ages it. */
+index.addEventListener('click', e => {
+  const a = e.target.closest('a'); if (!a) return;
+  const id = a.closest('li').dataset.id;
+  const opens = load();
+  opens[id] = (opens[id] || 0) + 1;
+  save(opens);
+  paint();
+});
+
+document.getElementById('age').addEventListener('click', () => {
+  const opens = load();
+  PROJECTS.forEach(p => { if (Math.random() < .55) opens[p.id] = (opens[p.id] || 0) + 1 + Math.floor(Math.random() * 3); });
+  save(opens); paint();
+});
+document.getElementById('reset').addEventListener('click', () => {
+  localStorage.removeItem(KEY); paint();
+});
+
+/* tuning ----------------------------------------------------------------- */
+const KNOBS = [
+  ['--wear-max',    1, 20, 1, 6, ''],
+  ['--wear-lift',   0, 24, 1, 7, 'px'],
+  ['--wear-smudge', 0, .4, .01, .10, ''],
+  ['--wear-soften', 0, 4, .1, 1.1, 'px']
+];
+const knobs = document.getElementById('knobs');
+knobs.innerHTML = KNOBS.map(([n,min,max,step,val,unit]) =>
+  `<label><span>${n}</span>
+     <input type="range" min="${min}" max="${max}" step="${step}" value="${val}" data-prop="${n}" data-unit="${unit}">
+     <output>${val}</output></label>`).join('');
+knobs.addEventListener('input', e => {
+  document.documentElement.style.setProperty(e.target.dataset.prop, e.target.value + e.target.dataset.unit);
+  e.target.nextElementSibling.textContent = e.target.value;
+  paint();
+});
+</script>
+</body>
+</html>

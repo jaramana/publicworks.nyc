@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>publicworks.nyc</title>
+<style>
+/* ---------------------------------------------------------------------------
+   publicworks.nyc
+
+   Two levels only. A category tab stands proud of the drawer; the projects
+   filed under it sit tucked behind. Exactly one card is ever held out.
+
+   Nothing on the page explains itself. Four behaviours are there for anyone
+   who tries them and invisible to anyone who does not:
+
+     - arrow keys, or j and k, walk the whole drawer; Enter opens
+     - typing jumps to a project by name
+     - shift-click, or shift-Enter, opens the repository instead of the site
+     - type 1999 and the site shows you what it is underneath
+     - leave it alone for 90 seconds and the drawer closes itself
+     - there is a bottle in here somewhere
+
+   All of it is decoration on top of a list of links. Turn off CSS and
+   JavaScript and the projects are still reachable.
+--------------------------------------------------------------------------- */
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --rule: #dcdcdc;        /* tab outline, deliberately faint */
+  --quiet: #6b6b6b;
+  --tint: #f4f4f1;
+  --indent: 22px;         /* how far a project sits behind its category */
+  --ease: cubic-bezier(.22,.61,.36,1);
+
+  --idle-fade: 900ms;     /* how slowly the drawer closes itself */
+  --tell-every: 60s;      /* how often the bottle gives itself away */
+  --tell-peak: .17;       /* how far it gets before thinking better of it */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0; padding: 44px 20px 80px;
+  background: var(--paper); color: var(--ink);
+  font: 15px/1.45 Arial, Helvetica, sans-serif;
+  transition: background 700ms var(--ease), color 700ms var(--ease);
+}
+
+/* No sign on the cabinet. The heading exists for machines only. */
+.vh {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.wrap { max-width: 980px; margin: 0 auto;
+        display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 34px; align-items: start; }
+
+/* ---- the rail ---------------------------------------------------------- */
+.rail { border-left: 1px solid var(--rule); position: relative; }
+
+.folder {
+  font-size: 11px; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--quiet);
+  padding: 6px 10px 5px;
+  border: 1px solid var(--rule); border-left: 0;
+  border-radius: 0 3px 3px 0;
+  display: inline-block;
+  margin: 16px 0 3px;
+  position: relative;
+}
+.rail > .group:first-child .folder { margin-top: 0; }
+
+.group ul { list-style: none; margin: 0; padding: 0 0 0 var(--indent); }
+.group li { margin: 0 0 2px; position: relative; }
+
+.tab {
+  /* Flex rather than a float, so a title that wraps to two lines keeps its
+     year on the first line instead of pushing it underneath. */
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  width: 100%;
+  font: inherit; font-size: 13px; text-align: left;
+  padding: 7px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 0 3px 3px 0;
+  background: var(--paper); color: var(--quiet);
+  cursor: pointer;
+  transition: transform 180ms var(--ease), color 180ms var(--ease),
+              background 500ms var(--ease), border-color 500ms var(--ease);
+}
+.tab:hover { color: var(--ink); transform: translateX(4px); }
+/* Inset, so the ring hugs the tab and inherits its corner instead of floating
+   a second, larger rounded box outside it. Still 2px and still full contrast,
+   which WCAG 2.2 asks for, but it reads as the tab sharpening rather than as
+   another shape landing on top. */
+.tab:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.tab[aria-selected="true"] {
+  color: var(--ink);
+  border-color: #a8a8a8;
+  background: var(--tint);
+  transform: translateX(9px);
+}
+.tab .yr { flex: none; color: var(--quiet); font-variant-numeric: tabular-nums; }
+
+/* ---- the held card ----------------------------------------------------- */
+.card {
+  /* The card follows the scroll. As the drawer grows this is what keeps the
+     preview beside whatever you are reading instead of far above it. */
+  position: sticky; top: 44px;
+  /* On a short window the card can be taller than the space it is pinned in,
+     which would strand its bottom permanently off screen. Cap it to the
+     visible area and let it scroll inside itself instead. */
+  max-height: calc(100vh - 88px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--rule);
+  padding: 18px;
+  background: rgba(255,255,255,.5);
+  backdrop-filter: blur(14px) saturate(1.6);
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 14px 34px -22px rgba(0,0,0,.55);
+  transition: opacity var(--idle-fade) var(--ease),
+              transform var(--idle-fade) var(--ease),
+              background 700ms var(--ease), border-color 700ms var(--ease);
+}
+.card img {
+  width: 100%; aspect-ratio: 3/2; object-fit: cover; object-position: top left;
+  border: 1px solid var(--rule); background: #efefef; display: block;
+}
+.card .noshot { width: 100%; aspect-ratio: 3/2; border: 1px dashed var(--rule);
+                display: grid; place-items: center; color: var(--quiet); font-size: 11px; }
+.card h2 { font-size: 22px; margin: 14px 0 2px; }
+.card h2 a { color: var(--ink); text-decoration: none; border-bottom: 3px solid transparent; }
+.card h2 a:hover, .card h2 a:focus-visible { border-bottom-color: var(--ink); }
+.card h2 a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.card .sub { color: var(--quiet); font-size: 12px; margin: 0 0 12px; }
+.card dl { margin: 0; font-size: 12px; color: var(--quiet);
+           display: grid; grid-template-columns: 84px minmax(0,1fr); row-gap: 3px; }
+.card dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+.card dd a { color: var(--ink); }
+.card .go { display: inline-block; margin-top: 14px; font-weight: bold; font-size: 14px; color: var(--ink); }
+
+/* ---- idle: the drawer closes itself ------------------------------------ */
+body.idle .card { opacity: 0; transform: translateY(10px); pointer-events: none; }
+body.idle .tab[aria-selected="true"] {
+  background: var(--paper); border-color: var(--rule); color: var(--quiet); transform: none;
+}
+
+/* ---- the bottle -------------------------------------------------------- */
+/* Tucked onto the spine below the last tab, where the rule already is. At
+   this opacity it is a slight thickening of a grey line and nothing more.
+   It is not in the tab order and not in the accessibility tree, so the only
+   way to find it is for a cursor to happen to pass over it. */
+.bottle {
+  position: absolute; left: -5px; bottom: -26px;
+  width: 11px; height: 22px; padding: 0;
+  border: 0; background: none; cursor: default;
+  color: #4c7a3f;
+  opacity: 0;
+  transition: opacity 260ms var(--ease), transform 400ms var(--ease);
+  /* Once a minute it breathes, just enough to be caught out of the corner of
+     an eye and not enough to read as a control. */
+  animation: tell var(--tell-every) ease-in-out infinite;
+}
+
+/* The visible window is a percentage of the cycle: at 60s it fades up over
+   1.2s, holds a moment, and is gone by 3s. Lengthen --tell-every and the
+   breath lengthens with it. */
+@keyframes tell {
+  0%   { opacity: 0; }
+  2%   { opacity: var(--tell-peak); }
+  5%   { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* It only fully surfaces if a cursor comes to rest on it. A sweep past does
+   not reveal anything, which is the point. */
+.bottle:hover {
+  animation: none;
+  opacity: 1; transform: rotate(-14deg); cursor: pointer;
+  transition-delay: 550ms;
+}
+.bottle svg { display: block; width: 100%; height: 100%; }
+
+/* =========================================================================
+   AFTER FIVE
+   The same drawer, decorated for the office party. Structure untouched:
+   every tab is where it was, the card holds the same record. Only the
+   lighting changed, and somebody hung things off it.
+
+   The colours are the City flag: blue, white, orange. The same three the
+   Mets and the Knicks wear. It is the only place on the site that admits
+   where any of this is from.
+   ========================================================================= */
+
+:root {
+  --nyc-blue: #0b41a0;
+  --nyc-orange: #ff6b16;
+  --nyc-white: #ffffff;
+}
+
+body.party {
+  background:
+    radial-gradient(900px 600px at 12% -5%, #10357e 0%, rgba(0,0,0,0) 60%),
+    radial-gradient(800px 700px at 92% 8%, #6b2a00 0%, rgba(0,0,0,0) 62%),
+    #04143a;
+  color: #eef3ff;
+}
+body.party .folder { color: #ff9146; border-color: rgba(255,107,22,.5); }
+body.party .quiet, body.party .card .sub, body.party .card dl { color: #a8bde6; }
+body.party .tab {
+  color: #d3e0f7;
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.16);
+  backdrop-filter: blur(6px);
+  transform: rotate(var(--tipsy, 0deg));
+}
+body.party .tab:hover { color: #fff; }
+body.party .tab .yr { color: #7f9bd0; }
+body.party .tab[aria-selected="true"] {
+  color: #04143a; font-weight: bold;
+  background: linear-gradient(180deg, #ffa257, var(--nyc-orange));
+  border-color: #ff9146;
+  transform: translateX(9px) rotate(var(--tipsy, 0deg));
+  box-shadow: 0 0 26px -4px rgba(255,107,22,.8);
+}
+body.party .tab[aria-selected="true"] .yr { color: rgba(4,20,58,.7); }
+/* Black on navy is not a focus indicator. */
+body.party .tab:focus-visible { outline-color: var(--nyc-white); }
+body.party .tab[aria-selected="true"]:focus-visible { outline-color: #04143a; }
+body.party .rail { border-left-color: rgba(255,255,255,.14); }
+
+/* String lights down the rail spine. */
+body.party .rail::before {
+  content: ""; position: absolute; left: -5px; top: 0; bottom: 0; width: 9px;
+  background-image: radial-gradient(circle at 50% 6px, currentColor 3px, rgba(0,0,0,0) 3.5px);
+  background-size: 9px 26px;
+  color: var(--nyc-orange);
+  animation: bulbs 2.1s steps(3) infinite;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+@keyframes bulbs {
+  0%   { color: var(--nyc-orange); }
+  33%  { color: var(--nyc-white); }
+  66%  { color: #4d86ff; }
+}
+
+/* A paper hat on every folder tab. */
+body.party .folder::before {
+  content: ""; position: absolute; top: -11px; right: 8px;
+  width: 0; height: 0;
+  border-left: 7px solid transparent; border-right: 7px solid transparent;
+  border-bottom: 12px solid var(--nyc-orange);
+}
+body.party .group:nth-child(2n) .folder::before { border-bottom-color: var(--nyc-white); }
+body.party .group:nth-child(3n) .folder::before { border-bottom-color: #4d86ff; }
+
+/* Tinsel strung across the top of the card. */
+body.party .card {
+  /* Solid rather than a 7% tint: backdrop-filter over a dark page renders
+     inconsistently, and the record has to stay readable at a party. */
+  background: rgba(6,22,60,.88);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  border-color: rgba(255,255,255,.2);
+  color: #fdf6e8;
+  box-shadow: 0 24px 60px -30px rgba(0,0,0,.9);
+}
+/* Sits at the card's own top edge rather than above it, because the card now
+   clips its overflow. */
+body.party .card::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 14px;
+  background:
+    repeating-linear-gradient(135deg,
+      var(--nyc-blue) 0 10px, var(--nyc-white) 10px 20px, var(--nyc-orange) 20px 30px);
+  clip-path: polygon(0 0, 100% 0, 100% 40%, 96% 100%, 92% 40%, 88% 100%,
+                     84% 40%, 80% 100%, 76% 40%, 72% 100%, 68% 40%, 64% 100%,
+                     60% 40%, 56% 100%, 52% 40%, 48% 100%, 44% 40%, 40% 100%,
+                     36% 40%, 32% 100%, 28% 40%, 24% 100%, 20% 40%, 16% 100%,
+                     12% 40%, 8% 100%, 4% 40%, 0 100%);
+  animation: sway 5s ease-in-out infinite alternate;
+  transform-origin: 50% 0;
+}
+@keyframes sway { from { transform: rotate(-.5deg); } to { transform: rotate(.5deg); } }
+
+body.party .card h2 a,
+body.party .card dd, body.party .card dd a, body.party .card .go { color: #eef3ff; }
+body.party .card h2 a:hover { border-bottom-color: var(--nyc-orange); }
+body.party .card img { border-color: rgba(255,255,255,.25); }
+body.party .card .noshot { border-color: rgba(255,255,255,.25); color: #cbb8e8; }
+/* Once the party is on it stops hiding: it is also the way back out. */
+body.party .bottle { animation: none; opacity: 1; transform: rotate(-24deg); }
+
+/* Confetti. Purely decorative, never in the way. */
+#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 90; overflow: hidden; display: none; }
+body.party #confetti { display: block; }
+#confetti i {
+  position: absolute; top: -20px; display: block;
+  width: 7px; height: 11px; border-radius: 1px;
+  animation: fall linear infinite;
+}
+@keyframes fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(760deg); opacity: .9; }
+}
+
+/* The party keeps its colours but stops moving if asked. */
+@media (prefers-reduced-motion: reduce) {
+  .tab, .card, body { transition: none; }
+  #confetti, body.party .rail::before { animation: none; }
+  #confetti { display: none !important; }
+  body.party .card::before { animation: none; }
+}
+
+/* ---- responsive -------------------------------------------------------- */
+@media (max-width: 760px) {
+  .wrap { grid-template-columns: minmax(0,1fr); gap: 18px; }
+  .wrap > .rail { min-width: 0; border-left: 0; display: flex; gap: 18px;
+                  overflow-x: auto; padding-bottom: 6px; }
+  .rail::before { display: none; }
+  .group { flex: none; }
+  .folder { margin: 0 0 4px; border-left: 1px solid var(--rule); border-radius: 3px; }
+  .group ul { display: flex; gap: 6px; padding: 0; }
+  .group li { flex: none; }
+  .tab { white-space: nowrap; border-radius: 3px; }
+  .tab[aria-selected="true"] { transform: none; }
+  body.party .tab[aria-selected="true"] { transform: rotate(var(--tipsy, 0deg)); }
+  .card { position: static; }
+  .bottle { left: auto; right: 2px; bottom: auto; top: -34px; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .card { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  body.party .card { background: #08183e; }
+}
+</style>
+</head>
+<body>
+
+<h1 class="vh">publicworks.nyc</h1>
+
+<div class="wrap">
+  <div class="rail" id="rail"></div>
+  <section class="card" id="card" role="tabpanel" aria-live="polite"></section>
+</div>
+
+<div id="confetti" aria-hidden="true"></div>
+
+<script src="projects.js"></script>
+<script>
+const rail = document.getElementById('rail');
+const card = document.getElementById('card');
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+/* Group by category, keeping the order categories first appear in projects.js. */
+const groups = [];
+PROJECTS.forEach(p => {
+  let g = groups.find(x => x.name === p.category);
+  if (!g) groups.push(g = { name: p.category, items: [] });
+  g.items.push(p);
+});
+
+rail.innerHTML = groups.map(g => `
+  <div class="group">
+    <div class="folder" id="folder-${g.name}">${g.name}</div>
+    <ul role="tablist" aria-labelledby="folder-${g.name}">
+      ${g.items.map(p => `
+        <li role="presentation">
+          <button class="tab" role="tab" type="button" id="tab-${p.id}"
+                  data-id="${p.id}" aria-selected="false" tabindex="-1">
+            ${p.title}<span class="yr">${p.year}</span>
+          </button>
+        </li>`).join('')}
+    </ul>
+  </div>`).join('')
+  + `<button class="bottle" id="bottle" type="button" tabindex="-1" aria-hidden="true">
+       <svg viewBox="0 0 15 30">
+         <path d="M6 1h3v5l2.2 3.4c.5.8.8 1.7.8 2.6V27a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V12c0-.9.3-1.8.8-2.6L6 6z"
+               fill="currentColor"/>
+         <rect x="3.6" y="15" width="7.8" height="7" fill="#fff" opacity=".55"/>
+       </svg>
+     </button>`;
+
+const tabs = [...rail.querySelectorAll('.tab')];
+
+/* Each tab gets a fixed, small tilt, used only after five. */
+tabs.forEach(t => {
+  let h = 0; for (const c of t.dataset.id) h = (h * 31 + c.charCodeAt(0)) | 0;
+  t.style.setProperty('--tipsy', ((Math.abs(h) % 300) / 100 - 1.5).toFixed(2) + 'deg');
+});
+
+function select(id, focus) {
+  const p = PROJECTS.find(x => x.id === id) || PROJECTS[0];
+  tabs.forEach(t => {
+    const on = t.dataset.id === p.id;
+    t.setAttribute('aria-selected', String(on));
+    t.tabIndex = on ? 0 : -1;
+    if (on && focus) t.focus();
+  });
+  card.setAttribute('aria-labelledby', 'tab-' + p.id);
+  card.innerHTML = `
+    ${p.shot ? `<img src="${p.shot}" alt="" loading="lazy">`
+             : `<div class="noshot">no screenshot</div>`}
+    <h2><a href="${p.url}">${p.title}</a></h2>
+    <p class="sub">${p.category} &middot; ${p.year}</p>
+    <dl>
+      <dt>Keywords</dt><dd>${p.keywords.join(', ')}</dd>
+      ${p.source ? `<dt>Source</dt><dd><a href="${p.source}">repository</a></dd>` : ''}
+    </dl>
+    <a class="go" href="${p.url}">Open &#8599;</a>`;
+  history.replaceState(null, '', '?p=' + p.id);
+}
+
+/* Shift-click a tab and you get the repository instead of the site. */
+rail.addEventListener('click', e => {
+  const t = e.target.closest('.tab'); if (!t) return;
+  const p = PROJECTS.find(x => x.id === t.dataset.id);
+  if (e.shiftKey && p && p.source) { window.open(p.source, '_blank', 'noopener'); return; }
+  select(t.dataset.id);
+});
+
+/* ---- keyboard ---------------------------------------------------------- */
+let buffer = '', bufferTimer = null;
+
+/* Bound to the document, not the rail: on a fresh page load nothing has focus
+   yet, and an easter egg you have to click into first is not an easter egg.
+   It stays out of the way of links, inputs, and the card. */
+document.addEventListener('keydown', e => {
+  if (showingRaw || e.metaKey || e.ctrlKey || e.altKey) return;
+
+  const onTab = tabs.includes(document.activeElement);
+  if (!onTab && document.activeElement !== document.body) return;
+
+  /* Walk from whatever is focused, or from whatever is currently held out. */
+  const i = onTab
+    ? tabs.indexOf(document.activeElement)
+    : Math.max(0, tabs.findIndex(t => t.getAttribute('aria-selected') === 'true'));
+
+  const horizontal = window.matchMedia('(max-width: 760px)').matches;
+  const fwd  = horizontal ? 'ArrowRight' : 'ArrowDown';
+  const back = horizontal ? 'ArrowLeft'  : 'ArrowUp';
+
+  const next = () => { e.preventDefault(); select(tabs[(i + 1) % tabs.length].dataset.id, true); };
+  const prev = () => { e.preventDefault(); select(tabs[(i - 1 + tabs.length) % tabs.length].dataset.id, true); };
+
+  if (e.key === fwd  || e.key === 'ArrowDown' || e.key === 'j') return next();
+  if (e.key === back || e.key === 'ArrowUp'   || e.key === 'k') return prev();
+  if (e.key === 'Home') { e.preventDefault(); return select(tabs[0].dataset.id, true); }
+  if (e.key === 'End')  { e.preventDefault(); return select(tabs[tabs.length - 1].dataset.id, true); }
+  /* Enter only opens something when a tab actually has focus. Pressing it on
+     a blank page should not navigate anyone anywhere. */
+  if (e.key === 'Enter' && onTab) {
+    const p = PROJECTS.find(x => x.id === tabs[i].dataset.id);
+    if (p) location.href = e.shiftKey && p.source ? p.source : p.url;
+    return;
+  }
+
+  /* Type-ahead: printable keys build a prefix and jump to it. Digits are left
+     alone so they can reach the year listener below. */
+  if (e.key.length === 1 && !(e.key >= '0' && e.key <= '9')) {
+    buffer += e.key.toLowerCase();
+    clearTimeout(bufferTimer);
+    bufferTimer = setTimeout(() => buffer = '', 800);
+    const hit = PROJECTS.find(p => p.title.toLowerCase().startsWith(buffer))
+             || PROJECTS.find(p => p.title.toLowerCase().includes(buffer));
+    if (hit) { e.preventDefault(); select(hit.id, true); }
+  }
+});
+
+/* ---- 1999: the site shows what it is underneath ------------------------ */
+const sheet = document.querySelector('style');
+let year = '', yearTimer = null, showingRaw = false;
+
+function nineteenNinetyNine() {
+  if (showingRaw) return;
+  showingRaw = true;
+  sheet.disabled = true;
+  document.body.innerHTML =
+    '<h1>publicworks.nyc</h1><ul>' +
+    PROJECTS.map(p => `<li><a href="${p.url}">${p.title}</a> (${p.category}, ${p.year})</li>`).join('') +
+    '</ul>';
+  setTimeout(restore, 5000);
+  document.addEventListener('keydown', restore, { once: true });
+  document.addEventListener('click', restore, { once: true });
+}
+/* Reloading is the honest way back: swapping the body out dropped every
+   listener with it, and the ?p= query brings the same card back. */
+function restore() {
+  if (!showingRaw) return;
+  showingRaw = false;
+  location.reload();
+}
+
+document.addEventListener('keydown', e => {
+  if (showingRaw || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key >= '0' && e.key <= '9') {
+    year += e.key;
+    if (year.length > 4) year = year.slice(-4);
+    clearTimeout(yearTimer);
+    yearTimer = setTimeout(() => year = '', 1200);
+    if (year === '1999') { year = ''; nineteenNinetyNine(); }
+  } else if (e.key.length === 1) {
+    year = '';
+  }
+});
+
+/* ---- idle: the drawer closes itself ------------------------------------ */
+const IDLE_MS = 90000;
+let idleTimer = null;
+
+function wake() {
+  document.body.classList.remove('idle');
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => document.body.classList.add('idle'), IDLE_MS);
+}
+['pointerdown', 'pointermove', 'keydown', 'wheel', 'focusin', 'touchstart']
+  .forEach(ev => document.addEventListener(ev, wake, { passive: true }));
+wake();
+
+/* ---- after five -------------------------------------------------------- */
+const PARTY_KEY = 'publicworks.afterfive';
+const confetti = document.getElementById('confetti');
+const bottle = document.getElementById('bottle');
+/* Blue, white, orange: the City flag, which is also the Mets and the Knicks. */
+const COLOURS = ['#0b41a0', '#ffffff', '#ff6b16', '#4d86ff', '#ff9146', '#dbe6ff'];
+
+function makeConfetti(n) {
+  if (confetti.children.length || reduced.matches) return;
+  let html = '';
+  for (let i = 0; i < n; i++) {
+    const dur = (4 + Math.random() * 5).toFixed(2);
+    html += `<i style="left:${(Math.random() * 100).toFixed(2)}%;
+      background:${COLOURS[i % COLOURS.length]};
+      animation-duration:${dur}s;
+      animation-delay:${(-Math.random() * dur).toFixed(2)}s;
+      width:${(5 + Math.random() * 5).toFixed(1)}px;
+      height:${(8 + Math.random() * 7).toFixed(1)}px"></i>`;
+  }
+  confetti.innerHTML = html;
+}
+
+function setParty(on) {
+  document.body.classList.toggle('party', on);
+  if (on) makeConfetti(90); else confetti.innerHTML = '';
+  try { on ? localStorage.setItem(PARTY_KEY, '1') : localStorage.removeItem(PARTY_KEY); } catch {}
+}
+
+bottle.addEventListener('click', () => setParty(!document.body.classList.contains('party')));
+
+try { if (localStorage.getItem(PARTY_KEY)) setParty(true); } catch {}
+
+select(new URLSearchParams(location.search).get('p') || PROJECTS[0].id);
+</script>
+</body>
+</html>

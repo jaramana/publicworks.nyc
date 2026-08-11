@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study 2 — Haze</title>
+<style>
+/* ---------------------------------------------------------------------------
+   STUDY 2 — HAZE
+   Pointing at a project disturbs the air around its name and then the air
+   settles. The disturbance is applied to a ghost copy of the text, never to
+   the text the visitor is reading, so legibility is not negotiable.
+
+   The ghost is aria-hidden and inert. Remove the whole effect and the index
+   is still a plain list of links.
+--------------------------------------------------------------------------- */
+
+:root {
+  --haze-scale: 14;      /* peak displacement in pixels */
+  --haze-blur: 2.2;      /* peak blur on the ghost */
+  --haze-ms: 460;        /* how long the air takes to settle */
+  --haze-opacity: .55;   /* peak ghost opacity */
+  --haze-freq: 0.018;    /* turbulence base frequency, x */
+
+  --ink: #000; --paper: #fff; --rule: #d4d4d4; --quiet: #6b6b6b;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; padding: 36px 20px 90px; background: var(--paper); color: var(--ink);
+       font: 15px/1.45 Arial, Helvetica, sans-serif; }
+.wrap { max-width: 760px; margin: 0 auto; }
+h1 { font-size: 15px; margin: 0 0 4px; }
+.note { color: var(--quiet); font-size: 13px; margin: 0 0 26px; max-width: 60ch; }
+
+ul { list-style: none; margin: 0; padding: 0; }
+li { border-bottom: 1px solid var(--rule); padding: 14px 0;
+     display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.meta { color: var(--quiet); font-size: 12px; white-space: nowrap; }
+
+/* The name and its ghost occupy the same box. */
+.name { position: relative; display: inline-block; isolation: isolate; }
+.name a {
+  position: relative; z-index: 2;
+  color: var(--ink); font-weight: bold; font-size: 19px; text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+.name a:hover, .name a:focus-visible { border-bottom-color: var(--ink); }
+.name a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.name a:visited { color: #3d3d3d; }
+
+.ghost {
+  position: absolute; inset: 0; z-index: 1;
+  font-weight: bold; font-size: 19px; color: var(--ink);
+  pointer-events: none; user-select: none;
+  opacity: 0;
+  filter: url(#hazeFilter);
+  will-change: opacity;
+}
+
+.desk { margin-top: 44px; border-top: 1px solid var(--rule); padding-top: 16px;
+        font-size: 12px; color: var(--quiet); }
+.desk label { display: grid; grid-template-columns: 130px 1fr 46px; gap: 10px;
+              align-items: center; margin-bottom: 6px; }
+.desk output { font-variant-numeric: tabular-nums; color: var(--ink); }
+.desk input[type=range] { width: 100%; }
+
+svg.defs { position: absolute; width: 0; height: 0; }
+
+/* Anyone who has asked for less motion gets none of this. */
+@media (prefers-reduced-motion: reduce) { .ghost { display: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Study 2 &mdash; Haze</h1>
+  <p class="note">Point at a name, or tab to it. The air moves once and settles. The readable
+  text is never displaced: the effect runs on a hidden copy behind it. Tab through the list to
+  confirm the effect is not hover-only.</p>
+
+  <ul id="index"></ul>
+
+  <section class="desk">
+    <p><strong>Tuning.</strong> These map onto the custom properties at the top of the file.</p>
+    <div id="knobs"></div>
+    <label style="grid-template-columns:130px auto">
+      <span>settle curve</span>
+      <select id="curve"><option value="out">ease out</option><option value="linear">linear</option><option value="bounce">two beats</option></select>
+    </label>
+  </section>
+</div>
+
+<svg class="defs" aria-hidden="true">
+  <filter id="hazeFilter" x="-30%" y="-60%" width="160%" height="220%" color-interpolation-filters="sRGB">
+    <feTurbulence id="hazeTurb" type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"/>
+    <feDisplacementMap id="hazeDisp" in="SourceGraphic" in2="noise" scale="0"
+                       xChannelSelector="R" yChannelSelector="G" result="disp"/>
+    <feGaussianBlur id="hazeBlur" in="disp" stdDeviation="0"/>
+  </filter>
+</svg>
+
+<script src="../projects.js"></script>
+<script>
+const index = document.getElementById('index');
+index.innerHTML = PROJECTS.map(p => `
+  <li>
+    <span class="name">
+      <a href="${p.url}">${p.title}</a>
+      <span class="ghost" aria-hidden="true">${p.title}</span>
+    </span>
+    <span class="meta">${p.category} &middot; ${p.year}</span>
+  </li>`).join('');
+
+const disp = document.getElementById('hazeDisp');
+const blur = document.getElementById('hazeBlur');
+const turb = document.getElementById('hazeTurb');
+const css  = getComputedStyle(document.documentElement);
+const num  = n => parseFloat(css.getPropertyValue(n));
+
+let cfg = {
+  scale:   num('--haze-scale'),
+  blur:    num('--haze-blur'),
+  ms:      num('--haze-ms'),
+  opacity: num('--haze-opacity'),
+  freq:    num('--haze-freq')
+};
+let curve = 'out';
+const easings = {
+  out:    t => 1 - Math.pow(1 - t, 3),
+  linear: t => t,
+  bounce: t => 1 - Math.abs(Math.cos(t * Math.PI * 1.5)) * (1 - t)
+};
+
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+let raf = null, active = null;
+
+/* One disturbance, then the air settles back to nothing. */
+function disturb(ghost) {
+  if (reduced.matches) return;
+  if (raf) cancelAnimationFrame(raf);
+  if (active && active !== ghost) active.style.opacity = 0;
+  active = ghost;
+  turb.setAttribute('baseFrequency', `${cfg.freq} ${cfg.freq * 2.5}`);
+  turb.setAttribute('seed', String(Math.floor(Math.random() * 99)));
+
+  const t0 = performance.now();
+  (function step(now) {
+    const t = Math.min(1, (now - t0) / cfg.ms);
+    const decay = 1 - easings[curve](t);          /* 1 at the start, 0 at rest */
+    disp.setAttribute('scale', (cfg.scale * decay).toFixed(2));
+    blur.setAttribute('stdDeviation', (cfg.blur * decay).toFixed(2));
+    ghost.style.opacity = (cfg.opacity * decay).toFixed(3);
+    if (t < 1) raf = requestAnimationFrame(step);
+    else { ghost.style.opacity = 0; raf = null; active = null; }
+  })(t0);
+}
+
+index.addEventListener('pointerenter', e => {
+  const n = e.target.closest?.('.name');
+  if (n) disturb(n.querySelector('.ghost'));
+}, true);
+index.addEventListener('focusin', e => {
+  const n = e.target.closest('.name');
+  if (n) disturb(n.querySelector('.ghost'));
+});
+
+/* tuning ----------------------------------------------------------------- */
+const KNOBS = [
+  ['scale',   0, 40,  1],
+  ['blur',    0,  6, .1],
+  ['ms',    120, 1400, 20],
+  ['opacity', 0,  1, .05],
+  ['freq',  .002, .08, .002]
+];
+const knobs = document.getElementById('knobs');
+knobs.innerHTML = KNOBS.map(([k,min,max,step]) =>
+  `<label><span>--haze-${k}</span>
+     <input type="range" min="${min}" max="${max}" step="${step}" value="${cfg[k]}" data-k="${k}">
+     <output>${cfg[k]}</output></label>`).join('');
+knobs.addEventListener('input', e => {
+  cfg[e.target.dataset.k] = parseFloat(e.target.value);
+  e.target.nextElementSibling.textContent = e.target.value;
+});
+document.getElementById('curve').addEventListener('change', e => curve = e.target.value);
+</script>
+</body>
+</html>

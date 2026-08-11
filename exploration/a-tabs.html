@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>publicworks.nyc — concept A, Tabs</title>
+<style>
+/* ---------------------------------------------------------------------------
+   CONCEPT A — TABS
+   The index is a stack of overlapping sheets. Each project occludes the one
+   above it. Peeking pulls a sheet sideways out of the stack and opens a gap.
+   Spatial logic: overlap and occlusion.
+--------------------------------------------------------------------------- */
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --rule: #c9c9c9;
+  --quiet: #6b6b6b;
+  --pull: 26px;       /* how far a sheet slides out of the drawer */
+  --overlap: 7px;     /* how much each sheet hides of the one above */
+  --ease: cubic-bezier(.22,.61,.36,1);
+  --speed: 260ms;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 40px 20px 96px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.45 Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sheetstack { max-width: 760px; margin: 0 auto; }
+
+h1 {
+  font-size: 15px; font-weight: bold; margin: 0 0 4px;
+  letter-spacing: .01em;
+}
+.masthead p { margin: 0 0 26px; color: var(--quiet); font-size: 13px; }
+
+/* ---- filters: the drawer labels ---------------------------------------- */
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 22px; }
+.filters button {
+  font: inherit; font-size: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: rgba(255,255,255,.6);
+  backdrop-filter: blur(6px) saturate(1.3);
+  color: var(--quiet);
+  cursor: pointer;
+}
+.filters button[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); }
+.filters button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* ---- the stack --------------------------------------------------------- */
+ol { list-style: none; margin: 0; padding: 0; }
+
+li {
+  position: relative;
+  margin-top: calc(var(--overlap) * -1);
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+  transition: transform var(--speed) var(--ease);
+}
+li:first-child { margin-top: 0; }
+li[hidden] { display: none; }
+
+/* pulled out of the drawer */
+li.is-open { transform: translateX(var(--pull)); z-index: 2; }
+
+/* the visible tab: title, year, category */
+.tab {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  gap: 14px;
+  padding: 13px 0 13px 0;
+}
+
+.tab a {
+  justify-self: start;
+  color: var(--ink);
+  font-weight: bold;
+  font-size: 17px;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+.tab a:hover, .tab a:focus-visible { border-bottom-color: var(--ink); }
+.tab a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.tab a:visited { color: #3d3d3d; }
+
+.meta { color: var(--quiet); font-size: 12px; white-space: nowrap; }
+
+/* the peek control is the sheet's edge */
+.peek {
+  font: inherit; font-size: 11px; line-height: 1;
+  width: 30px; height: 30px;
+  border: 1px solid var(--rule);
+  background: rgba(255,255,255,.55);
+  backdrop-filter: blur(8px) saturate(1.4);
+  color: var(--quiet);
+  border-radius: 3px;
+  cursor: pointer;
+  align-self: center;
+}
+.peek:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+li.is-open .peek { color: var(--ink); border-color: var(--ink); }
+
+/* ---- the record, hidden under the next sheet --------------------------- */
+.record {
+  display: grid;
+  /* minmax(0,1fr) stops the hidden card's screenshot from widening the row. */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--speed) var(--ease);
+}
+li.is-open .record { grid-template-rows: 1fr; }
+.record > div { overflow: hidden; min-width: 0; }
+
+.card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 2px 0 20px;
+  align-items: flex-start;
+}
+.card img {
+  width: 190px; height: 130px; object-fit: cover; object-position: top left;
+  border: 1px solid var(--rule);
+  background: #f4f4f4;
+  flex: none;
+}
+.noshot {
+  width: 190px; height: 130px; flex: none;
+  border: 1px dashed var(--rule);
+  display: grid; place-items: center;
+  color: var(--quiet); font-size: 11px;
+}
+.card dl { margin: 0; font-size: 12px; color: var(--quiet);
+           display: grid; grid-template-columns: 78px minmax(0,1fr); row-gap: 3px; }
+.card dt { }
+.card dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+.card dd a { color: var(--ink); }
+.card .src { display: inline-block; margin-top: 8px; font-size: 12px; color: var(--quiet); }
+
+/* ---- accessibility fallbacks ------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  li, .record { transition: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .filters button, .peek { backdrop-filter: none; background: #fff; }
+}
+@media (max-width: 560px) {
+  :root { --pull: 14px; }
+  /* Two rows: the title over its meta line, with the peek control beside both. */
+  .tab { grid-template-columns: minmax(0, 1fr) auto; row-gap: 2px; column-gap: 10px; }
+  .tab a    { grid-column: 1; grid-row: 1; overflow-wrap: anywhere; }
+  .tab .meta { grid-column: 1; grid-row: 2; }
+  .tab .peek { grid-column: 2; grid-row: 1 / span 2; }
+  .card { flex-direction: column; }
+  .card img, .noshot { width: 100%; height: 150px; }
+}
+</style>
+</head>
+<body>
+
+<main class="sheetstack">
+  <header class="masthead">
+    <h1>publicworks.nyc</h1>
+    <p>Concept A. Peek pulls a sheet out of the stack.</p>
+  </header>
+
+  <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+
+  <ol id="stack"></ol>
+</main>
+
+<script src="../projects.js"></script>
+<script>
+/* Render the stack from PROJECTS. One template, no framework. */
+const stack = document.getElementById('stack');
+
+stack.innerHTML = PROJECTS.map((p, i) => `
+  <li data-category="${p.category}">
+    <div class="tab">
+      <a href="${p.url}">${p.title}</a>
+      <span class="meta">${p.category} &middot; ${p.year}</span>
+      <button class="peek" type="button" aria-expanded="false"
+              aria-controls="rec-${p.id}"
+              aria-label="Peek at ${p.title}">&#9662;</button>
+    </div>
+    <div class="record" id="rec-${p.id}">
+      <div>
+        <div class="card">
+          ${p.shot
+            ? `<img src="../${p.shot}" alt="" loading="lazy" width="190" height="130">`
+            : `<div class="noshot">no screenshot</div>`}
+          <dl>
+            <dt>Category</dt><dd>${p.category}</dd>
+            <dt>Year</dt><dd>${p.year}</dd>
+            <dt>Keywords</dt><dd>${p.keywords.join(', ')}</dd>
+            <dt>Destination</dt><dd><a href="${p.url}">${p.url.replace(/^https?:\/\//,'')}</a></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </li>`).join('');
+
+/* Peek: click, or hover on pointers that have hover. Never on the title. */
+stack.addEventListener('click', e => {
+  const btn = e.target.closest('.peek');
+  if (!btn) return;
+  const li = btn.closest('li');
+  const open = li.classList.toggle('is-open');
+  btn.setAttribute('aria-expanded', String(open));
+  btn.innerHTML = open ? '&#9652;' : '&#9662;';
+});
+
+if (window.matchMedia('(hover: hover)').matches) {
+  stack.addEventListener('pointerenter', e => {
+    const li = e.target.closest?.('li'); if (li) li.classList.add('is-open');
+  }, true);
+  stack.addEventListener('pointerleave', e => {
+    const li = e.target.closest?.('li');
+    if (li && li.querySelector('.peek').getAttribute('aria-expanded') === 'false') {
+      li.classList.remove('is-open');
+    }
+  }, true);
+}
+
+/* Keyboard focus opens the sheet too, so nothing is hover-only. */
+stack.addEventListener('focusin', e => e.target.closest('li')?.classList.add('is-open'));
+stack.addEventListener('focusout', e => {
+  const li = e.target.closest('li');
+  if (li && li.querySelector('.peek').getAttribute('aria-expanded') === 'false') {
+    setTimeout(() => { if (!li.contains(document.activeElement)) li.classList.remove('is-open'); }, 0);
+  }
+});
+
+/* Filters */
+const cats = ['All', ...new Set(PROJECTS.map(p => p.category))];
+document.getElementById('filters').innerHTML = cats.map((c, i) =>
+  `<button type="button" aria-pressed="${i === 0}">${c}</button>`).join('');
+
+document.getElementById('filters').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  [...e.currentTarget.children].forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  const want = b.textContent;
+  [...stack.children].forEach(li => {
+    li.hidden = want !== 'All' && li.dataset.category !== want;
+  });
+});
+</script>
+</body>
+</html>

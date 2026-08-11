@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>publicworks.nyc</title>
+<style>
+/* ---------------------------------------------------------------------------
+   C / ZEN
+   Identical structure, identical content, nothing drawn that does not have to
+   be. No borders. No glass. No shadows. No fills. The drawer is described by
+   position and weight alone: a category sits at the left margin, its projects
+   sit indented behind it, and the selected one is simply the darkest thing on
+   the page.
+
+   The only line on the whole page is one hairline under the held title.
+--------------------------------------------------------------------------- */
+
+:root {
+  --paper: #fcfcfb;
+  --ink: #16161a;
+  --soft: #9a9a97;      /* unselected project */
+  --faint: #c6c6c2;     /* category labels, years */
+  --indent: 26px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0; padding: 96px 32px 120px;
+  background: var(--paper); color: var(--ink);
+  font: 15px/1.7 Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+.wrap { max-width: 1000px; margin: 0 auto;
+        display: grid; grid-template-columns: 280px minmax(0,1fr); gap: 90px;
+        align-items: start; }
+
+/* ---- the rail ---------------------------------------------------------- */
+.folder {
+  font-size: 10px; letter-spacing: .28em; text-transform: uppercase;
+  color: var(--faint);
+  margin: 44px 0 12px;
+}
+.rail > .group:first-child .folder { margin-top: 0; }
+
+.group ul { list-style: none; margin: 0; padding: 0 0 0 var(--indent); }
+.group li { margin: 0; }
+
+.tab {
+  display: block; width: 100%;
+  font: inherit; font-size: 14px; text-align: left;
+  padding: 7px 0;
+  border: 0; background: none;
+  color: var(--soft);
+  cursor: pointer;
+  transition: color 400ms var(--ease), letter-spacing 400ms var(--ease);
+}
+.tab:hover { color: var(--ink); }
+.tab:focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; }
+.tab[aria-selected="true"] { color: var(--ink); letter-spacing: .012em; }
+
+.tab .yr { float: right; color: var(--faint); font-size: 12px;
+           font-variant-numeric: tabular-nums; }
+
+/* ---- the held card ----------------------------------------------------- */
+.card { position: sticky; top: 96px; }
+
+/* The screenshot is present but held back, so the name stays the loudest thing. */
+.card img {
+  width: 100%; aspect-ratio: 3/2; object-fit: cover; object-position: top left;
+  display: block; background: #f2f2f0;
+  opacity: .58; filter: saturate(.5);
+  transition: opacity 600ms var(--ease), filter 600ms var(--ease);
+}
+.card:hover img, .card:focus-within img { opacity: 1; filter: none; }
+.card .noshot { width: 100%; aspect-ratio: 3/2; background: #f6f6f4; }
+
+.card h2 { font-size: 30px; font-weight: normal; letter-spacing: -.015em;
+           margin: 40px 0 0; line-height: 1.2; }
+.card h2 a { color: var(--ink); text-decoration: none; }
+.card h2 a:hover { opacity: .55; }
+.card h2 a:focus-visible { outline: 1px solid var(--ink); outline-offset: 5px; }
+
+/* The one line on the page. */
+.card .rule { height: 1px; background: #e6e6e2; margin: 22px 0 18px; }
+
+.card dl { margin: 0; font-size: 12px; color: var(--faint);
+           display: grid; grid-template-columns: 92px minmax(0,1fr); row-gap: 7px; }
+.card dt { letter-spacing: .12em; text-transform: uppercase; font-size: 10px; padding-top: 2px; }
+.card dd { margin: 0; color: #55554f; overflow-wrap: anywhere; }
+.card dd a { color: #55554f; }
+
+@media (max-width: 860px) {
+  body { padding: 44px 22px 90px; }
+  .wrap { grid-template-columns: minmax(0,1fr); gap: 42px; }
+  .rail { min-width: 0; display: flex; gap: 34px; overflow-x: auto; padding-bottom: 10px; }
+  .group { flex: none; }
+  .folder { margin: 0 0 8px; }
+  .group ul { display: flex; gap: 20px; padding: 0; }
+  .group li { flex: none; }
+  .tab { white-space: nowrap; }
+  .tab .yr { float: none; margin-left: 10px; }
+  .card { position: static; }
+  .card img { opacity: 1; filter: none; }
+}
+
+@media (prefers-reduced-motion: reduce) { .tab, .card img { transition: none; } }
+</style>
+</head>
+<body>
+
+<h1 class="vh">publicworks.nyc</h1>
+
+<div class="wrap">
+  <div class="rail" id="rail"></div>
+  <section class="card" id="card" role="tabpanel" aria-live="polite"></section>
+</div>
+
+<script src="../projects.js"></script>
+<script>
+const rail = document.getElementById('rail');
+const card = document.getElementById('card');
+
+const groups = [];
+PROJECTS.forEach(p => {
+  let g = groups.find(x => x.name === p.category);
+  if (!g) groups.push(g = { name: p.category, items: [] });
+  g.items.push(p);
+});
+
+rail.innerHTML = groups.map(g => `
+  <div class="group">
+    <div class="folder" id="folder-${g.name}">${g.name}</div>
+    <ul role="tablist" aria-labelledby="folder-${g.name}">
+      ${g.items.map(p => `
+        <li role="presentation">
+          <button class="tab" role="tab" type="button" id="tab-${p.id}"
+                  data-id="${p.id}" aria-selected="false" tabindex="-1">
+            ${p.title}<span class="yr">${p.year}</span>
+          </button>
+        </li>`).join('')}
+    </ul>
+  </div>`).join('');
+
+const tabs = [...rail.querySelectorAll('.tab')];
+
+function select(id, focus) {
+  const p = PROJECTS.find(x => x.id === id) || PROJECTS[0];
+  tabs.forEach(t => {
+    const on = t.dataset.id === p.id;
+    t.setAttribute('aria-selected', String(on));
+    t.tabIndex = on ? 0 : -1;
+    if (on && focus) t.focus();
+  });
+  card.setAttribute('aria-labelledby', 'tab-' + p.id);
+  card.innerHTML = `
+    ${p.shot ? `<img src="../${p.shot}" alt="" loading="lazy">`
+             : `<div class="noshot"></div>`}
+    <h2><a href="${p.url}">${p.title}</a></h2>
+    <div class="rule"></div>
+    <dl>
+      <dt>Category</dt><dd>${p.category}</dd>
+      <dt>Year</dt><dd>${p.year}</dd>
+      <dt>Keywords</dt><dd>${p.keywords.join(', ')}</dd>
+      ${p.source ? `<dt>Source</dt><dd><a href="${p.source}">repository</a></dd>` : ''}
+    </dl>`;
+  history.replaceState(null, '', '?p=' + p.id);
+}
+
+rail.addEventListener('click', e => {
+  const t = e.target.closest('.tab'); if (!t) return;
+  const p = PROJECTS.find(x => x.id === t.dataset.id);
+  if (e.shiftKey && p && p.source) { window.open(p.source, '_blank', 'noopener'); return; }
+  select(t.dataset.id);
+});
+
+let buffer = '', bufferTimer = null;
+rail.addEventListener('keydown', e => {
+  const i = tabs.indexOf(document.activeElement);
+  if (i < 0) return;
+  const horizontal = window.matchMedia('(max-width: 860px)').matches;
+  const fwd  = horizontal ? 'ArrowRight' : 'ArrowDown';
+  const back = horizontal ? 'ArrowLeft'  : 'ArrowUp';
+  if (e.key === fwd  || e.key === 'ArrowDown') { e.preventDefault(); select(tabs[(i + 1) % tabs.length].dataset.id, true); return; }
+  if (e.key === back || e.key === 'ArrowUp')   { e.preventDefault(); select(tabs[(i - 1 + tabs.length) % tabs.length].dataset.id, true); return; }
+  if (e.key === 'Home') { e.preventDefault(); select(tabs[0].dataset.id, true); return; }
+  if (e.key === 'End')  { e.preventDefault(); select(tabs[tabs.length - 1].dataset.id, true); return; }
+  if (e.key === 'Enter') {
+    const p = PROJECTS.find(x => x.id === tabs[i].dataset.id);
+    if (p) location.href = e.shiftKey && p.source ? p.source : p.url;
+    return;
+  }
+  if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) {
+    buffer += e.key.toLowerCase();
+    clearTimeout(bufferTimer);
+    bufferTimer = setTimeout(() => buffer = '', 800);
+    const hit = PROJECTS.find(p => p.title.toLowerCase().startsWith(buffer))
+             || PROJECTS.find(p => p.title.toLowerCase().includes(buffer));
+    if (hit) { e.preventDefault(); select(hit.id, true); }
+  }
+});
+
+select(new URLSearchParams(location.search).get('p') || PROJECTS[0].id);
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>publicworks.nyc — concept B, Ledger</title>
+<style>
+/* ---------------------------------------------------------------------------
+   CONCEPT B — LEDGER
+   The index is a real, sortable HTML table. Nothing moves, nothing overlaps.
+   The only fluid object on the page is one glass sheet that floats over the
+   ledger and shows whatever row you are pointed at.
+   Spatial logic: fixed grid, one moving lens.
+--------------------------------------------------------------------------- */
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --rule: #d4d4d4;
+  --quiet: #6b6b6b;
+  --tint: #f6f6f4;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 40px 20px 120px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.45 Arial, Helvetica, sans-serif;
+}
+
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 40px;
+  align-items: start;
+}
+
+h1 { font-size: 15px; margin: 0 0 4px; }
+.masthead p { margin: 0 0 24px; color: var(--quiet); font-size: 13px; }
+
+/* ---- the ledger -------------------------------------------------------- */
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+caption { text-align: left; font-size: 12px; color: var(--quiet); padding-bottom: 8px; }
+
+th { text-align: left; font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+     color: var(--quiet); font-weight: normal; padding: 0 10px 6px 0;
+     border-bottom: 1px solid var(--ink); white-space: nowrap; }
+
+th button {
+  font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit;
+  background: none; border: 0; padding: 0; cursor: pointer;
+}
+th button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+th[aria-sort] button::after { content: " \25B4"; }
+th[aria-sort="descending"] button::after { content: " \25BE"; }
+
+td { padding: 9px 10px 9px 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
+tbody tr:hover, tbody tr:focus-within { background: var(--tint); }
+
+td.title a { color: var(--ink); font-weight: bold; text-decoration: none;
+             border-bottom: 2px solid transparent; }
+td.title a:hover, td.title a:focus-visible { border-bottom-color: var(--ink); }
+td.title a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+td.title a:visited { color: #3d3d3d; }
+
+td.year { font-variant-numeric: tabular-nums; color: var(--quiet); width: 1%; white-space: nowrap; }
+td.cat, td.kw { color: var(--quiet); font-size: 13px; }
+
+/* Shown only when the narrow layout drops the year and category columns. */
+.rowmeta { display: none; color: var(--quiet); font-size: 12px; }
+
+/* ---- the glass sheet --------------------------------------------------- */
+.lens {
+  position: sticky; top: 40px;
+  border: 1px solid rgba(0,0,0,.14);
+  border-radius: 10px;
+  padding: 14px;
+  background: rgba(255,255,255,.42);
+  backdrop-filter: blur(16px) saturate(1.7) brightness(1.04);
+  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(255,255,255,.5),
+    0 10px 30px -18px rgba(0,0,0,.5);
+  transition: opacity 180ms var(--ease);
+}
+.lens[data-empty="true"] .lens-body { opacity: .35; }
+
+.lens img {
+  width: 100%; aspect-ratio: 3 / 2; object-fit: cover; object-position: top left;
+  border: 1px solid rgba(0,0,0,.12); background: #efefef; display: block;
+}
+.lens .noshot {
+  width: 100%; aspect-ratio: 3 / 2; border: 1px dashed rgba(0,0,0,.2);
+  display: grid; place-items: center; color: var(--quiet); font-size: 11px;
+}
+.lens h2 { font-size: 15px; margin: 10px 0 6px; }
+.lens dl { margin: 0; font-size: 12px; color: var(--quiet);
+           display: grid; grid-template-columns: 70px minmax(0,1fr); row-gap: 3px; }
+.lens dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+.lens .go { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: bold; color: var(--ink); }
+
+/* ---- mobile: the lens becomes a bottom sheet --------------------------- */
+@media (max-width: 780px) {
+  .wrap { grid-template-columns: 1fr; gap: 0; }
+  th[data-key="keywords"], td.kw { display: none; }
+  .lens {
+    position: fixed; inset: auto 12px 12px 12px; top: auto; z-index: 5;
+    transform: translateY(120%); transition: transform 240ms var(--ease);
+    max-height: 62vh; overflow: auto;
+  }
+  .lens.is-up { transform: none; }
+  .lens .close { position: absolute; top: 8px; right: 8px; font: inherit; font-size: 12px;
+                 border: 1px solid rgba(0,0,0,.2); border-radius: 999px; width: 26px; height: 26px;
+                 background: rgba(255,255,255,.7); cursor: pointer; }
+}
+@media (min-width: 781px) { .lens .close { display: none; } }
+
+/* Below this the ledger keeps Year and Project, and category moves onto its
+   own line under the title. Year sorting survives, which is the sort that
+   matters most on a phone. */
+@media (max-width: 560px) {
+  th[data-key="category"], td.cat { display: none; }
+  .rowmeta { display: block; margin-top: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) { .lens { transition: none; } }
+@media (prefers-reduced-transparency: reduce) {
+  .lens { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <main>
+    <header class="masthead">
+      <h1>publicworks.nyc</h1>
+      <p>Concept B. A sortable ledger under one glass sheet.</p>
+    </header>
+
+    <table id="ledger">
+      <caption>Sort by any column. Point at a row to inspect it.</caption>
+      <thead>
+        <tr>
+          <th data-key="year" aria-sort="descending"><button type="button">Year</button></th>
+          <th data-key="title"><button type="button">Project</button></th>
+          <th data-key="category"><button type="button">Category</button></th>
+          <th data-key="keywords"><button type="button">Keywords</button></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <aside class="lens" id="lens" data-empty="true" aria-live="polite">
+    <button class="close" type="button" aria-label="Close preview">&times;</button>
+    <div class="lens-body"></div>
+  </aside>
+</div>
+
+<script src="../projects.js"></script>
+<script>
+const tbody = document.querySelector('#ledger tbody');
+const lens  = document.getElementById('lens');
+const body  = lens.querySelector('.lens-body');
+
+let rows = PROJECTS.slice();
+let sortKey = 'year', sortDir = -1;   /* -1 = descending */
+
+function draw() {
+  rows.sort((a, b) => {
+    const av = Array.isArray(a[sortKey]) ? a[sortKey].join() : a[sortKey];
+    const bv = Array.isArray(b[sortKey]) ? b[sortKey].join() : b[sortKey];
+    return (av > bv ? 1 : av < bv ? -1 : 0) * sortDir;
+  });
+  tbody.innerHTML = rows.map(p => `
+    <tr data-id="${p.id}">
+      <td class="year">${p.year}</td>
+      <td class="title"><a href="${p.url}">${p.title}</a>
+        <span class="rowmeta">${p.category}</span></td>
+      <td class="cat">${p.category}</td>
+      <td class="kw">${p.keywords.join(', ')}</td>
+    </tr>`).join('');
+}
+draw();
+
+/* Sorting */
+document.querySelector('#ledger thead').addEventListener('click', e => {
+  const th = e.target.closest('th'); if (!th) return;
+  const key = th.dataset.key;
+  sortDir = (key === sortKey) ? -sortDir : (key === 'year' ? -1 : 1);
+  sortKey = key;
+  document.querySelectorAll('#ledger th').forEach(x => x.removeAttribute('aria-sort'));
+  th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+  draw();
+});
+
+/* The lens */
+function show(id) {
+  const p = PROJECTS.find(x => x.id === id); if (!p) return;
+  lens.dataset.empty = 'false';
+  lens.classList.add('is-up');
+  body.innerHTML = `
+    ${p.shot ? `<img src="../${p.shot}" alt="" loading="lazy">`
+             : `<div class="noshot">no screenshot</div>`}
+    <h2>${p.title}</h2>
+    <dl>
+      <dt>Category</dt><dd>${p.category}</dd>
+      <dt>Year</dt><dd>${p.year}</dd>
+      <dt>Keywords</dt><dd>${p.keywords.join(', ')}</dd>
+    </dl>
+    <a class="go" href="${p.url}">Open &#8599;</a>`;
+}
+
+tbody.addEventListener('pointerover', e => {
+  const tr = e.target.closest('tr'); if (tr) show(tr.dataset.id);
+});
+tbody.addEventListener('focusin', e => {
+  const tr = e.target.closest('tr'); if (tr) show(tr.dataset.id);
+});
+/* Touch: tapping the row (but not the link) raises the sheet. */
+tbody.addEventListener('click', e => {
+  if (e.target.closest('a')) return;
+  const tr = e.target.closest('tr'); if (tr) show(tr.dataset.id);
+});
+lens.querySelector('.close').addEventListener('click', () => lens.classList.remove('is-up'));
+
+/* Seed the lens so it is never blank on load. */
+show(PROJECTS[0].id);
+lens.dataset.empty = 'true';
+lens.classList.remove('is-up');
+</script>
+</body>
+</html>
