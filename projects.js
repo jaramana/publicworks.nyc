@@ -54,6 +54,16 @@ const PROJECTS = [
     source: "https://github.com/jaramana/civilservice.nyc"
   },
   {
+    id: "schoolsfinder",
+    title: "schoolsfinder.nyc",
+    url: "https://schoolsfinder.nyc",
+    category: "Data",
+    year: 2026,
+    keywords: ["schools", "nycps", "python", "statistics"],
+    shot: null,
+    source: null
+  },
+  {
     /* The domain no longer resolves, so the repository is the destination. */
     id: "covidtracker",
     title: "covidtracker.nyc",
@@ -191,6 +201,19 @@ const PROJECTS = [
     keywords: ["civic tech", "astro", "trilingual", "galiza"],
     shot: "media/corunalabs.png",
     source: "https://github.com/Coruna-Labs/website"
+  },
+  {
+    /* The title is the only place a name appears anywhere on the index, and it
+       gets there by being a project rather than an author credit. Keywords
+       stay about the object, not the person. */
+    id: "allenshaibani",
+    title: "allenshaibani.com",
+    url: "https://allenshaibani.com",
+    category: "Site",
+    year: 2026,
+    keywords: ["one page", "static", "css"],
+    shot: "media/allenshaibani.png",
+    source: "https://github.com/jaramana/allenshaibani.com"
   },
 
   /* ---- Tools ----------------------------------------------------------- */

@@ -23,40 +23,40 @@ and search engines, and nothing on screen.
 
 ## What is in the index
 
-Twenty-two projects across six categories, drawn from the `jaramana` and
+Twenty-four projects across six categories, drawn from the `jaramana` and
 `Coruna-Labs` GitHub accounts and the local project folders. All of it is in
-[projects.js](../projects.js), one block per project. Seven have screenshots in
+[projects.js](../projects.js), one block per project. Eight have screenshots in
 `media/`; the rest render a dashed placeholder.
 
 | Category | Count |
 | --- | --- |
-| Data | 3 |
+| Data | 4 |
 | Map | 7 |
 | Essay | 2 |
 | Analysis | 2 |
-| Site | 1 |
+| Site | 2 |
 | Tools | 7 |
 
-Deliberately left out, and yours to overrule:
+**allenshaibani.com is in, on purpose.** The brief rules out biographical
+content and an author credit, and this does neither. It is a project in the
+index like any other, and the name arrives sideways, as a domain someone can
+choose to click. It is the only place a name appears anywhere on the site. Its
+keywords describe the object rather than the person for the same reason.
 
-1. **allenshaibani.com**, which is live. The brief rules out biographical
-   content and the creator's name, and the title alone would put the name on
-   the page. It is the one exclusion that is a judgement call rather than a
-   fact.
-2. **urban-risk-index**, which is a fork of `NYCEM-GIS/urban-risk-index` rather
-   than original work. It belongs in the index only if the substance is yours.
-3. **schoolsfinder.nyc**, which is built locally but has no repository and no
-   domain that resolves. It goes in the day it is live.
-4. **ahmadshaibani.com, Language-Explorer, Leaflet-Demo, test, mc_server**, as
+**schoolsfinder.nyc is in ahead of its deploy.** The record points at
+`https://schoolsfinder.nyc`, which does not resolve yet. That link is dead
+until the repository is pushed, Pages is switched on and the domain is pointed.
+
+Still left out, and yours to overrule:
+
+1. **urban-risk-index**, a fork of `NYCEM-GIS/urban-risk-index`. Given the work
+   at NYC Emergency Management this may well be yours in substance, in which
+   case it belongs in Analysis.
+2. **ahmadshaibani.com, Language-Explorer, Leaflet-Demo, test, mc_server**, as
    duplicates, demos or not projects.
 
-Two other standing decisions:
-
-- **Years are the year of the current version, not first commit.**
-  thepaygap.nyc reads 2026, not 2020.
-- **Site is a category of one.** It holds Coruña Labs, which is an index of
-  tools in the same way this site is. It grows to two if allenshaibani.com is
-  ever added.
+One standing decision: **years are the year of the current version, not first
+commit.** thepaygap.nyc reads 2026, not 2020.
 
 ## The behaviours nobody is told about
 
