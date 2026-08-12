@@ -23,19 +23,22 @@ and search engines, and nothing on screen.
 
 ## What is in the index
 
-Twenty-four projects across six categories, drawn from the `jaramana` and
+Twenty-two projects across five categories, drawn from the `jaramana` and
 `Coruna-Labs` GitHub accounts and the local project folders. All of it is in
-[projects.js](../projects.js), one block per project. Eight have screenshots in
-`media/`; the rest render a dashed placeholder.
+[projects.js](../projects.js), one block per project. Every project with a live
+site has a screenshot; the ten that are repositories only render a dashed
+placeholder.
 
 | Category | Count |
 | --- | --- |
 | Data | 4 |
 | Map | 7 |
 | Essay | 2 |
-| Analysis | 2 |
 | Site | 2 |
 | Tools | 7 |
+
+Analysis was cut before launch. It held NYC WAV Wait Times and the New York
+and A Coruña Gini piece, both of which are repositories rather than sites.
 
 **allenshaibani.com is in, on purpose.** The brief rules out biographical
 content and an author credit, and this does neither. It is a project in the
@@ -43,15 +46,11 @@ index like any other, and the name arrives sideways, as a domain someone can
 choose to click. It is the only place a name appears anywhere on the site. Its
 keywords describe the object rather than the person for the same reason.
 
-**schoolsfinder.nyc is in ahead of its deploy.** The record points at
-`https://schoolsfinder.nyc`, which does not resolve yet. That link is dead
-until the repository is pushed, Pages is switched on and the domain is pointed.
-
 Still left out, and yours to overrule:
 
 1. **urban-risk-index**, a fork of `NYCEM-GIS/urban-risk-index`. Given the work
    at NYC Emergency Management this may well be yours in substance, in which
-   case it belongs in Analysis.
+   case it earns a place.
 2. **ahmadshaibani.com, Language-Explorer, Leaflet-Demo, test, mc_server**, as
    duplicates, demos or not projects.
 

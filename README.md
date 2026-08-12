@@ -13,6 +13,7 @@ There is no navigation, no introduction and no description of the work.
 | `index.html` | The whole site. One file, styles and script included. |
 | `projects.js` | Every project record. The only file you edit to change the index. |
 | `media/` | Project screenshots, 720px wide PNGs. |
+| `tools/shoot.mjs` | Screenshot capture. Not part of the site. |
 | `exploration/` | The concepts and interaction studies that preceded the build. Not linked from the site. |
 
 ## Adding a project
@@ -35,20 +36,34 @@ builds.
 ```
 
 Categories appear in the order they first occur in the file. Moving a run of
-blocks reorders the drawer. The current categories are Data, Map, Essay,
-Analysis, Site and Tools.
+blocks reorders the drawer. The current categories are Data, Map, Essay, Site
+and Tools.
 
-To make a screenshot:
+## Making a screenshot
+
+Chrome's own `--screenshot` flag fires at the load event, which is far too
+early for a map, and `--virtual-time-budget` deadlocks MapLibre because its Web
+Worker never advances under virtual time. Both produce a picture of a loading
+spinner. `tools/shoot.mjs` drives Chrome over the DevTools Protocol instead: it
+waits for the network to go quiet, waits for any loading indicator to
+disappear, and only then captures. It has no dependencies and needs only Node
+18 or newer.
+
+Start Chrome once with a debugging port open:
 
 ```bash
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-  --headless=new --window-size=1200,900 --hide-scrollbars \
-  --screenshot=media/NAME.png https://example.com
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --remote-debugging-port=9222 --user-data-dir=/tmp/cdp-profile --no-first-run &
+```
+
+Then shoot as many pages as you like, and downscale:
+
+```bash
+node tools/shoot.mjs https://example.com media/NAME.png 1200 900 3000
 sips -Z 720 media/NAME.png
 ```
 
-Headless Chrome cannot finish loading a WebGL map, so map tools need capturing
-from a real browser window instead.
+The last argument is an extra wait in milliseconds after the page settles. Maps
+want 4000 or more; ordinary pages are fine at the default.
 
 ## Running it locally
 

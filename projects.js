@@ -13,7 +13,7 @@
      id        short slug, lowercase, no spaces. Also the screenshot name.
      title     what the visitor reads
      url       where the project actually lives
-     category  Data, Map, Essay, Analysis, Site, Tools
+     category  Data, Map, Essay, Site, Tools
      year      four digits, as a number. The year of the current version.
      keywords  up to five short words, lowercase
      built     what the thing was actually made with, listed plainly, in the
@@ -25,14 +25,10 @@
      source    optional repository link, shown as a small secondary link.
                Leave null when url already points at the repository.
 
-   Screenshots live in media/ and are 720px wide PNGs. To make one:
-     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-       --headless=new --window-size=1200,900 --hide-scrollbars \
-       --screenshot=media/NAME.png https://example.com
-     sips -Z 720 media/NAME.png
-
-   Headless Chrome cannot finish loading a WebGL map, so the three Coruña Labs
-   map tools have no screenshot yet. They need capturing from a real browser.
+   Screenshots live in media/ and are 720px wide PNGs. Make them with
+   tools/shoot.mjs, which is documented in the README. Chrome's own
+   --screenshot flag fires at the load event, long before a map has drawn, so
+   it is not good enough for half of these projects.
 --------------------------------------------------------------------------- */
 
 const PROJECTS = [
@@ -72,16 +68,17 @@ const PROJECTS = [
     source: "https://github.com/jaramana/schools.publicworks.nyc"
   },
   {
-    /* The domain no longer resolves, so the repository is the destination. */
+    /* Back online under the portfolio's own domain. The year stays 2020
+       because that is the work, and the data stops there. */
     id: "covidtracker",
-    title: "covidtracker.nyc",
-    url: "https://github.com/jaramana/covidtracker.nyc",
+    title: "Covid Tracker",
+    url: "https://covidtracker.publicworks.nyc",
     category: "Data",
     year: 2020,
     keywords: ["covid", "dohmh", "charts", "archived"],
     built: "JavaScript, R",
-    shot: null,
-    source: null
+    shot: "media/covidtracker.png",
+    source: "https://github.com/jaramana/covidtracker.nyc"
   },
 
   /* ---- Map ------------------------------------------------------------- */
@@ -104,7 +101,7 @@ const PROJECTS = [
     year: 2026,
     keywords: ["buses", "gtfs", "a coruña", "maplibre"],
     built: "MapLibre, GTFS, Claude",
-    shot: null,
+    shot: "media/busworks.png",
     source: "https://github.com/Coruna-Labs/bus-works"
   },
   {
@@ -115,7 +112,7 @@ const PROJECTS = [
     year: 2026,
     keywords: ["income", "inequality", "ine", "a coruña"],
     built: "MapLibre, INE data, Claude",
-    shot: null,
+    shot: "media/adrh.png",
     source: "https://github.com/Coruna-Labs/adrh-mapper"
   },
   {
@@ -126,7 +123,7 @@ const PROJECTS = [
     year: 2026,
     keywords: ["schools", "catchments", "galiza", "xunta"],
     built: "MapLibre, Claude",
-    shot: null,
+    shot: "media/escolares.png",
     source: "https://github.com/Coruna-Labs/zonas-escolares"
   },
   {
@@ -185,30 +182,6 @@ const PROJECTS = [
     built: "HTML, MapLibre, Claude",
     shot: "media/galiciansincuba.png",
     source: "https://github.com/jaramana/galiciansincuba.com"
-  },
-
-  /* ---- Analysis -------------------------------------------------------- */
-  {
-    id: "wav",
-    title: "NYC WAV Wait Times",
-    url: "https://github.com/jaramana/nyc-wav-wait-times",
-    category: "Analysis",
-    year: 2026,
-    keywords: ["tlc", "accessibility", "r", "trip records"],
-    built: "R, arrow, dplyr, Claude",
-    shot: "media/wav.png",
-    source: null
-  },
-  {
-    id: "gini",
-    title: "New York and A Coruña on one Gini scale",
-    url: "https://github.com/Coruna-Labs/journal_gini-nyc",
-    category: "Analysis",
-    year: 2026,
-    keywords: ["gini", "inequality", "census", "r"],
-    built: null,
-    shot: null,
-    source: null
   },
 
   /* ---- Site ------------------------------------------------------------ */
