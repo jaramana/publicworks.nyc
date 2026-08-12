@@ -129,35 +129,35 @@ const PROJECTS = [
   {
     id: "hou-language",
     title: "Houston Language Explorer",
-    url: "https://github.com/jaramana/hou-language-explorer",
+    url: "https://languages.publicworks.nyc",
     category: "Map",
     year: 2020,
     keywords: ["acs", "language", "leaflet", "houston"],
     built: "Leaflet, JavaScript",
-    shot: null,
-    source: null
+    shot: "media/hou-language.png",
+    source: "https://github.com/jaramana/hou-language-explorer"
   },
   {
     id: "nyc-commute",
     title: "NYC Commute",
-    url: "https://github.com/jaramana/nyc-commute",
+    url: "https://commute.publicworks.nyc",
     category: "Map",
     year: 2020,
     keywords: ["commuting", "leaflet", "transit"],
     built: "Leaflet, JavaScript",
-    shot: null,
-    source: null
+    shot: "media/nyc-commute.png",
+    source: "https://github.com/jaramana/nyc-commute"
   },
   {
     id: "pr-popchange",
     title: "Puerto Rico Population Change",
-    url: "https://github.com/jaramana/pr-popchange",
+    url: "https://popchange.publicworks.nyc",
     category: "Map",
     year: 2020,
     keywords: ["census", "municipios", "leaflet"],
     built: "Leaflet, JavaScript",
-    shot: null,
-    source: null
+    shot: "media/pr-popchange.png",
+    source: "https://github.com/jaramana/pr-popchange"
   },
 
   /* ---- Essay ----------------------------------------------------------- */
