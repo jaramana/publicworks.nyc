@@ -70,6 +70,51 @@ The site is static and served from the repository root by GitHub Pages.
 
 `.nojekyll` is present so Pages serves the files as they are.
 
+## The shared header
+
+Every project under this portfolio uses the same masthead, so moving between
+them does not feel like moving between strangers. The reference implementation
+is `schools.publicworks.nyc`. Copy it from there rather than from memory.
+
+Markup: an empty `<header data-chrome="masthead">` that the site's own
+`site.js` fills in, so the header is written once per project and not repeated
+on every page.
+
+```html
+<div class="wrap masthead-inner">
+  <a class="wordmark" href="index.html">Product Name</a>
+  <nav class="nav" aria-label="Sections"> ... </nav>
+</div>
+```
+
+The measurements are fixed. Changing any of them on one site alone is what
+this section exists to prevent.
+
+| Property | Value |
+| --- | --- |
+| `.masthead-inner` padding | `.55rem 0` |
+| `.masthead-inner` gap | `1.25rem` |
+| `.wordmark` size, weight, tracking | `1.25rem`, `700`, `-.03em` |
+| `.nav` gap | `.15rem` |
+| `.nav a` size, weight, padding | `.9rem`, `500`, `.35rem .6rem` |
+| Rendered height, one row | 52.81px |
+
+Two things, and only two, are allowed to differ between projects.
+
+- **`--accent`.** The site's identity colour, which carries the nav hover and
+  the current-page state. Everything else reads from shared variables.
+- **Controls the project actually needs.** The Pay Gap carries a theme toggle
+  because it is the only site with a dark mode. A control like that sits
+  inside `.nav`, after the links, and must not change the header's height.
+
+The wordmark is the product name in plain English. It does not spell the
+site's own address, and it does not carry `publicworks.nyc`: the portfolio is
+a filing cabinet, and a link in the footer is the whole of what it needs.
+
+The masthead does not scroll with the page. A sticky header costs vertical
+space on a phone permanently, to save a scroll gesture that is cheap, and
+these are reading and reference sites rather than applications.
+
 ## Accessibility
 
 Semantic HTML, real links to real destinations, full keyboard operation,
