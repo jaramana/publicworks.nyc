@@ -166,7 +166,7 @@ const PROJECTS = [
   /* ---- Essay ----------------------------------------------------------- */
   {
     id: "arabsincuba",
-    title: "arabsincuba.com",
+    title: "Arabs in Cuba",
     url: "https://arabsincuba.com",
     category: "Essay",
     year: 2026,
@@ -177,7 +177,7 @@ const PROJECTS = [
   },
   {
     id: "galiciansincuba",
-    title: "galiciansincuba.com",
+    title: "Galicians in Cuba",
     url: "https://galiciansincuba.com",
     category: "Essay",
     year: 2026,
@@ -224,11 +224,12 @@ const PROJECTS = [
     source: "https://github.com/Coruna-Labs/website"
   },
   {
-    /* The title is the only place a name appears anywhere on the index, and it
-       gets there by being a project rather than an author credit. Keywords
-       stay about the object, not the person. */
+    /* The title is the only place a name appears anywhere on the index. It is
+       here as the name of a site that happens to be a personal one, not as an
+       author credit on everything else in the file. The keywords stay about
+       the object rather than the person, which is what keeps that reading. */
     id: "allenshaibani",
-    title: "allenshaibani.com",
+    title: "Allen Shaibani",
     url: "https://allenshaibani.com",
     category: "Site",
     year: 2026,

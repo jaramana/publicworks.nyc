@@ -28,8 +28,9 @@ builds.
   category: "Data",
   year: 2026,
   keywords: ["up", "to", "five", "words"],
-  shot: "media/short-slug.png",   // or null
-  source: "https://github.com/..." // or null
+  built: "What it was made with",   // or null to hide the row
+  shot: "media/short-slug.png",     // or null
+  source: "https://github.com/..."  // or null
 }
 ```
 
