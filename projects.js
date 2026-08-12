@@ -40,36 +40,36 @@ const PROJECTS = [
   /* ---- Data ------------------------------------------------------------ */
   {
     id: "thepaygap",
-    title: "thepaygap.nyc",
-    url: "https://thepaygap.nyc",
+    title: "The Pay Gap",
+    url: "https://paygap.publicworks.nyc",
     category: "Data",
     year: 2026,
     keywords: ["payroll", "open data", "r", "salaries"],
     built: "R, dplyr, Claude",
     shot: "media/thepaygap.png",
-    source: "https://github.com/jaramana/thepaygap.nyc"
+    source: "https://github.com/jaramana/paygap.publicworks.nyc"
   },
   {
     id: "civilservice",
-    title: "civilservice.nyc",
-    url: "https://jaramana.github.io/civilservice.nyc/",
+    title: "NYC Civil Service Exams",
+    url: "https://civilservice.publicworks.nyc",
     category: "Data",
     year: 2026,
     keywords: ["exams", "job titles", "open data", "python"],
     built: "Python, JavaScript, Claude",
     shot: "media/civilservice.png",
-    source: "https://github.com/jaramana/civilservice.nyc"
+    source: "https://github.com/jaramana/civilservice.publicworks.nyc"
   },
   {
     id: "schoolsfinder",
-    title: "schoolsfinder.nyc",
-    url: "https://schoolsfinder.nyc",
+    title: "Schools Finder",
+    url: "https://schools.publicworks.nyc",
     category: "Data",
     year: 2026,
     keywords: ["schools", "nycps", "python", "statistics"],
     built: "Python, Claude",
-    shot: null,
-    source: null
+    shot: "media/schoolsfinder.png",
+    source: "https://github.com/jaramana/schools.publicworks.nyc"
   },
   {
     /* The domain no longer resolves, so the repository is the destination. */
