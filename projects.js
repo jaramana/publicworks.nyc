@@ -68,6 +68,17 @@ const PROJECTS = [
     source: "https://github.com/jaramana/schools.publicworks.nyc"
   },
   {
+    id: "hazardhistorian",
+    title: "NYC Hazard Historian",
+    url: "https://hazardhistorian.publicworks.nyc",
+    category: "Data",
+    year: 2026,
+    keywords: ["hazards", "events", "open data", "weather service"],
+    built: "Python, MapLibre, Claude",
+    shot: "media/hazardhistorian.png",
+    source: "https://github.com/jaramana/hazardhistorian.publicworks.nyc"
+  },
+  {
     /* Back online under the portfolio's own domain. The year stays 2020
        because that is the work, and the data stops there. */
     id: "covidtracker",

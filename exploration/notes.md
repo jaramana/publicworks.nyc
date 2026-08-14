@@ -23,15 +23,15 @@ and search engines, and nothing on screen.
 
 ## What is in the index
 
-Twenty-two projects across five categories, drawn from the `jaramana` and
+Twenty-three projects across five categories, drawn from the `jaramana` and
 `Coruna-Labs` GitHub accounts and the local project folders. All of it is in
 [projects.js](../projects.js), one block per project. Every project with a live
-site has a screenshot; the ten that are repositories only render a dashed
-placeholder.
+site has a screenshot. The seven under Tools are repositories rather than sites,
+and render a dashed placeholder.
 
 | Category | Count |
 | --- | --- |
-| Data | 4 |
+| Data | 5 |
 | Map | 7 |
 | Essay | 2 |
 | Site | 2 |
@@ -62,15 +62,15 @@ commit.** thepaygap.nyc reads 2026, not 2020.
 | Try | What happens |
 | --- | --- |
 | Arrow keys, or `j` and `k` | Walk the whole drawer, across category boundaries |
-| Type a few letters | Jumps to that project. `wav` lands on NYC WAV Wait Times. Buffer clears after 800ms |
+| Type a few letters | Jumps to that project. `bus` lands on Bus Works. Buffer clears after 800ms |
 | `Enter` | Opens the held project |
 | Shift-click a tab, or Shift-Enter | Opens the repository instead of the site |
 | Type `1999` | The stylesheet switches off for five seconds. Times New Roman, blue underlined links, a bare `<ul>`. Any key or click returns early |
+| Find the bottle | 11 by 22 pixels, on the rail spine below the last tab, at zero opacity. Clicking it is after five |
 
 Idle drift was built and then cut before launch. Leaving the page alone for 90
 seconds used to fade the card out and release the selected tab, with any
 movement reopening it. It is in the history if it is ever wanted back.
-| Find the bottle | 11 by 22 pixels, on the rail spine below the last tab, at zero opacity. Clicking it is after five |
 
 ### The bottle
 
