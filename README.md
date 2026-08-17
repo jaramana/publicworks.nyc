@@ -116,7 +116,7 @@ this section exists to prevent.
 
 Two things, and only two, are allowed to differ between projects.
 
-- **`--accent`.** The site's identity colour, which carries the nav hover and
+- **`--accent`.** The site's identity color, which carries the nav hover and
   the current-page state. Everything else reads from shared variables.
 - **Controls the project actually needs.** The Pay Gap carries a theme toggle
   because it is the only site with a dark mode. A control like that sits
@@ -134,7 +134,7 @@ these are reading and reference sites rather than applications.
 
 Semantic HTML, real links to real destinations, full keyboard operation,
 visible focus, and no information that is available only on hover.
-`prefers-reduced-motion` and `prefers-reduced-transparency` are both honoured.
+`prefers-reduced-motion` and `prefers-reduced-transparency` are both honored.
 With CSS and JavaScript switched off, every project is still reachable as a
 plain list of links.
 
