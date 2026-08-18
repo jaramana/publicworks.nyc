@@ -126,9 +126,31 @@ The wordmark is the product name in plain English. It does not spell the
 site's own address, and it does not carry `publicworks.nyc`: the portfolio is
 a filing cabinet, and a link in the footer is the whole of what it needs.
 
-The masthead does not scroll with the page. A sticky header costs vertical
-space on a phone permanently, to save a scroll gesture that is cheap, and
-these are reading and reference sites rather than applications.
+On a phone the masthead does not scroll with the page. A sticky header costs
+vertical space permanently, to save a scroll gesture that is cheap, and these
+are reading and reference sites rather than applications.
+
+On a desktop screen it does travel, on a layer of glass, because there the
+52.81px it holds is space the page was not using. The gate is
+`@media (min-width: 60rem) and (hover: hover)`: `hover` rules out a touch
+screen and `60rem` rules out a desktop window too narrow to give the space
+away. Below either, the bar is static and opaque, exactly as before.
+
+| Property | Value |
+| --- | --- |
+| `--glass` | the site's `--paper` at `.82` alpha |
+| `--glass-blur` | `saturate(140%) blur(14px)` |
+| `--glass-edge` | `inset 0 1px 0 rgba(255, 255, 255, .9)` |
+| `.masthead` when sticky | `top: 0`, `z-index: 30` |
+| `--masthead-h` | `3.3rem`, the 52.81px above, named so other things can clear it |
+
+Three things have to come with it, and a project that adopts the glass without
+them is worse off than one that never did. Anchored links need
+`scroll-padding-top: calc(var(--masthead-h) + 1rem)` or every `#section` link
+opens with its own heading hidden behind the bar. Anything else the project
+sticks to the top of the viewport has to clear `--masthead-h` too. And the bar
+goes opaque under `prefers-reduced-transparency: reduce`, and static under
+`@media (max-height: 34rem)`, which is what a reader at 200 per cent zoom has.
 
 ## The footer
 
