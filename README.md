@@ -89,7 +89,7 @@ The site is static and served from the repository root by GitHub Pages.
 
 Every project under this portfolio uses the same masthead, so moving between
 them does not feel like moving between strangers. The reference implementation
-is `schools.publicworks.nyc`. Copy it from there rather than from memory.
+is `paygap.publicworks.nyc`. Copy it from there rather than from memory.
 
 Markup: an empty `<header data-chrome="masthead">` that the site's own
 `site.js` fills in, so the header is written once per project and not repeated
@@ -129,6 +129,113 @@ a filing cabinet, and a link in the footer is the whole of what it needs.
 The masthead does not scroll with the page. A sticky header costs vertical
 space on a phone permanently, to save a scroll gesture that is cheap, and
 these are reading and reference sites rather than applications.
+
+## The footer
+
+Four columns, then the colophon, then the portfolio mark on its own line.
+
+| Column | What goes in it |
+| --- | --- |
+| Views | The tool pages: the things you do on the site. |
+| Reference | `method.html` and `about.html`. Nothing else. |
+| Sources | The upstream publishers, linked out. |
+| Project | The repository and the issue tracker. Code, not pages. |
+
+Every link points at a page. None points at a section within a page: four
+entries that all open `method.html` at a different anchor read as four
+destinations and are one.
+
+`publicworks.nyc` sits below the colophon in its own `.portfolio` line, outside
+the columns, separated by a rule:
+
+```html
+<p class="portfolio">A <a href="https://publicworks.nyc">publicworks.nyc</a> project</p>
+```
+
+It is the cabinet these projects are filed in, not a section of any one site,
+so it is announced once at the foot and does not compete with the site's own
+navigation.
+
+## Boxes
+
+There are two, they mean different things, and both are defined identically on
+every site. Adding a third is how three sites end up with three card styles.
+
+**Plain panel** — a static box: an informational panel, an entry point, a
+download, a chapter link. It sits on the paper and does not float above it.
+
+```css
+background: var(--paper-raised);
+border: 1px solid var(--rule);
+border-radius: 10px;
+box-shadow: var(--shadow-tight);
+transition: border-color .15s ease;
+/* hover */ border-color: var(--accent);
+```
+
+Used by `.panel` and `.jump a` (Hazard Historian), `.chapters a` (Pay Gap,
+Schools Finder), `.download` and `.entry` (Schools Finder).
+
+**Result card** — one row of a result set, where the left bar says "this is one
+of many" and lights up as you move down the list.
+
+```css
+background: var(--paper-raised);
+border: 1px solid var(--rule);
+border-left: 3px solid var(--rule-strong);
+border-radius: 0 8px 8px 0;
+transition: border-left-color .12s ease, background .12s ease;
+/* hover */ border-left-color: var(--accent); background: var(--paper-sunken);
+```
+
+Used by `.result-card` (Pay Gap) and `.school-card` (Schools Finder).
+
+The rule for choosing: if it is one of a set the reader asked for, it is a
+result card. Everything else is a plain panel. Do not put the directional bar
+on a box that is not a result.
+
+`--shadow-tight` is one hairline lift with no ambient spread, and is the only
+shadow a card carries. `--shadow`, which does spread, is reserved for `.card`
+and for surfaces that genuinely float, like a search dropdown.
+
+## The announcement banner
+
+Every project that reconstructs an official record carries the same notice, in
+a `.note-box` on the home page and nowhere else. Repeating it on Method or
+About in different words reads as two different claims about one site.
+
+```html
+<p><strong>This is not an official product.</strong> It is an independent
+initiative, not affiliated with, endorsed by, or produced by
+<a href="URL">AGENCY</a> or the City of New York. Please refer to them for
+authoritative information.</p>
+```
+
+It appears in exactly two places, and the words are identical in both:
+
+- the home page, wrapped in a `.note-box`;
+- the footer, as the `.colophon`, on every page.
+
+The `.note-box` is `max-width: 46rem` with `.85rem 1rem` padding, and it must
+carry `.note-box p { max-width: none }`. Without that line the global
+`p { max-width: var(--measure) }` holds the text to 34rem inside a 46rem box,
+and the paragraph stops short of the box it sits in.
+
+One thing changes per project: **AGENCY**, the body that publishes the official
+version, linked to it. New York City Emergency Management; New York City Public
+Schools. Where no agency sits between the project and the City — The Pay Gap
+reads the City's own payroll — the sentence names the City once instead of
+naming an agency and the City.
+
+Leave the rest of the sentence alone. It carries the affiliation disclaimer and
+the instruction to go elsewhere, and stops there. It does not enumerate the ways
+the data can be wrong: that is what the Method page is for, and a home page that
+opens by arguing against itself is not a way in.
+
+The build credit is not part of it. `Public data, public method, built with X`
+and whatever wink follows it belong in a `.built-with` line beneath the
+colophon, so the disclaimer stays byte-identical across the suite while each
+project keeps its own voice.
 
 ## Accessibility
 
