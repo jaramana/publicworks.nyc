@@ -7,6 +7,7 @@ import BaseHead from './BaseHead.astro';
 import Mark from './Mark.astro';
 import Controls from './Controls.astro';
 import { register } from '../i18n/register.js';
+import { localizePath } from '../i18n/ui.js';
 const { lang = 'en' } = Astro.props;
 const t = register[lang];
 
@@ -30,7 +31,7 @@ const entries=[...records,self];
 <a class="skip-link" href="#index">{t.skip}</a>
 <div class="register-layout">
  <main id="index" class="register-index" tabindex="-1">
-  <header class="mast"><div><h1><Mark />publicworks.nyc</h1><p class="sub">{t.sub}</p><p class="index-meta">{t.index} · {entries.length} {t.entries}</p></div><Controls lang={lang} /></header>
+  <header class="mast"><div><h1><a class="home-link" href={localizePath('/',lang)}><Mark />publicworks.nyc</a></h1><p class="sub">{t.sub}</p><p class="index-meta">{t.index} · {entries.length} {t.entries}</p></div><Controls lang={lang} /></header>
   {groups.map(group=><section class="register-group" aria-label={group}>
    <div class="register-head"><h2 class="group-name">{group}</h2><span>{t.year}</span></div>
    {entries.filter(e=>e.group===group).map(e=><a class="register-row" id={'entry-'+e.key} data-entry={e.key} data-repo={e.repository} href={'#record-'+e.key} aria-controls={'record-'+e.key}><span class="entry-title">{e.title}<small>{e.summary}</small></span><span class="year" title={e.year ? undefined : t.noDate}>{e.year ?? "—"}</span></a>)}
@@ -43,7 +44,7 @@ const entries=[...records,self];
  <aside class="record-desk" aria-label={t.record}>
   <div class="empty-record"><h2>{t.select}</h2><p class="record-kind">{t.selectNote}</p></div>
   {entries.map(e=><section class="record-panel" id={'record-'+e.key} data-record={e.key} aria-labelledby={'title-'+e.key}>
-   <a class="return-index" href={'#entry-'+e.key}>{t.back} ↑</a>
+   <a class="return-index" href={'#entry-'+e.key}>← {t.back}</a>
    {e.shot && <img class="record-shot" src={e.shot} alt="" loading="lazy" decoding="async" />}
    <h2 id={'title-'+e.key} tabindex="-1">{e.title}</h2><p class="record-kind">{e.group} · {e.year}</p>
    <p class="record-body">{e.body}</p>
@@ -67,11 +68,14 @@ const entries=[...records,self];
  function fromUrl(){const url=new URL(location.href);return url.hash.startsWith('#record-') ? url.hash.slice(8) : url.searchParams.get('p');}
  function select(key:string|null, focus=false){
   const panel=panels.find(p=>p.dataset.record===key);
+  const previousRow=rows.find(r=>r.hasAttribute('aria-current'));
+  const focusWasInDetails=desk.contains(document.activeElement);
   panels.forEach(p=>p.hidden=p!==panel);
   empty.hidden=!!panel;
   desk.classList.toggle('has-record',!!panel);
   rows.forEach(r=>{if(r.dataset.entry===key&&panel)r.setAttribute('aria-current','true');else r.removeAttribute('aria-current');});
   document.querySelector('[data-announcement]')!.textContent=panel?.querySelector('h2')?.textContent||'';
+  if(!panel && focusWasInDetails)previousRow?.focus({preventScroll:true});
   if(panel){desk.scrollTop=0;if(focus){panel.querySelector('h2')!.focus({preventScroll:true});if(mobile.matches)desk.scrollIntoView({behavior:'instant',block:'start'});}}
  }
  // Clicks create a history entry; arrow browsing updates the current selection.
@@ -142,9 +146,28 @@ const entries=[...records,self];
   }
  });
 
+ function clearSelection(){
+  const url=new URL(location.href);
+  url.searchParams.delete('p');url.hash='';
+  if(url.href!==location.href)history.pushState(null,'',url);
+  select(null);
+ }
  document.querySelectorAll<HTMLAnchorElement>('.return-index').forEach(a=>a.addEventListener('click',event=>{
-  event.preventDefault();const row=document.getElementById(a.hash.slice(1));row?.focus({preventScroll:true});row?.scrollIntoView({behavior:'instant',block:'center'});
+  if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();
+  const row=document.getElementById(a.hash.slice(1));
+  clearSelection();
+  row?.focus({preventScroll:true});
+  if(mobile.matches)row?.scrollIntoView({behavior:'instant',block:'center'});
  }));
+ // The title returns the page to its rest state, with no record and scrolled to the top.
+ document.querySelector<HTMLAnchorElement>('.home-link')?.addEventListener('click',event=>{
+  if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();
+  clearSelection();
+  scrollTo({top:0,behavior:'instant'});
+  document.getElementById('index')!.focus({preventScroll:true});
+ });
  addEventListener('popstate',()=>select(fromUrl(),desk.contains(document.activeElement)));
  addEventListener('hashchange',()=>select(fromUrl()));
 
