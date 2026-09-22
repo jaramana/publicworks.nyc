@@ -1,0 +1,108 @@
+.figure {
+  max-width: none;
+  width: min(100%, 920px);
+  margin: 44px 0;
+}
+.figure img { width: 100%; height: auto; display: block; }
+.figure figcaption {
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  line-height: 1.55;
+  margin-top: 12px;
+  max-width: var(--max-prose);
+}
+.figure-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-md);
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+.figure-sub {
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  margin: 0 0 16px;
+  max-width: var(--max-prose);
+}
+
+/* --- scale toggle ------------------------------------------ */
+.gini-fig > input { position: absolute; opacity: 0; pointer-events: none; }
+.gini-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.gini-tabs label {
+  font-size: var(--fs-sm);
+  padding: 7px 15px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background .12s ease, color .12s ease, border-color .12s ease;
+}
+.gini-tabs label:hover { border-color: var(--atlantic); color: var(--atlantic); }
+.gini-fig > input.sa:checked ~ .gini-tabs label[data-for="a"],
+.gini-fig > input.sb:checked ~ .gini-tabs label[data-for="b"] {
+  background: var(--atlantic);
+  border-color: var(--atlantic);
+  color: #fff;
+}
+
+.gini-pane { display: none; }
+.gini-fig > input.sa:checked ~ .gini-body .pane-a,
+.gini-fig > input.sb:checked ~ .gini-body .pane-b { display: block; }
+
+/* --- legend ------------------------------------------------- */
+.gini-legend {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.gini-legend li { display: flex; align-items: center; gap: 7px; }
+.gini-legend i {
+  width: 26px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+  display: block;
+}
+.gini-legend .k1 { background: #1B4965; }
+.gini-legend .k2 { background: #5a8299; }
+.gini-legend .k3 { background: #c98a72; }
+.gini-legend .k4 { background: #c0503a; }
+.gini-legend .k5 { background: #a5251d; }
+.gini-legend .k0 { background: #dadcde; }
+
+@media (max-width: 720px) {
+  .figure { margin: 32px 0; }
+  .gini-legend { gap: 5px 12px; }
+  .gini-legend i { width: 20px; }
+}
+
+/* Formula / method callout inside an article. */
+.formula {
+  margin: 26px 0;
+  padding: 18px 20px;
+  background: var(--paper-2);
+  border-left: 3px solid var(--atlantic);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.formula p { margin: 0 0 6px; font-size: var(--fs-base); }
+.formula p:last-child { margin-bottom: 0; }
+.formula .eq {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  color: var(--ink);
+  line-height: 1.5;
+}
+.formula .note { font-size: var(--fs-sm); color: var(--muted); }
+@media (max-width: 720px) { .formula .eq { font-size: var(--fs-base); } }
+
+/* The radio inputs are visually hidden; expose keyboard focus on their labels. */
+.gini-fig > input.sa:focus-visible ~ .gini-tabs label[data-for="a"],
+.gini-fig > input.sb:focus-visible ~ .gini-tabs label[data-for="b"] {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}

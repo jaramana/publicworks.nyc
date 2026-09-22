@@ -1,0 +1,26 @@
+---
+import { localizePath, languages } from '../i18n/ui.js';
+import { register } from '../i18n/register.js';
+const { lang = 'en' } = Astro.props;
+const t = register[lang];
+const names = { en: 'English' };
+
+// The language nav appears once there is more than one language to switch to.
+const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c=>c!=='en').join('|') + ')(?=/|$)'), '') || '/';
+---
+<div class="register-controls">{languages.length > 1 && <nav aria-label="Language">{languages.map(code => <a data-language href={localizePath(bare,code)} lang={code} aria-label={code+' — '+names[code]} aria-current={code===lang?'page':undefined}>{code}</a>)}</nav>}<button class="lights" type="button" data-toggle aria-label={t.lights+': '+t.theme} aria-pressed="false">{t.lights}</button></div>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-toggle]');
+  const syncTheme = () => toggle?.setAttribute('aria-pressed',String(document.documentElement.dataset.theme === 'dark'));
+  toggle?.addEventListener('click',() => {
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = theme;
+    try { localStorage.setItem('publicworks-theme',theme); } catch {}
+    syncTheme();
+  });
+  syncTheme();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e => {
+    let saved; try { saved=localStorage.getItem('publicworks-theme'); } catch {}
+    if(saved!=='light' && saved!=='dark'){document.documentElement.dataset.theme=e.matches?'dark':'light';syncTheme();}
+  });
+</script>

@@ -1,7 +1,13 @@
+dist/
+node_modules/
+.astro/
 .DS_Store
 *.log
-.vscode/
-.idea/
+.env
+.claude/
 
 # Working documents. Kept local, not published.
 exploration/brief/
+
+# The previous static site and its studies. Kept local, never pushed.
+archive/

@@ -2,42 +2,94 @@
 
 An index of projects across websites, data and GIS.
 
-The site is one page. Categories sit at the left margin of a rail, the projects
-filed under each sit indented behind it, and one card is held out at a time.
-There is no navigation, no introduction and no description of the work.
+The site is one page. Categories group a register of records; selecting one
+holds it out on the right. There is no navigation and no introduction.
+
+The codebase is a fork of [cidade-labs/website](https://github.com/cidade-labs/website),
+kept close enough that a change made on either site can be copied to the other.
+Structure, styles and index behavior came over as they were; only the content
+and the language set were replaced.
+
+## Develop
+
+Use a supported Node.js LTS release with npm.
+
+```sh
+npm ci
+npm run dev
+npm run build
+npm run preview
+```
 
 ## Files
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The whole site. One file, styles and script included. |
-| `projects.js` | Every project record. The only file you edit to change the index. |
-| `media/` | Project screenshots, 720px wide PNGs. |
+| `src/content/projects/` | One Markdown file per record. The file you edit to change the index. |
+| `src/content/config.ts` | The shape of a record, and of a journal post. |
+| `src/components/Archive.astro` | The index, the records and the selection behavior. |
+| `src/components/Controls.astro` | The theme control, and the language nav once there is one. |
+| `src/components/Mark.astro`, `public/favicon.svg` | Matching Folio geometry. |
+| `src/styles/register.css` | The index and record layout. |
+| `src/styles/appearance.css` | Palette and spacing. |
+| `src/styles/global.css` | Reading pages and shared styles. |
+| `src/i18n/register.js` | Index copy. |
+| `src/i18n/ui.js` | Interface strings and the path helpers. |
+| `public/media/` | Project screenshots, 720px wide PNGs. |
 | `tools/shoot.mjs` | Screenshot capture. Not part of the site. |
-| `exploration/` | The concepts and interaction studies that preceded the build. Not linked from the site. |
 
 ## Adding a project
 
-Open `projects.js`, copy a block, edit it, save. Nothing runs and nothing
-builds.
+Copy a file in `src/content/projects/`, edit the frontmatter, save.
 
-```js
-{
-  id: "short-slug",
-  title: "What the visitor reads",
-  url: "https://where-it-lives",
-  category: "Data",
-  year: 2026,
-  keywords: ["up", "to", "five", "words"],
-  built: "What it was made with",   // or null to hide the row
-  shot: "media/short-slug.png",     // or null
-  source: "https://github.com/..."  // or null
-}
+```yaml
+title: "What the visitor reads"
+indexSummary: "One line, under the title in the index."
+description: "The paragraph in the record."
+category: "Data"          # Data, Map, Essay, Site or Tools
+recordId: "short-slug"    # the ?p= value, and the screenshot name
+year: 2026
+keywords: ["up", "to", "five", "words"]
+builtWith: "What it was made with"   # omit the line entirely if nothing to list
+url: "https://where-it-lives"
+shot: "/media/short-slug.png"        # omit for no screenshot
+repository: "https://github.com/..." # omit when url is already the repository
+source: "Who publishes the data"     # omit where the project names none
+order: 1                             # order within the category
+lang: "en"
 ```
 
-Categories appear in the order they first occur in the file. Moving a run of
-blocks reorders the drawer. The current categories are Data, Map, Essay, Site
-and Tools.
+Categories are ordered in `src/i18n/register.js`, which also holds the labels.
+`builtWith` lists what the thing was actually made with. Claude is listed
+exactly like R or MapLibre, because it was a tool like R or MapLibre. Projects
+that predate it simply do not list it, which is what makes the field worth
+reading.
+
+## Behavior
+
+Selecting an entry updates `?p=record-id`, and browser history keeps the
+selection. Arrow keys browse records, Home and End jump to the ends, and Back
+to index restores row focus. Keyboard focus stays visible. Without JavaScript
+every record remains in the document.
+
+Light and dark follow the system until a preference is saved locally. No
+cookies, no analytics, no external fonts, no client framework runtime.
+
+## Languages
+
+English only, served at the root. `src/i18n/` keeps the dictionary-and-path
+scaffold from the upstream trilingual site, so a second language is a new block
+in each dictionary, a `lang` value in the schema, and a page tree — not a
+rewrite. `Controls.astro` renders the language nav on its own once
+`languages` holds more than one code.
+
+## Journal
+
+There is no journal yet. The `blog` collection stays defined in
+`src/content/config.ts`, and `Base.astro`, `Header.astro`, `Footer.astro` and
+`PostCard.astro` are the reading-page scaffold it uses. Restoring it means
+creating `src/content/blog/`, copying `src/pages/blog/` back from the upstream
+repository, and putting the writing group back into `Archive.astro`.
 
 ## Making a screenshot
 
@@ -58,38 +110,35 @@ Start Chrome once with a debugging port open:
 Then shoot as many pages as you like, and downscale:
 
 ```bash
-node tools/shoot.mjs https://example.com media/NAME.png 1200 900 3000
-sips -Z 720 media/NAME.png
+node tools/shoot.mjs https://example.com public/media/NAME.png 1200 900 3000
+sips -Z 720 public/media/NAME.png
 ```
 
 The last argument is an extra wait in milliseconds after the page settles. Maps
 want 4000 or more; ordinary pages are fine at the default.
 
-## Running it locally
-
-```bash
-python3 -m http.server 8823
-```
-
-Then open `http://localhost:8823`. A server is needed because `projects.js` is
-loaded as a script; opening `index.html` from the filesystem works in some
-browsers but not reliably.
-
 ## Deploying
 
-The site is static and served from the repository root by GitHub Pages.
+GitHub Actions builds the site and publishes `dist/` to GitHub Pages. The
+workflow is `.github/workflows/deploy.yml` and runs on every push to `main`.
 
-1. Push to `main`.
-2. Settings, Pages, source: deploy from branch `main`, folder `/ (root)`.
-3. Point the domain at GitHub Pages and confirm the `CNAME` file matches.
+One-time setup: Settings, Pages, Source, GitHub Actions. `public/CNAME` and
+`public/.nojekyll` are copied into the build, so the custom domain and the
+`_astro/` directory survive every deployment.
 
-`.nojekyll` is present so Pages serves the files as they are.
+Build and verify before pushing. After pushing `main`, watch the Deploy
+workflow finish, then check the live homepage and a `?p=` deep link. Do not
+treat a successful push as proof of a successful deployment.
+
+To roll back, revert the release commit and push the revert, or re-run an
+earlier successful deployment from the Actions tab.
 
 ## The shared header
 
 Every project under this portfolio uses the same masthead, so moving between
 them does not feel like moving between strangers. The reference implementation
-is `paygap.publicworks.nyc`. Copy it from there rather than from memory.
+is `paygap.publicworks.nyc`. Copy it from there rather than from memory. The
+index itself does not carry it: it is the cabinet, not one of the drawers.
 
 Markup: an empty `<header data-chrome="masthead">` that the site's own
 `site.js` fills in, so the header is written once per project and not repeated
@@ -264,10 +313,13 @@ project keeps its own voice.
 Semantic HTML, real links to real destinations, full keyboard operation,
 visible focus, and no information that is available only on hover.
 `prefers-reduced-motion` and `prefers-reduced-transparency` are both honored.
-With CSS and JavaScript switched off, every project is still reachable as a
-plain list of links.
+With JavaScript switched off, every record is still in the document as a plain
+list of links.
 
 ## Credits
 
-Built with plain HTML, CSS and JavaScript, with no framework and no build step.
-Screenshots captured with headless Chrome. Written with Claude.
+Built with Astro, and with plain HTML and CSS. Screenshots captured with
+headless Chrome. Written with Claude.
+
+The previous hand-written site, and the interaction studies that preceded it,
+are kept in `archive/` outside version control.

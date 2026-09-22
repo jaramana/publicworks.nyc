@@ -1,0 +1,7 @@
+---
+import Mark from './Mark.astro';
+import Controls from './Controls.astro';
+import { localizePath } from '../i18n/ui.js';
+const { lang = 'en' } = Astro.props;
+---
+<header class="reader-mast wrap"><a class="small-brand" href={localizePath('/',lang)}><Mark />publicworks.nyc</a><Controls lang={lang} /></header>

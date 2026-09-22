@@ -1,0 +1,21 @@
+---
+/* ============================================================
+   POST CARD
+   Renders one blog post as a card linking to the full article.
+   ============================================================ */
+import { localizePath, useTranslations } from '../i18n/ui.js';
+const { title, description, pubDate, slug, lang = 'en' } = Astro.props;
+const t = useTranslations(lang);
+
+const dateStr = pubDate
+  ? new Date(pubDate).toLocaleDateString(lang === 'en' ? 'en-US' : lang, {
+      year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
+    })
+  : '';
+---
+<a class="card" href={localizePath('/blog/' + slug, lang)}>
+  <span class="kicker">{t('blog.title')}</span>
+  <h3>{title}</h3>
+  <p>{description}</p>
+  <div class="meta">{dateStr}</div>
+</a>

@@ -1,0 +1,112 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/global.css';
+import '../styles/register.css';
+import '../styles/appearance.css';
+import BaseHead from './BaseHead.astro';
+import Mark from './Mark.astro';
+import Controls from './Controls.astro';
+import { register } from '../i18n/register.js';
+const { lang = 'en' } = Astro.props;
+const t = register[lang];
+
+// Categories group the index. The order here is the order of the drawer.
+const groups = [t.data, t.map, t.essay, t.site, t.tools];
+const label = { Data: t.data, Map: t.map, Essay: t.essay, Site: t.site, Tools: t.tools };
+
+const records = (await getCollection('projects', p => p.data.lang === lang))
+ .sort((a,b)=>a.data.order-b.data.order)
+ .map(p=>({key:p.data.recordId,title:p.data.title,summary:p.data.indexSummary,body:p.data.description,group:label[p.data.category],year:p.data.year,keywords:p.data.keywords,built:p.data.builtWith,source:p.data.source,repository:p.data.repository,shot:p.data.shot,href:p.data.url,action:t.open}));
+
+// The index files itself, in its own drawer, like everything else.
+const self = {key:'this',title:t.this,summary:t.thisShort,body:t.thisBody,group:t.tools,year:2026,keywords:[],built:'Astro, HTML, CSS, TypeScript',source:null,repository:'https://github.com/jaramana/publicworks.nyc',shot:null,href:null,action:null};
+
+const entries=[...records,self];
+---
+<!doctype html>
+<html lang={lang} class="register-document">
+<head><BaseHead title="publicworks.nyc" description={t.sub} /><script is:inline>document.documentElement.classList.add('has-js');</script></head>
+<body class="register-site">
+<a class="skip-link" href="#index">{t.skip}</a>
+<div class="register-layout">
+ <main id="index" class="register-index" tabindex="-1">
+  <header class="mast"><div><h1><Mark />publicworks.nyc</h1><p class="sub">{t.sub}</p><p class="index-meta">{t.index} · {entries.length} {t.entries}</p></div><Controls lang={lang} /></header>
+  {groups.map(group=><section class="register-group" aria-label={group}>
+   <div class="register-head"><h2 class="group-name">{group}</h2><span>{t.year}</span></div>
+   {entries.filter(e=>e.group===group).map(e=><a class="register-row" id={'entry-'+e.key} data-entry={e.key} href={'#record-'+e.key} aria-controls={'record-'+e.key}><span class="entry-title">{e.title}<small>{e.summary}</small></span><span class="year" title={e.year ? undefined : t.noDate}>{e.year ?? "—"}</span></a>)}
+  </section>)}
+  <footer class="register-footer"><p>publicworks.nyc · New York · <a href="https://github.com/jaramana">GitHub</a></p><p>{t.privacy}</p></footer>
+ </main>
+ <aside class="record-desk" aria-label={t.record}>
+  <div class="empty-record"><h2>{t.select}</h2><p class="record-kind">{t.selectNote}</p></div>
+  {entries.map(e=><section class="record-panel" id={'record-'+e.key} data-record={e.key} aria-labelledby={'title-'+e.key}>
+   <a class="return-index" href={'#entry-'+e.key}>{t.back} ↑</a>
+   {e.shot && <img class="record-shot" src={e.shot} alt="" loading="lazy" decoding="async" />}
+   <h2 id={'title-'+e.key} tabindex="-1">{e.title}</h2><p class="record-kind">{e.group} · {e.year}</p>
+   <p class="record-body">{e.body}</p>
+   <dl class="record-fields">
+    {e.keywords.length > 0 && <><dt>{t.keywords}</dt><dd>{e.keywords.join(', ')}</dd></>}
+    {e.source && <><dt>{t.source}</dt><dd>{e.source}</dd></>}
+    {e.built && <><dt>{t.built}</dt><dd>{e.built}</dd></>}
+    {e.repository && <><dt>{t.code}</dt><dd><a href={e.repository}>{e.repository.replace('https://github.com/','')}</a></dd></>}
+   </dl>
+   {e.href && <a class="record-open" href={e.href}>{e.action} ↗</a>}
+  </section>)}
+ </aside>
+</div>
+<p class="sr-only" role="status" data-announcement></p>
+<script>
+ const rows=[...document.querySelectorAll<HTMLAnchorElement>('[data-entry]')];
+ const panels=[...document.querySelectorAll<HTMLElement>('[data-record]')];
+ const empty=document.querySelector<HTMLElement>('.empty-record')!;
+ const desk=document.querySelector<HTMLElement>('.record-desk')!;
+ const mobile=matchMedia('(max-width:800px)');
+ function fromUrl(){const url=new URL(location.href);return url.hash.startsWith('#record-') ? url.hash.slice(8) : url.searchParams.get('p');}
+ function select(key:string|null, focus=false){
+  const panel=panels.find(p=>p.dataset.record===key);
+  panels.forEach(p=>p.hidden=p!==panel);
+  empty.hidden=!!panel;
+  desk.classList.toggle('has-record',!!panel);
+  rows.forEach(r=>{if(r.dataset.entry===key&&panel)r.setAttribute('aria-current','true');else r.removeAttribute('aria-current');});
+  document.querySelector('[data-announcement]')!.textContent=panel?.querySelector('h2')?.textContent||'';
+  if(panel){desk.scrollTop=0;if(focus){panel.querySelector('h2')!.focus({preventScroll:true});if(mobile.matches)desk.scrollIntoView({behavior:'instant',block:'start'});}}
+ }
+ // Clicks create a history entry; arrow browsing updates the current selection.
+ function openEntry(row:HTMLAnchorElement, keyboard=false, replace=false){
+  const url=new URL(location.href);
+  url.searchParams.set('p',row.dataset.entry!);url.hash='';
+  if(url.href!==location.href){
+   if(replace)history.replaceState(null,'',url);
+   else history.pushState(null,'',url);
+  }
+  select(row.dataset.entry!,keyboard && !replace);
+  if(replace){row.focus({preventScroll:true});row.scrollIntoView({block:'nearest'});}
+  else if(mobile.matches)desk.scrollIntoView({behavior:'instant',block:'start'});
+ }
+ rows.forEach(row=>row.addEventListener('click',event=>{
+  if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();openEntry(row,event.detail===0);
+ }));
+ document.addEventListener('keydown',event=>{
+  if(event.metaKey||event.ctrlKey||event.altKey||event.shiftKey)return;
+  const active=document.activeElement;
+  const focused=rows.findIndex(row=>row===active);
+  if(focused<0 && active!==document.body && active!==document.getElementById('index'))return;
+  const current=focused>=0 ? focused : rows.findIndex(row=>row.hasAttribute('aria-current'));
+  let next:number;
+  if(event.key==='ArrowDown' || (mobile.matches && event.key==='ArrowRight'))next=(current+1)%rows.length;
+  else if(event.key==='ArrowUp' || (mobile.matches && event.key==='ArrowLeft'))next=(current<0 ? rows.length-1 : current-1+rows.length)%rows.length;
+  else if(event.key==='Home')next=0;
+  else if(event.key==='End')next=rows.length-1;
+  else return;
+  event.preventDefault();openEntry(rows[next],true,true);
+ });
+ document.querySelectorAll<HTMLAnchorElement>('.return-index').forEach(a=>a.addEventListener('click',event=>{
+  event.preventDefault();const row=document.getElementById(a.hash.slice(1));row?.focus({preventScroll:true});row?.scrollIntoView({behavior:'instant',block:'center'});
+ }));
+ addEventListener('popstate',()=>select(fromUrl(),desk.contains(document.activeElement)));
+ addEventListener('hashchange',()=>select(fromUrl()));
+ select(fromUrl(),!!fromUrl() && window.self === window.top);
+</script>
+</body>
+</html>
