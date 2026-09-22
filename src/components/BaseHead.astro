@@ -1,5 +1,6 @@
 ---
-const { title = 'publicworks.nyc', description, noindex = false } = Astro.props;
+import { siteName } from '../i18n/ui.js';
+const { title = siteName, description, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 <meta charset="UTF-8" />

@@ -7,6 +7,13 @@
    block below plus an entry in `languages`, not a rewrite.
    ============================================================ */
 
+/* Which site this is. Every component reads these instead of naming the site,
+   so the components stay identical between publicworks.nyc and cidadelabs.org. */
+export const siteName = 'publicworks.nyc';
+export const githubUrl = 'https://github.com/jaramana';
+export const languageNames = { en: 'English' };
+export const locales = { en: 'en-US' };
+
 export const languages = ['en'];
 export const defaultLang = 'en';
 

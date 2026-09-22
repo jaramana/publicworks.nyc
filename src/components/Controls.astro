@@ -1,10 +1,11 @@
 ---
-import { localizePath, languages } from '../i18n/ui.js';
-const { lang = 'en' } = Astro.props;
-const names = { en: 'English' };
+import { localizePath, languages, defaultLang, languageNames } from '../i18n/ui.js';
+import { register } from '../i18n/register.js';
+const { lang = defaultLang } = Astro.props;
+const t = register[lang];
 
 // The language nav appears once there is more than one language to switch to.
 // Light and dark follow the reader's own system setting, so there is no control for it.
-const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c=>c!=='en').join('|') + ')(?=/|$)'), '') || '/';
+const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c=>c!==defaultLang).join('|') + ')(?=/|$)'), '') || '/';
 ---
-{languages.length > 1 && <div class="register-controls"><nav aria-label="Language">{languages.map(code => <a data-language href={localizePath(bare,code)} lang={code} aria-label={code+' — '+names[code]} aria-current={code===lang?'page':undefined}>{code}</a>)}</nav></div>}
+{languages.length > 1 && <div class="register-controls"><nav aria-label={t.languages}>{languages.map(code => <a data-language href={localizePath(bare,code)} lang={code} aria-label={code+' — '+languageNames[code]} aria-current={code===lang?'page':undefined}>{code}</a>)}</nav></div>}

@@ -1,10 +1,10 @@
 ---
 import { archive } from '../i18n/archive.js';
-import { localizePath } from '../i18n/ui.js';
-const { lang = 'en' } = Astro.props;
+import { localizePath, defaultLang, siteName, githubUrl } from '../i18n/ui.js';
+const { lang = defaultLang } = Astro.props;
 const t = archive[lang];
 ---
 <footer class="site-footer wrap">
-  <div><a class="footer-name" href={localizePath('/', lang)}>publicworks.nyc</a><p>{t.aboutShort}</p></div>
-  <div class="footer-right"><a href="https://github.com/jaramana">GitHub ↗</a><p>{t.humor}</p></div>
+  <div><a class="footer-name" href={localizePath('/', lang)}>{siteName}</a><p>{t.aboutShort}</p></div>
+  <div class="footer-right"><a href={githubUrl}>GitHub ↗</a><p>{t.humor}</p></div>
 </footer>

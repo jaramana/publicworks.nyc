@@ -6,7 +6,8 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { archive } from '../i18n/archive.js';
-const { lang = 'en', title = 'publicworks.nyc', description = archive[lang].intro, noindex = false } = Astro.props;
+import { defaultLang, siteName } from '../i18n/ui.js';
+const { lang = defaultLang, title = siteName, description = archive[lang].intro, noindex = false } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang={lang}>

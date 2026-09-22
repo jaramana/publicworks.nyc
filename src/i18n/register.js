@@ -20,6 +20,7 @@ export const register = {
     "open": "Open",
     "read": "Read",
     "back": "Back to index",
+    "languages": "Languages",
     "privacy": "No cookies. No analytics. No further action is required.",
     "this": "This index",
     "thisShort": "The page you are reading.",

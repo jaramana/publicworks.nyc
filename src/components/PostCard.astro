@@ -3,12 +3,12 @@
    POST CARD
    Renders one blog post as a card linking to the full article.
    ============================================================ */
-import { localizePath, useTranslations } from '../i18n/ui.js';
-const { title, description, pubDate, slug, lang = 'en' } = Astro.props;
+import { localizePath, useTranslations, defaultLang, locales } from '../i18n/ui.js';
+const { title, description, pubDate, slug, lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
 
 const dateStr = pubDate
-  ? new Date(pubDate).toLocaleDateString(lang === 'en' ? 'en-US' : lang, {
+  ? new Date(pubDate).toLocaleDateString(locales[lang] ?? lang, {
       year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
     })
   : '';
