@@ -220,7 +220,13 @@ const entries=[...records,self];
   }else if(event.key.length===1)year='';
  });
 
- select(fromUrl(),!!fromUrl() && window.self === window.top);
+ /* The record is already on screen at load, so focusing it only adds a focus
+    ring, which a keyboard reload makes visible. The status line announces the
+    record instead. Mobile still gets the scroll, because the desk sits below
+    the whole index. */
+ const initial=fromUrl();
+ select(initial);
+ if(desk.classList.contains('has-record') && mobile.matches && window.self === window.top)desk.scrollIntoView({behavior:'instant',block:'start'});
 </script>
 </body>
 </html>
