@@ -32,7 +32,6 @@ npm run preview
 | `src/components/Mark.astro`, `public/favicon.svg` | Matching Folio geometry. |
 | `src/styles/register.css` | The index and record layout. |
 | `src/styles/appearance.css` | Palette and spacing. |
-| `src/styles/afterfive.css` | Everything the register does not strictly need. |
 | `src/styles/global.css` | Reading pages and shared styles. |
 | `src/i18n/register.js` | Index copy. |
 | `src/i18n/ui.js` | Interface strings and the path helpers. |

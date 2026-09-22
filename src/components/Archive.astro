@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import '../styles/global.css';
 import '../styles/register.css';
 import '../styles/appearance.css';
-import '../styles/afterfive.css';
 import BaseHead from './BaseHead.astro';
 import Mark from './Mark.astro';
 import Controls from './Controls.astro';
@@ -39,12 +38,6 @@ const entries=[...records,self];
   <footer class="register-footer">
    <p>publicworks.nyc · New York · <a href="https://github.com/jaramana">GitHub</a></p>
    <p>{t.privacy}</p>
-   <button class="bottle" id="bottle" type="button" tabindex="-1" aria-hidden="true">
-    <svg viewBox="0 0 15 30">
-     <path d="M6 1h3v5l2.2 3.4c.5.8.8 1.7.8 2.6V27a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V12c0-.9.3-1.8.8-2.6L6 6z" fill="currentColor"/>
-     <rect x="3.6" y="15" width="7.8" height="7" fill="#fff" opacity=".55"/>
-    </svg>
-   </button>
   </footer>
  </main>
  <aside class="record-desk" aria-label={t.record}>
@@ -64,7 +57,6 @@ const entries=[...records,self];
   </section>)}
  </aside>
 </div>
-<div id="confetti" aria-hidden="true"></div>
 <p class="sr-only" role="status" data-announcement></p>
 <script>
  const rows=[...document.querySelectorAll<HTMLAnchorElement>('[data-entry]')];
@@ -72,7 +64,6 @@ const entries=[...records,self];
  const empty=document.querySelector<HTMLElement>('.empty-record')!;
  const desk=document.querySelector<HTMLElement>('.record-desk')!;
  const mobile=matchMedia('(max-width:800px)');
- const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  function fromUrl(){const url=new URL(location.href);return url.hash.startsWith('#record-') ? url.hash.slice(8) : url.searchParams.get('p');}
  function select(key:string|null, focus=false){
   const panel=panels.find(p=>p.dataset.record===key);
@@ -110,7 +101,6 @@ const entries=[...records,self];
       - typing jumps to a project by name
       - shift-click, or shift-Enter, opens the repository
       - type 1999 and the site shows you what it is underneath
-      - there is a bottle in here somewhere
 
     All of it is decoration on top of a list of links. Turn off CSS and
     JavaScript and the records are still reachable.
@@ -206,45 +196,6 @@ const entries=[...records,self];
    if(year==='1999'){year='';nineteenNinetyNine();}
   }else if(event.key.length===1)year='';
  });
-
- /* ---- after five ------------------------------------------------------ */
- const PARTY_KEY='publicworks.afterfive';
- const confetti=document.getElementById('confetti')!;
- const bottle=document.getElementById('bottle');
- /* Blue, white, orange: the City flag, which is also the Mets and the Knicks. */
- const COLOURS=['#0b41a0','#ffffff','#ff6b16','#4d86ff','#ff9146','#dbe6ff'];
-
- /* A fixed, small tilt per row, used only after five. Far smaller than the
-    old drawer's: these rows run the width of the column, so the same angle
-    would throw their ends several rows out of line. */
- rows.forEach(row=>{
-  let h=0;for(const c of row.dataset.entry!)h=(h*31+c.charCodeAt(0))|0;
-  row.style.setProperty('--tipsy',((Math.abs(h)%140)/200-.35).toFixed(2)+'deg');
- });
-
- function makeConfetti(n:number){
-  if(confetti.children.length||reduced.matches)return;
-  let html='';
-  for(let i=0;i<n;i++){
-   const dur=(4+Math.random()*5).toFixed(2);
-   html+=`<i style="left:${(Math.random()*100).toFixed(2)}%;
-     background:${COLOURS[i%COLOURS.length]};
-     animation-duration:${dur}s;
-     animation-delay:${(-Math.random()*dur).toFixed(2)}s;
-     width:${(5+Math.random()*5).toFixed(1)}px;
-     height:${(8+Math.random()*7).toFixed(1)}px"></i>`;
-  }
-  confetti.innerHTML=html;
- }
-
- function setParty(on:boolean){
-  document.body.classList.toggle('party',on);
-  if(on)makeConfetti(90);else confetti.innerHTML='';
-  try{on?localStorage.setItem(PARTY_KEY,'1'):localStorage.removeItem(PARTY_KEY);}catch{}
- }
-
- bottle?.addEventListener('click',()=>setParty(!document.body.classList.contains('party')));
- try{if(localStorage.getItem(PARTY_KEY))setParty(true);}catch{}
 
  select(fromUrl(),!!fromUrl() && window.self === window.top);
 </script>
