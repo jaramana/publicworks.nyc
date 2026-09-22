@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import '../styles/global.css';
 import '../styles/register.css';
 import '../styles/appearance.css';
@@ -7,54 +6,42 @@ import BaseHead from './BaseHead.astro';
 import Mark from './Mark.astro';
 import Controls from './Controls.astro';
 import { register } from '../i18n/register.js';
-import { localizePath } from '../i18n/ui.js';
-const { lang = 'en' } = Astro.props;
+import { localizePath, defaultLang, siteName, githubUrl } from '../i18n/ui.js';
+import { buildIndex } from '../entries.js';
+const { lang = defaultLang } = Astro.props;
 const t = register[lang];
-
-// Categories group the index. The order here is the order of the drawer.
-const groups = [t.data, t.map, t.essay, t.site, t.tools];
-const label = { Data: t.data, Map: t.map, Essay: t.essay, Site: t.site, Tools: t.tools };
-
-const records = (await getCollection('projects', p => p.data.lang === lang))
- .sort((a,b)=>a.data.order-b.data.order)
- .map(p=>({key:p.data.recordId,title:p.data.title,summary:p.data.indexSummary,body:p.data.description,group:label[p.data.category],year:p.data.year,keywords:p.data.keywords,built:p.data.builtWith,source:p.data.source,repository:p.data.repository,shot:p.data.shot,href:p.data.url,action:t.open}));
-
-// The index files itself, in its own drawer, like everything else.
-const self = {key:'this',title:t.this,summary:t.thisShort,body:t.thisBody,group:t.tools,year:2026,keywords:[],built:'Astro, HTML, CSS, TypeScript',source:null,repository:'https://github.com/jaramana/publicworks.nyc',shot:null,href:null,action:null};
-
-const entries=[...records,self];
+const { groups, entries } = await buildIndex(lang, t);
 ---
 <!doctype html>
 <html lang={lang} class="register-document">
-<head><BaseHead title="publicworks.nyc" description={t.sub} /><script is:inline>document.documentElement.classList.add('has-js');</script></head>
+<head><BaseHead description={t.sub} /><script is:inline>document.documentElement.classList.add('has-js');</script></head>
 <body class="register-site">
 <a class="skip-link" href="#index">{t.skip}</a>
 <div class="register-layout">
  <main id="index" class="register-index" tabindex="-1">
-  <header class="mast"><div><h1><a class="home-link" href={localizePath('/',lang)}><Mark />publicworks.nyc</a></h1><p class="sub">{t.sub}</p><p class="index-meta">{t.index} · {entries.length} {t.entries}</p></div><Controls lang={lang} /></header>
+  <header class="mast"><div><h1><a class="home-link" href={localizePath('/',lang)}><Mark />{siteName}</a></h1><p class="sub">{t.sub}</p><p class="index-meta">{t.index} · {entries.length} {t.entries}</p></div><Controls lang={lang} /></header>
   {groups.map(group=><section class="register-group" aria-label={group}>
    <div class="register-head"><h2 class="group-name">{group}</h2><span>{t.year}</span></div>
    {entries.filter(e=>e.group===group).map(e=><a class="register-row" id={'entry-'+e.key} data-entry={e.key} data-repo={e.repository} href={'#record-'+e.key} aria-controls={'record-'+e.key}><span class="entry-title">{e.title}<small>{e.summary}</small></span><span class="year" title={e.year ? undefined : t.noDate}>{e.year ?? "—"}</span></a>)}
   </section>)}
-  <footer class="register-footer">
-   <p>publicworks.nyc · New York · <a href="https://github.com/jaramana">GitHub</a></p>
-   <p>{t.privacy}</p>
-  </footer>
+  <footer class="register-footer"><p>{siteName} · {t.place} · <a href={githubUrl}>GitHub</a></p><p>{t.privacy}</p></footer>
  </main>
  <aside class="record-desk" aria-label={t.record}>
   <div class="empty-record"><h2>{t.select}</h2><p class="record-kind">{t.selectNote}</p></div>
   {entries.map(e=><section class="record-panel" id={'record-'+e.key} data-record={e.key} aria-labelledby={'title-'+e.key}>
    <a class="return-index" href={'#entry-'+e.key}>← {t.back}</a>
    {e.shot && <img class="record-shot" src={e.shot} alt="" loading="lazy" decoding="async" />}
-   <h2 id={'title-'+e.key} tabindex="-1">{e.title}</h2><p class="record-kind">{e.group} · {e.year}</p>
+   <h2 id={'title-'+e.key} tabindex="-1">{e.title}</h2><p class="record-kind">{e.kind}</p>
    <p class="record-body">{e.body}</p>
    <dl class="record-fields">
-    {e.keywords.length > 0 && <><dt>{t.keywords}</dt><dd>{e.keywords.join(', ')}</dd></>}
+    {e.keywords?.length > 0 && <><dt>{t.keywords}</dt><dd>{e.keywords.join(', ')}</dd></>}
     {e.source && <><dt>{t.source}</dt><dd>{e.source}</dd></>}
+    {e.scope && <><dt>{t.scope}</dt><dd>{e.scope}</dd></>}
     {e.built && <><dt>{t.built}</dt><dd>{e.built}</dd></>}
+    {e.languages && <><dt>{t.languages}</dt><dd>{e.languages}</dd></>}
     {e.repository && <><dt>{t.code}</dt><dd><a href={e.repository}>{e.repository.replace('https://github.com/','')}</a></dd></>}
    </dl>
-   {e.href && <a class="record-open" href={e.href}>{e.action} ↗</a>}
+   {e.href && <a class="record-open" href={e.href}>{e.action} {e.arrow ?? '↗'}</a>}
   </section>)}
  </aside>
 </div>
@@ -74,6 +61,7 @@ const entries=[...records,self];
   empty.hidden=!!panel;
   desk.classList.toggle('has-record',!!panel);
   rows.forEach(r=>{if(r.dataset.entry===key&&panel)r.setAttribute('aria-current','true');else r.removeAttribute('aria-current');});
+  document.querySelectorAll<HTMLAnchorElement>('[data-language]').forEach(a=>{const u=new URL(a.href);if(panel&&key)u.searchParams.set('p',key);else u.searchParams.delete('p');a.href=u.href;});
   document.querySelector('[data-announcement]')!.textContent=panel?.querySelector('h2')?.textContent||'';
   if(!panel && focusWasInDetails)previousRow?.focus({preventScroll:true});
   if(panel){desk.scrollTop=0;if(focus){panel.querySelector('h2')!.focus({preventScroll:true});if(mobile.matches)desk.scrollIntoView({behavior:'instant',block:'start'});}}
@@ -186,7 +174,7 @@ const entries=[...records,self];
   });
   document.querySelectorAll<HTMLStyleElement|HTMLLinkElement>('style,link[rel=stylesheet]').forEach(s=>s.disabled=true);
   const heading=document.createElement('h1');
-  heading.textContent='publicworks.nyc';
+  heading.textContent=document.title;
   const ul=document.createElement('ul');
   list.forEach(item=>{
    const li=document.createElement('li');

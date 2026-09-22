@@ -21,6 +21,7 @@ export const register = {
     "read": "Read",
     "back": "Back to index",
     "languages": "Languages",
+    "place": "New York",
     "privacy": "No cookies. No analytics. No further action is required.",
     "this": "This index",
     "thisShort": "The page you are reading.",
