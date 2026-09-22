@@ -11,14 +11,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <link rel="canonical" href={canonical} />
-<meta name="theme-color" content="#191919" />
+<meta name="theme-color" content="#ececed" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#191919" media="(prefers-color-scheme: dark)" />
 <title>{title}</title>
-<script is:inline>
-  // Apply before paint. Storage is optional; system preference is the fallback.
-  (() => {
-    let theme;
-    try { theme = localStorage.getItem('publicworks-theme'); } catch {}
-    if (theme !== 'light' && theme !== 'dark') theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    document.documentElement.dataset.theme = theme;
-  })();
-</script>

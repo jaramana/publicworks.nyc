@@ -28,7 +28,7 @@ npm run preview
 | `src/content/projects/` | One Markdown file per record. The file you edit to change the index. |
 | `src/content/config.ts` | The shape of a record, and of a journal post. |
 | `src/components/Archive.astro` | The index, the records and the selection behavior. |
-| `src/components/Controls.astro` | The theme control, and the language nav once there is one. |
+| `src/components/Controls.astro` | The language nav, once there is a second language. |
 | `src/components/Mark.astro`, `public/favicon.svg` | Matching Folio geometry. |
 | `src/styles/register.css` | The index and record layout. |
 | `src/styles/appearance.css` | Palette and spacing. |
@@ -72,8 +72,8 @@ selection. Arrow keys browse records, Home and End jump to the ends, and Back
 to index restores row focus. Keyboard focus stays visible. Without JavaScript
 every record remains in the document.
 
-Light and dark follow the system until a preference is saved locally. No
-cookies, no analytics, no external fonts, no client framework runtime.
+Light and dark follow the system setting, with no control and nothing stored.
+No cookies, no analytics, no external fonts, no client framework runtime.
 
 Nothing on the page explains itself. What the index does beyond the above is
 written down once, in the keyboard section of `Archive.astro`, and nowhere a

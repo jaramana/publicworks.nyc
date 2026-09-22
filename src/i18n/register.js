@@ -13,8 +13,6 @@ export const register = {
     "record": "Details",
     "select": "Select an entry",
     "selectNote": "Choose a project to see the record.",
-    "lights": "Lights",
-    "theme": "Switch light and dark surfaces",
     "source": "Source",
     "keywords": "Keywords",
     "built": "Built with",
