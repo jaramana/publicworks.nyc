@@ -32,6 +32,7 @@ npm run preview
 | `src/components/Mark.astro`, `public/favicon.svg` | Matching Folio geometry. |
 | `src/styles/register.css` | The index and record layout. |
 | `src/styles/appearance.css` | Palette and spacing. |
+| `src/styles/afterfive.css` | Everything the register does not strictly need. |
 | `src/styles/global.css` | Reading pages and shared styles. |
 | `src/i18n/register.js` | Index copy. |
 | `src/i18n/ui.js` | Interface strings and the path helpers. |
@@ -74,6 +75,10 @@ every record remains in the document.
 
 Light and dark follow the system until a preference is saved locally. No
 cookies, no analytics, no external fonts, no client framework runtime.
+
+Nothing on the page explains itself. What the index does beyond the above is
+written down once, in the keyboard section of `Archive.astro`, and nowhere a
+visitor will read it.
 
 ## Languages
 
@@ -322,4 +327,5 @@ Built with Astro, and with plain HTML and CSS. Screenshots captured with
 headless Chrome. Written with Claude.
 
 The previous hand-written site, and the interaction studies that preceded it,
-are kept in `archive/` outside version control.
+are kept in `archive/` outside version control. Everything it did that was not
+a list of links came across with it.

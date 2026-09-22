@@ -1,0 +1,207 @@
+/* =========================================================================
+   AFTER FIVE, AND THE BOTTLE THAT OPENS IT
+
+   The same register, decorated for the office party. Structure untouched:
+   every row is where it was, the desk holds the same record. Only the
+   lighting changed, and somebody hung things off it.
+
+   The colors are the City flag: blue, white, orange. The same three the
+   Mets and the Knicks wear. It is the only place on the site that admits
+   where any of this is from.
+
+   Everything here is scoped to .party or .bottle, so the register's own
+   files stay as they came from upstream.
+   ========================================================================= */
+
+.register-site {
+  --nyc-blue: #0b41a0;
+  --nyc-orange: #ff6b16;
+  --nyc-white: #ffffff;
+
+  --tell-every: 60s;      /* how often the bottle gives itself away */
+  --tell-peak: .17;       /* how far it gets before thinking better of it */
+}
+
+/* ---- the bottle -------------------------------------------------------- */
+/* Tucked into the gap above the footer rule, where the page is already
+   empty. At this opacity it is a slight thickening of the background and
+   nothing more. It is not in the tab order and not in the accessibility
+   tree, so the only way to find it is for a cursor to happen to pass over
+   it. */
+.register-footer { position: relative; }
+
+.bottle {
+  position: absolute; left: 0; top: -26px;
+  width: 11px; height: 22px; padding: 0;
+  border: 0; background: none; cursor: default;
+  color: #4c7a3f;
+  opacity: 0;
+  transition: opacity 260ms cubic-bezier(.22,.61,.36,1),
+              transform 400ms cubic-bezier(.22,.61,.36,1);
+  /* Once a minute it breathes, just enough to be caught out of the corner
+     of an eye and not enough to read as a control. */
+  animation: tell var(--tell-every) ease-in-out infinite;
+}
+
+/* The visible window is a percentage of the cycle: at 60s it fades up over
+   1.2s, holds a moment, and is gone by 3s. Lengthen --tell-every and the
+   breath lengthens with it. */
+@keyframes tell {
+  0%   { opacity: 0; }
+  2%   { opacity: var(--tell-peak); }
+  5%   { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* It only fully surfaces if a cursor comes to rest on it. A sweep past does
+   not reveal anything, which is the point. */
+.bottle:hover {
+  animation: none;
+  opacity: 1; transform: rotate(-14deg); cursor: pointer;
+  transition-delay: 550ms;
+}
+.bottle svg { display: block; width: 100%; height: 100%; }
+
+/* Once the party is on it stops hiding: it is also the way back out. */
+.party .bottle { animation: none; opacity: 1; transform: rotate(-24deg); }
+
+/* ---- the party --------------------------------------------------------- */
+/* The register reads its surfaces from --a-* and --b-*. Redefining those is
+   most of the repaint; the rest is what got hung off it.
+
+   The html[data-theme] prefix is not decoration. appearance.css sets these
+   same tokens from html[data-theme='light'], which outranks a bare
+   .register-site.party and leaves the party painted in daylight. */
+html[data-theme] .register-site.party {
+  --a-ink: #eef3ff;
+  --a-muted: #a8bde6;
+  --a-hair: rgba(255,255,255,.16);
+  --a-hover: rgba(255,255,255,.1);
+  --b-bg: rgba(6,22,60,.88);
+  --b-ink: #fdf6e8;
+  --b-muted: #a8bde6;
+  --b-hair: rgba(255,255,255,.25);
+  color: var(--a-ink);
+  background:
+    radial-gradient(900px 600px at 12% -5%, #10357e 0%, rgba(0,0,0,0) 60%),
+    radial-gradient(800px 700px at 92% 8%, #6b2a00 0%, rgba(0,0,0,0) 62%),
+    #04143a;
+  background-attachment: fixed;
+}
+
+/* Rows become boxes again, the way the old drawer's tabs were, so the tilt
+   below reads as a tipsy file rather than as broken type. */
+.party .register-row {
+  border: 1px solid var(--a-hair);
+  border-radius: 0 3px 3px 0;
+  background: rgba(255,255,255,.06);
+  margin-bottom: 3px;
+  transform: rotate(var(--tipsy, 0deg));
+}
+.party .register-row:hover { background: var(--a-hover); }
+.party .register-row .year { color: #7f9bd0; }
+
+.party .register-row[aria-current] {
+  background: linear-gradient(180deg, #ffa257, var(--nyc-orange));
+  border-color: #ff9146;
+  box-shadow: 0 0 26px -4px rgba(255,107,22,.8);
+}
+.party .register-row[aria-current] .entry-title,
+.party .register-row[aria-current] .entry-title small { color: #04143a; }
+.party .register-row[aria-current] .entry-title { font-weight: 700; }
+.party .register-row[aria-current] .year { color: rgba(4,20,58,.7); }
+
+/* Black on navy is not a focus indicator. */
+.party .register-row:focus-visible { outline-color: var(--nyc-white); }
+.party .register-row[aria-current]:focus-visible { outline-color: #04143a; }
+
+.party .register-head { border-bottom-color: var(--nyc-orange); }
+.party .register-footer { border-top-color: var(--nyc-orange); }
+.party .group-name { color: #ff9146; position: relative; }
+
+/* A paper hat on every group. */
+.party .group-name::before {
+  content: ""; position: absolute; top: -13px; left: 2px;
+  width: 0; height: 0;
+  border-left: 7px solid transparent; border-right: 7px solid transparent;
+  border-bottom: 12px solid var(--nyc-orange);
+}
+.party .register-group:nth-child(2n) .group-name::before { border-bottom-color: var(--nyc-white); }
+.party .register-group:nth-child(3n) .group-name::before { border-bottom-color: #4d86ff; }
+
+/* String lights down the index's left edge, where the old rail's spine was. */
+.party .register-index { position: relative; }
+.party .register-index::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 9px;
+  background-image: radial-gradient(circle at 50% 6px, currentColor 3px, rgba(0,0,0,0) 3.5px);
+  background-size: 9px 26px;
+  color: var(--nyc-orange);
+  animation: bulbs 2.1s steps(3) infinite;
+  filter: drop-shadow(0 0 5px currentColor);
+  pointer-events: none;
+}
+@keyframes bulbs {
+  0%   { color: var(--nyc-orange); }
+  33%  { color: var(--nyc-white); }
+  66%  { color: #4d86ff; }
+}
+
+/* The desk keeps its own surface, translucent over the party behind it. */
+html[data-theme] .party .record-desk {
+  color-scheme: dark;
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  border-left: 1px solid rgba(255,255,255,.2);
+}
+.party .record-open:hover { color: #04143a; background: var(--b-ink); }
+
+/* Tinsel strung across the desk. It sits at the desk's own top edge rather
+   than above it, because the desk clips its overflow. */
+.party .record-desk::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 14px;
+  background:
+    repeating-linear-gradient(135deg,
+      var(--nyc-blue) 0 10px, var(--nyc-white) 10px 20px, var(--nyc-orange) 20px 30px);
+  clip-path: polygon(0 0, 100% 0, 100% 40%, 96% 100%, 92% 40%, 88% 100%,
+                     84% 40%, 80% 100%, 76% 40%, 72% 100%, 68% 40%, 64% 100%,
+                     60% 40%, 56% 100%, 52% 40%, 48% 100%, 44% 40%, 40% 100%,
+                     36% 40%, 32% 100%, 28% 40%, 24% 100%, 20% 40%, 16% 100%,
+                     12% 40%, 8% 100%, 4% 40%, 0 100%);
+  animation: sway 5s ease-in-out infinite alternate;
+  transform-origin: 50% 0;
+  pointer-events: none;
+}
+@keyframes sway { from { transform: rotate(-.5deg); } to { transform: rotate(.5deg); } }
+
+/* ---- confetti ---------------------------------------------------------- */
+/* Purely decorative, never in the way. */
+#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 90; overflow: hidden; display: none; }
+.party #confetti { display: block; }
+#confetti i {
+  position: absolute; top: -20px; display: block;
+  width: 7px; height: 11px; border-radius: 1px;
+  animation: fall linear infinite;
+}
+@keyframes fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(760deg); opacity: .9; }
+}
+
+/* ---- what the reader asked for ----------------------------------------- */
+/* The party keeps its colors but stops moving if asked. */
+@media (prefers-reduced-motion: reduce) {
+  .bottle { animation: none; opacity: var(--tell-peak); }
+  .party .register-index::before, .party .record-desk::before { animation: none; }
+  #confetti { display: none !important; }
+  .party .register-row { transform: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  html[data-theme] .party .record-desk {
+    background: #08183e;
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+  }
+}
+
+@media print { .bottle, #confetti { display: none !important; } }
