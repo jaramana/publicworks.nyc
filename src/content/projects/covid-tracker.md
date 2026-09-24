@@ -1,7 +1,7 @@
 ---
 title: "Covid Tracker"
 indexSummary: "COVID-19 testing in New York City. Archived, unchanged since 2020."
-description: "Tracked COVID-19 testing in New York City from the Department of Health and Mental Hygiene's published data. Support ended in November 2020 and the site stays online as it was. The year stays 2020 because that is where the work, and the data, stop."
+description: "Tracked COVID-19 testing in New York City from the Department of Health and Mental Hygiene's published data. The site is archived as it stood when support ended in November 2020."
 category: "Data"
 recordId: "covidtracker"
 year: 2020

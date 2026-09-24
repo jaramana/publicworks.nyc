@@ -22,7 +22,7 @@ export const register = {
     "back": "Back to index",
     "languages": "Languages",
     "place": "New York",
-    "privacy": "No cookies. No analytics. No further action is required.",
+    "privacy": "No cookies or analytics.",
     "this": "This index",
     "thisShort": "The page you are reading.",
     "thisBody": "A catalogue of the projects filed under publicworks.nyc. Astro generates static HTML from the records in src/content/projects. A small script holds one record out at a time; everything stays in the document without it.",

@@ -1,7 +1,7 @@
 ---
 title: "Schools Finder"
-indexSummary: "Every figure the City publishes about a school, on one page."
-description: "New York City's school statistics are split across a quality report dataset, an enrollment workbook and several admissions directories. This does the joining once, in the open, with the definition, the reporting period and the source next to every value. No ranking and no overall score, because the published data does not support one."
+indexSummary: "Published statistics for New York City public schools."
+description: "Search school reports, enrollment figures, and admissions information together. Measures include their definitions, reporting periods, and sources. The site does not assign an overall school score."
 category: "Data"
 recordId: "schoolsfinder"
 year: 2026
@@ -15,4 +15,4 @@ order: 3
 lang: "en"
 ---
 
-Every figure the City publishes about a school, on one page, with the definition, the reporting period and the source beside each value.
+Published statistics for New York City public schools, with the definition, the reporting period and the source beside each value.

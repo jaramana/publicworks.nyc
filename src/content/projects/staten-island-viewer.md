@@ -1,7 +1,7 @@
 ---
 title: "Staten Island Data Viewer"
 indexSummary: "A 3D map of Staten Island, built from published records."
-description: "Fly the camera, click a feature, switch between data views. The visual style is borrowed from early-2000s city-builder games, and every value on screen traces back to a published NYC dataset. The style is invented; the data is not."
+description: "Fly the camera, click a feature, switch between data views. Its game-inspired visuals display published New York City data."
 category: "Map"
 recordId: "staten-island"
 year: 2026

@@ -1,7 +1,7 @@
 ---
 title: "NYC Hazard Historian"
 indexSummary: "Hazard events and their documented consequences, with the gaps marked."
-description: "A public record of hazard events in New York City, rebuilt from the original sources. Every figure carries its source, its period and its status, and where a measure was never collected the site says so instead of printing a zero. Experimental, not official, and checked by no agency."
+description: "Explore New York City hazard events using published weather and city records. Each measure identifies its source and reporting period; missing records are labeled. This independent project has not been reviewed by a city agency."
 category: "Data"
 recordId: "hazardhistorian"
 year: 2026

@@ -9,7 +9,7 @@ export const archive = {
     "source": "Source",
     "back": "Back to index",
     "skip": "Skip to content",
-    "footer": "Open sources. Documented methods. Work in progress.",
+    "footer": "Sources and methods are available with each project.",
     "humor": "No appointment necessary.",
     "aboutShort": "An index of projects across websites, data and GIS. Filed in New York.",
     "intro": "An index of projects across websites, data and GIS.",
