@@ -1,8 +1,10 @@
 # Conventions
 
 Notes that used to live in the README. The shared header, footer, boxes and
-announcement banner are portfolio-wide and apply to every project site, not
-only to this index.
+announcement banner apply to The Pay Gap, Hazard Historian and Schools Finder.
+Civil Service Exams and The Blue Pages have their own chrome and disclosures.
+The portfolio index has its own layout too. Follow each site's implementation
+for those exceptions; do not copy the shared chrome into them by default.
 
 ## Adding a project
 
@@ -33,10 +35,10 @@ reading.
 
 ## The shared header
 
-Every project under this portfolio uses the same masthead, so moving between
-them does not feel like moving between strangers. The reference implementation
-is `paygap.publicworks.nyc`. Copy it from there rather than from memory. The
-index itself does not carry it: it is the cabinet, not one of the drawers.
+The three sites named above use the same masthead. The reference
+implementation is `paygap.publicworks.nyc`. Copy it from there rather than
+from memory. The index itself does not carry it: it is the cabinet, not one
+of the drawers.
 
 Markup: an empty `<header data-chrome="masthead">` that the site's own
 `site.js` fills in, so the header is written once per project and not repeated
@@ -118,12 +120,17 @@ destinations and are one.
 the columns, separated by a rule:
 
 ```html
-<p class="portfolio">A <a href="https://publicworks.nyc">publicworks.nyc</a> project</p>
+<p class="portfolio">A <a href="https://publicworks.nyc/">publicworks.nyc</a> project.</p>
 ```
 
 It is the cabinet these projects are filed in, not a section of any one site,
 so it is announced once at the foot and does not compete with the site's own
 navigation.
+
+The Pay Gap, Hazard Historian, Schools Finder, Civil Service Exams and The Blue
+Pages all end with this exact line. Civil Service Exams and The Blue Pages keep
+their own footer layouts. Source dates belong beside the data or in the source
+notes, never in the portfolio line.
 
 ## Boxes
 
@@ -169,8 +176,8 @@ and for surfaces that genuinely float, like a search dropdown.
 
 ## The announcement banner
 
-Every project that reconstructs an official record carries the same notice, in
-a `.note-box` on the home page and nowhere else. Repeating it on Method or
+Each of the three sites covered by these conventions carries the same notice,
+in a `.note-box` on the home page and nowhere else. Repeating it on Method or
 About in different words reads as two different claims about one site.
 
 ```html
@@ -201,7 +208,5 @@ the instruction to go elsewhere, and stops there. It does not enumerate the ways
 the data can be wrong: that is what the Method page is for, and a home page that
 opens by arguing against itself is not a way in.
 
-The build credit is not part of it. `Public data, public method, built with X`
-and whatever wink follows it belong in a `.built-with` line beneath the
-colophon, so the disclaimer stays byte-identical across the suite while each
-project keeps its own voice.
+Tool credits belong on the About pages, in the READMEs and in the portfolio
+records. The footers do not carry build slogans.

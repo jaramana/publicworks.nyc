@@ -1,33 +1,24 @@
 # publicworks.nyc
 
-An index of projects across websites, data and GIS.
+[publicworks.nyc](https://publicworks.nyc) is the index for this portfolio of
+independent public-record tools and earlier data, GIS and website projects. Its
+current New York City sites are [The Pay Gap](https://paygap.publicworks.nyc),
+[NYC Hazard Historian](https://hazardhistorian.publicworks.nyc),
+[Schools Finder](https://schools.publicworks.nyc),
+[NYC Civil Service Exams](https://civilservice.publicworks.nyc) and
+[The Blue Pages](https://bluepages.publicworks.nyc).
 
-The index is one page. Categories group a register of records, and selecting a
-record holds it out on the right. English only, served at the root.
+## Tools
 
-## Built with
+Astro, HTML, CSS, JavaScript and TypeScript. There is no client framework runtime,
+external font, analytics or cookie.
 
-Astro, HTML, CSS and TypeScript. No client framework runtime, no external
-fonts, no analytics and no cookies.
+## Publishing
 
-## Design
+GitHub Actions builds the site and publishes it to GitHub Pages on pushes to
+`main`. Project records live in `src/content/projects/`; adding a record there
+makes it available to the index.
 
-The Graphite palette, Balanced spacing and the Folio mark. Light and dark
-follow the system setting, with no control and nothing stored.
-
-## Behavior
-
-Selecting an entry updates `?p=record-id`, and browser history keeps the
-selection. Arrow keys browse records, and Back to index clears the selection
-and restores row focus. Keyboard focus stays visible. Without JavaScript every
-record is still in the document.
-
-## Deployment
-
-GitHub Actions builds the site and publishes `dist/` to GitHub Pages on every
-push to `main`.
-
-## Sibling site
-
-The codebase is shared with [cidadelabs.org](https://github.com/cidade-labs/website).
-A change made on either site is meant to be carried across to the other.
+The site shares its codebase with
+[Cidade Labs](https://github.com/cidade-labs/website). A change to shared behavior
+or styling should be reviewed on both sites.

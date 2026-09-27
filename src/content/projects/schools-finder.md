@@ -1,7 +1,7 @@
 ---
 title: "Schools Finder"
 indexSummary: "Published statistics for New York City public schools."
-description: "Search school reports, enrollment figures, and admissions information together. Measures include their definitions, reporting periods, and sources. The site does not assign an overall school score."
+description: "Search school reports, enrollment figures and admissions information together. Each measure shows its definition, reporting period and source."
 category: "Data"
 recordId: "schoolsfinder"
 year: 2026

@@ -1,7 +1,7 @@
 ---
 title: "NYC Civil Service Exams"
 indexSummary: "Exams and job titles, gathered from the City's separate sources."
-description: "The City publishes exam schedules, civil service lists and title salaries as separate datasets. This puts them in one place. Each exam shows whether it is open, coming or closed; each title shows what it pays. No account, and no tracking."
+description: "Search the City's exam schedules, civil service lists and title salaries together. Each exam shows whether applications are open, coming or closed; each title shows what it pays."
 category: "Data"
 recordId: "civilservice"
 year: 2026

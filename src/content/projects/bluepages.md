@@ -1,6 +1,6 @@
 ---
 title: "The Blue Pages"
-indexSummary: "An independent directory of New York City's 307 agencies, boards, and offices."
+indexSummary: "Leadership and reporting lines for 307 City organizations."
 description: "Each of the 307 organizations in the City's agency list gets a listing with its published leadership and reporting line. Where records can be matched, it also shows Green Book contacts and payroll counts from The Pay Gap."
 category: "Data"
 recordId: "bluepages"
