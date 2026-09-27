@@ -14,5 +14,3 @@ source: "Instituto Nacional de Estadística (INE)"
 order: 3
 lang: "en"
 ---
-
-Income, poverty, inequality and demographics across 186 census sections. Fifteen ways to read A Coruña.

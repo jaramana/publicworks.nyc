@@ -11,5 +11,3 @@ url: "https://github.com/jaramana/ArcPy_Automated-Batch-Export"
 order: 7
 lang: "en"
 ---
-
-Exports a set of bookmarks and layers in one run, instead of toggling each combination by hand.

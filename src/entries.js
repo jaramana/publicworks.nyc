@@ -40,7 +40,7 @@ export async function buildIndex(lang, t) {
     group: t.tools,
     year: 2026,
     kind: t.tools + ' · 2026',
-    built: 'Astro, HTML, CSS, TypeScript',
+    built: 'Astro, HTML, CSS, JavaScript, TypeScript',
     repository: 'https://github.com/jaramana/publicworks.nyc',
   };
 

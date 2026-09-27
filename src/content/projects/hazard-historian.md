@@ -14,5 +14,3 @@ source: "NYC Emergency Management, National Weather Service"
 order: 4
 lang: "en"
 ---
-
-Hazard events in New York City and their documented consequences, rebuilt from the original sources, with the gaps in the record marked as gaps.

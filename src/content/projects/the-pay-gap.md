@@ -14,5 +14,3 @@ source: "NYC Citywide Payroll Data"
 order: 1
 lang: "en"
 ---
-
-New York City's published payroll by title and agency, with pay and overtime set against inflation and rent.

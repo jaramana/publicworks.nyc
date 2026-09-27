@@ -14,5 +14,3 @@ source: "School Quality Reports, Demographic Snapshot"
 order: 3
 lang: "en"
 ---
-
-Published statistics for New York City public schools, with the definition, the reporting period and the source beside each value.

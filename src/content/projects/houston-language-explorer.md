@@ -14,5 +14,3 @@ source: "American Community Survey, 5-year 2015"
 order: 5
 lang: "en"
 ---
-
-Languages spoken at home across the greater Houston area, from the 2015 American Community Survey five-year estimates.

@@ -11,5 +11,3 @@ url: "https://github.com/cidade-labs/map-template"
 order: 1
 lang: "en"
 ---
-
-A single-file MapLibre scaffold. Each tool takes its own copy, so changing the template does not change the tools already in use.

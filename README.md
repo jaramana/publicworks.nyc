@@ -10,14 +10,16 @@ current New York City sites are [The Pay Gap](https://paygap.publicworks.nyc),
 
 ## Tools
 
-Astro, HTML, CSS, JavaScript and TypeScript. There is no client framework runtime,
-external font, analytics or cookie.
+Astro builds the static index from project frontmatter. The site uses HTML,
+CSS, JavaScript and TypeScript, served from GitHub Pages.
 
 ## Publishing
 
 GitHub Actions builds the site and publishes it to GitHub Pages on pushes to
 `main`. Project records live in `src/content/projects/`; adding a record there
-makes it available to the index.
+makes it available to the index. The index reads the frontmatter fields; it
+does not display Markdown body text. The five current product sites share
+About-page and README conventions in [docs/conventions.md](docs/conventions.md).
 
 The site shares its codebase with
 [Cidade Labs](https://github.com/cidade-labs/website). A change to shared behavior

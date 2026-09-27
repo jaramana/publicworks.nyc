@@ -14,5 +14,3 @@ source: "American Community Survey, 5-year 2017"
 order: 6
 lang: "en"
 ---
-
-Means of transportation to work across New York City, from the 2017 American Community Survey five-year estimates.

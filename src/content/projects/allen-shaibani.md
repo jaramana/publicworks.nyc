@@ -12,5 +12,3 @@ repository: "https://github.com/jaramana/allenshaibani.com"
 order: 2
 lang: "en"
 ---
-
-A simple portfolio page with selected work.

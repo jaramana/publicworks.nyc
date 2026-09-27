@@ -14,5 +14,3 @@ source: "Rigoberto Menéndez Paredes"
 order: 1
 lang: "en"
 ---
-
-A visual essay on the history of the Arab community in Cuba, drawn from the book and research of Rigoberto Menéndez Paredes.

@@ -12,5 +12,3 @@ source: "NYC Geoclient API"
 order: 2
 lang: "en"
 ---
-
-Reads addresses from a .csv and returns the matching records from the City's Geoclient API.

@@ -11,5 +11,3 @@ url: "https://github.com/jaramana/R-Offer_Lag"
 order: 3
 lang: "en"
 ---
-
-Calculates the lag between a trip being offered and it being accepted and booked.

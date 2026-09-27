@@ -2,7 +2,7 @@
 
 Notes that used to live in the README. The shared header, footer, boxes and
 announcement banner apply to The Pay Gap, Hazard Historian and Schools Finder.
-Civil Service Exams and The Blue Pages have their own chrome and disclosures.
+Civil Service Exams and The Blue Pages have their own chrome.
 The portfolio index has its own layout too. Follow each site's implementation
 for those exceptions; do not copy the shared chrome into them by default.
 
@@ -129,8 +129,28 @@ navigation.
 
 The Pay Gap, Hazard Historian, Schools Finder, Civil Service Exams and The Blue
 Pages all end with this exact line. Civil Service Exams and The Blue Pages keep
-their own footer layouts. Source dates belong beside the data or in the source
-notes, never in the portfolio line.
+their own footer layouts. Civil Service Exams now uses the full independence
+notice in its footer, naming DCAS as the authoritative publisher. Source dates
+belong beside the data or in the source notes, never in the portfolio line.
+
+## About pages
+
+The five current products share the same core sections, in this order: Why,
+Scope, Built, Independence, Credits, Reuse and Contact. Keep product-specific
+sections where they carry necessary facts: The Pay Gap has History; Schools
+Finder has Language; Civil Service Exams keeps data limits and its field guide;
+The Blue Pages lists the sources used on its entries.
+
+Built describes tools and data methods. Updates belong on a method or data
+page, or in the README. Independence says "No agency reviewed this site."
+Credits names the data publishers and says "Claude was used in development."
+Reuse covers the code license, source terms and any guidance needed to
+republish figures. Contact points to the project's issue tracker.
+
+Each product README uses the same section names for Data sources, Method and
+limits, Updates, Tools, and License and reuse. Its Tools paragraph matches
+the About page's Built paragraph. The portfolio records use frontmatter only;
+extra Markdown body copy is not displayed by the index.
 
 ## Boxes
 

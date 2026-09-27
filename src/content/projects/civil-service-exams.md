@@ -14,5 +14,3 @@ source: "DCAS, NYC Open Data"
 order: 2
 lang: "en"
 ---
-
-Exam schedules, civil service lists and title salaries, gathered from the City's separate sources into one place.

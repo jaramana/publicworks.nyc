@@ -11,5 +11,3 @@ url: "https://github.com/jaramana/R-Pivot_Table"
 order: 6
 lang: "en"
 ---
-
-Summarizes data tables the way a pivot table does in Excel, for datasets Excel will not open.

@@ -14,5 +14,3 @@ source: "Compañía de Tranvías de A Coruña"
 order: 2
 lang: "en"
 ---
-
-A Coruña's 25 bus lines on one map, with simulated vehicles moving along the actual routes.

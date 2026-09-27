@@ -14,5 +14,3 @@ source: "Xunta de Galicia"
 order: 4
 lang: "en"
 ---
-
-Find school catchments by address. Covers 346 schools in the 11 Galician municipalities supported by the source.

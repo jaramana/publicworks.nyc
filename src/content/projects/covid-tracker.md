@@ -14,5 +14,3 @@ source: "NYC Department of Health and Mental Hygiene"
 order: 5
 lang: "en"
 ---
-
-COVID-19 testing in New York City, from the Department of Health and Mental Hygiene's published data. Archived and unchanged since November 2020.

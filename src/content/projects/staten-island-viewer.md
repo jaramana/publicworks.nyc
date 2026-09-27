@@ -14,5 +14,3 @@ source: "NYC Open Data"
 order: 1
 lang: "en"
 ---
-
-A 3D map of Staten Island. The style is borrowed from early-2000s city-builder games; every value on screen comes from a published dataset.

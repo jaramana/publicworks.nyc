@@ -13,5 +13,3 @@ source: "NYC Agencies and Governance Organizations, Green Book, Citywide Payroll
 order: 6
 lang: "en"
 ---
-
-An independent directory of the organizations in New York City's agency list, from departments and elected offices to boards and nonprofits, with an org chart built from their reporting lines.

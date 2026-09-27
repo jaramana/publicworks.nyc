@@ -11,5 +11,3 @@ url: "https://github.com/jaramana/R-Polygon_to_Points"
 order: 5
 lang: "en"
 ---
-
-Assigns attributes from a polygon layer to the points that fall inside it.

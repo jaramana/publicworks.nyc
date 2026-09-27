@@ -14,5 +14,3 @@ source: "2000 and 2010 Censuses"
 order: 7
 lang: "en"
 ---
-
-Change in population across Puerto Rico's municipios between the 2000 and 2010 Censuses.
