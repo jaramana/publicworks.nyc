@@ -193,9 +193,9 @@ It appears in exactly two places, and the words are identical in both:
 - the footer, as the `.colophon`, on every page.
 
 The Blue Pages follows the same two placements in its own layout: a muted
-notice below the header on the directory home view, and the same wording in
-the footer on every view. Its About view lists sources without repeating the
-notice.
+notice below the four data counts on the directory home view, and the same
+wording in the footer on every view. Its About view lists sources without
+repeating the notice.
 
 The `.note-box` is `max-width: 46rem` with `.85rem 1rem` padding, and it must
 carry `.note-box p { max-width: none }`. Without that line the global
