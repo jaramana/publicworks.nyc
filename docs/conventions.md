@@ -164,7 +164,7 @@ live in `alignment.md`. The visual parts are shared.
 | --- | --- |
 | Downloads | `.downloads` grid of `.download` plain panels, each with an `h3` and one sentence. It is the same plain panel as in Boxes. |
 | Columns | A `details.columns` directly under the downloads. It holds the column definitions, generated from the pipeline's dictionary. |
-| Process | `ol.process`, a vertical numbered list. A filled accent circle carries the number, and a line joins the steps. |
+| Process | `ol.process`, a vertical numbered list. A filled accent circle carries the number, and a line joins the steps. Wealth NYC is the exception. It shows two parallel calculations as cards, each with its own `ol.pipeline` and equation. |
 
 Section headings are single words. The order is Downloads, Sources, Process, an
 optional product section, Limits. Anchors are `#downloads`, `#sources`,
