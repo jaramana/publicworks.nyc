@@ -6,7 +6,7 @@ category: "Data"
 recordId: "schoolsfinder"
 year: 2026
 keywords: ["schools", "nycps", "python", "statistics"]
-builtWith: "Python, Claude"
+builtWith: "Python, MapLibre, Claude"
 url: "https://schools.publicworks.nyc"
 shot: "/media/schoolsfinder.png"
 repository: "https://github.com/jaramana/schools.publicworks.nyc"

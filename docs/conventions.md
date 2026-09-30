@@ -2,8 +2,9 @@
 
 Notes that used to live in the README. The shared header, footer, boxes and
 announcement banner apply to The Pay Gap, Hazard Historian and Schools Finder.
-Civil Service Exams and The Blue Pages have their own chrome.
-The portfolio index has its own layout too. Follow each site's implementation
+Wealth NYC uses the same footer structure without a Sources column, and its
+own masthead styling. Civil Service Exams and The Blue Pages have their own
+chrome. The portfolio index has its own layout too. Follow each site's implementation
 for those exceptions; do not copy the shared chrome into them by default.
 
 ## Adding a project
@@ -108,12 +109,12 @@ Four columns, then the colophon, then the portfolio mark on its own line.
 | Column | What goes in it |
 | --- | --- |
 | Views | The tool pages: the things you do on the site. |
-| Reference | `method.html` and `about.html`. Nothing else. |
+| Reference | `data.html` and `about.html`. Nothing else. |
 | Sources | The upstream publishers, linked out. |
 | Project | The repository and the issue tracker. Code, not pages. |
 
 Every link points at a page. None points at a section within a page: four
-entries that all open `method.html` at a different anchor read as four
+entries that all open one page at a different anchor read as four
 destinations and are one.
 
 `publicworks.nyc` sits below the colophon in its own `.portfolio` line, outside
@@ -127,30 +128,48 @@ It is the cabinet these projects are filed in, not a section of any one site,
 so it is announced once at the foot and does not compete with the site's own
 navigation.
 
-The Pay Gap, Hazard Historian, Schools Finder, Civil Service Exams and The Blue
-Pages all end with this exact line. Civil Service Exams and The Blue Pages keep
+The Pay Gap, Hazard Historian, Schools Finder, Civil Service Exams, The Blue
+Pages and Wealth NYC all end with this exact line. Civil Service Exams and The Blue Pages keep
 their own footer layouts. Civil Service Exams now uses the full independence
 notice in its footer, naming DCAS as the authoritative publisher. Source dates
 belong beside the data or in the source notes, never in the portfolio line.
 
 ## About pages
 
-The five current products share the same core sections, in this order: Why,
-Scope, Built, Independence, Credits, Reuse and Contact. Keep product-specific
-sections where they carry necessary facts: The Pay Gap has History; Schools
-Finder has Language; Civil Service Exams keeps data limits and its field guide;
-The Blue Pages lists the sources used on its entries.
+The six current products share the same core sections, in this order: Why,
+Scope, Built, Independence, Credits, Reuse and Contact. A one-sentence lead sits
+under the heading. Keep product-specific sections between Scope and Built where
+they carry necessary facts: The Pay Gap has History, Schools Finder has Language
+and Wealth NYC has Read the map. Sources, update schedules, data limits and
+column definitions belong on the Data page, never on About.
 
-Built describes tools and data methods. Updates belong on a method or data
-page, or in the README. Independence says "No agency reviewed this site."
+Built describes tools and data methods. Updates belong on the Data page or in
+the README. Independence says "No agency reviewed this site."
 Credits names the data publishers and says "Claude was used in development."
 Reuse covers the code license, source terms and any guidance needed to
 republish figures. Contact points to the project's issue tracker.
 
 Each product README uses the same section names for Data sources, Method and
-limits, Updates, Tools, and License and reuse. Its Tools paragraph matches
+limits, Updates, Tools, and License and reuse. Wealth NYC adds Verification
+because it has tests. Its Tools paragraph matches
 the About page's Built paragraph. The portfolio records use frontmatter only;
 extra Markdown body copy is not displayed by the index.
+
+## Data pages
+
+Every product has a Data page at `data.html`. The skeleton and the reasoning
+live in `alignment.md`. The visual parts are shared.
+
+| Part | What it is |
+| --- | --- |
+| Downloads | `.downloads` grid of `.download` plain panels, each with an `h3` and one sentence. It is the same plain panel as in Boxes. |
+| Columns | A `details.columns` directly under the downloads. It holds the column definitions, generated from the pipeline's dictionary. |
+| Process | `ol.process`, a vertical numbered list. A filled accent circle carries the number, and a line joins the steps. |
+
+Section headings are single words. The order is Downloads, Sources, Process, an
+optional product section, Limits. Anchors are `#downloads`, `#sources`,
+`#process` and `#limits`. The old `method.html` and `methodology.html` URLs
+remain as redirect stubs that keep the anchor.
 
 ## Boxes
 
@@ -184,7 +203,7 @@ transition: border-left-color .12s ease, background .12s ease;
 /* hover */ border-left-color: var(--accent); background: var(--paper-sunken);
 ```
 
-Used by `.result-card` (Pay Gap) and `.school-card` (Schools Finder).
+Used by `.result-card` (Pay Gap).
 
 The rule for choosing: if it is one of a set the reader asked for, it is a
 result card. Everything else is a plain panel. Do not put the directional bar
