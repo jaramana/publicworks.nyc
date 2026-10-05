@@ -9,30 +9,76 @@ for those exceptions; do not copy the shared chrome into them by default.
 
 ## Adding a project
 
-Copy a file in `src/content/projects/`, edit the frontmatter, save.
+Copy a file in `src/content/projects/`, edit the frontmatter, save. The schema
+is `src/content/config.ts`, and the build fails on a missing or misspelled field.
 
 ```yaml
 title: "What the visitor reads"
-indexSummary: "One line, under the title in the index."
-description: "The paragraph in the record."
+indexSummary: "One line, under the title on the tile and in the archive row."
+description: "The panel paragraph, used when the record has no narrative."
 category: "Data"          # Data, Map, Essay, Site or Tools
-recordId: "short-slug"    # the ?p= value, and the screenshot name
+status: "works"           # works: a product in the public-works folder; archive: everything else
+series: "redux"           # only for a past professional project rebuilt from public sources
+recordId: "short-slug"    # the ?p= value
 year: 2026
 keywords: ["up", "to", "five", "words"]
 builtWith: "What it was made with"   # omit the line entirely if nothing to list
 url: "https://where-it-lives"
-shot: "/media/short-slug.png"        # omit for no screenshot
+aboutUrl: "https://..."              # works only, when About is not url/about.html
+dataUrl: "https://..."               # works only, when Data is not url/data.html
+cover: "../../assets/media/short-slug.png"  # required for works
 repository: "https://github.com/..." # omit when url is already the repository
 source: "Who publishes the data"     # omit where the project names none
-order: 1                             # order within the category
+accent: "#579672"                    # works: the product's color, 4.5:1 or better on black
+lead: "One sentence at the top of the panel."
+specs:                               # replaces the default Data and Built with rows
+  - label: "Data"
+    value: "..."
+limit: "The stated limit. Must agree with the product's About and Data pages."
+updated: 2026-10-02                  # when the product's data was last built
+order: 1                             # order in Works, or within a category in the archive
+draft: false
 lang: "en"
 ```
 
-Categories are ordered in `src/i18n/register.js`, which also holds the labels.
+The Markdown body below the frontmatter is the panel's narrative. Works use
+four sections: Why it exists, What it shows, How it is built, Limits. Write
+them from the product's own About page, Data page and README, and invent
+nothing. A record without a body shows its `indexSummary` as the lead and its
+`description` as the text.
+
+Screenshots live in `src/assets/media/` and are converted to AVIF and WebP at
+build time. Each Redux record says in its own text that it was rebuilt from
+public sources only.
+
+`accent` comes from the product's own `--accent`. Use its dark-theme value
+where it has one. Otherwise raise the light value's lightness in OKLCH, keeping
+the hue, until it reaches 6:1 on black.
+
+Categories are ordered in `src/entries.js`, and their labels live in
+`src/i18n/works.js`.
 `builtWith` lists what the thing was actually made with. Claude is listed
 exactly like R or MapLibre, because it was a tool like R or MapLibre. Projects
 that predate it simply do not list it, which is what makes the field worth
 reading.
+
+## The portfolio page
+
+The index is one page in its own design, separate from the product chrome
+below. The styles are in `src/styles/works.css`.
+
+| Part | Rule |
+| --- | --- |
+| Color | Black page (`#000`), `#0a0a0b` panel, `#f1f1ee` ink, `#8d8d92` muted. No gradients, glow or radius. |
+| Type | PW Heros only, regular and bold. Labels are 12px uppercase, tracked .06em, muted. |
+| `--spot` | The focused project's `accent`. It colors the wordmark's dot, the 4px tile bar, the title rule, the limit bar and `::selection`. Nothing else. |
+| Tiles | Covers rest at 55 percent brightness, partly desaturated, and come to full color on hover, focus or the middle of a touch screen. |
+| Glass | Two places only: the sticky masthead and the panel's control bar. Same gate as the product mastheads. Opaque under reduced transparency. |
+| Grid | Twelve columns, 1440px wide, 24px gutter. The first work spans the full width; the rest run in pairs. An odd one out shares its row with a pointer to the archive. |
+
+Hidden keys, none explained on the page: `/` finds, `j` and `k` move between
+tiles, arrows move inside the panel, shift-click opens the repository, and
+typing 1999 shows the page as a plain list.
 
 ## The shared header
 

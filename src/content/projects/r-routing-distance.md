@@ -3,6 +3,7 @@ title: "R Routing Distance"
 indexSummary: "Distance between two coordinates, over the road network."
 description: "Calculates the distance between two coordinates in a row using routes from OSRM, rather than the straight line between them."
 category: "Tools"
+status: "archive"
 recordId: "r-routing"
 year: 2019
 keywords: ["r", "routing", "distance"]

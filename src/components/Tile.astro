@@ -1,0 +1,19 @@
+---
+/* One work in the grid. The title link stretches over the whole tile. */
+import Cover from './Cover.astro';
+const { r, wide = false, eager = false } = Astro.props;
+const sizes = wide
+  ? '(min-width: 90rem) 1392px, calc(100vw - 32px)'
+  : '(min-width: 90rem) 684px, (min-width: 48rem) calc(50vw - 36px), calc(100vw - 32px)';
+---
+<li class:list={['tile', { 'tile--wide': wide }]} style={r.accent ? `--accent:${r.accent}` : undefined} data-tile={r.key} data-find={r.find}>
+  <div class="tile-media">
+    <Cover src={r.cover} sizes={sizes} eager={eager} />
+    {r.built && <p class="tile-facts">{r.built}</p>}
+  </div>
+  <div class="tile-text">
+    <p class="meta">{r.meta}</p>
+    <h3 class="tile-title"><a class="tile-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>{r.title}</a></h3>
+    <p class="tile-summary">{r.summary}</p>
+  </div>
+</li>

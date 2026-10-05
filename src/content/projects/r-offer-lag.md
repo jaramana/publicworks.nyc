@@ -3,6 +3,7 @@ title: "R Offer Lag"
 indexSummary: "Time between a trip being offered and being booked."
 description: "Calculates the lag between a trip being offered and it being accepted and booked, so a shortfall in acceptance can be read against the wait time it produces."
 category: "Tools"
+status: "archive"
 recordId: "r-offer-lag"
 year: 2020
 keywords: ["r", "hiring", "lag"]

@@ -1,0 +1,19 @@
+---
+/* A screenshot as AVIF with a WebP fallback, at every width up to the source's own. */
+import { Picture } from 'astro:assets';
+const { src, alt = '', sizes, eager = false, class: className } = Astro.props;
+const widths = [360, 480, 720, 960, 1280, 1600, 1920, 2400].filter(w => w < src.width).concat(src.width);
+---
+<Picture
+  src={src}
+  alt={alt}
+  formats={['avif']}
+  fallbackFormat="webp"
+  widths={widths}
+  sizes={sizes}
+  quality={72}
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? 'high' : undefined}
+  decoding={eager ? 'sync' : 'async'}
+  class={className}
+/>

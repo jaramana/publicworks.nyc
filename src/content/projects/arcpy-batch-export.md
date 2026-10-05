@@ -3,6 +3,7 @@ title: "ArcPy Automated Batch Export"
 indexSummary: "Batch export map layouts instead of toggling layers by hand."
 description: "Exports a set of bookmarks and layers in one run, instead of toggling each combination and waiting out the export before starting the next."
 category: "Tools"
+status: "archive"
 recordId: "arcpy-batch"
 year: 2019
 keywords: ["arcpy", "python", "export"]

@@ -1,0 +1,27 @@
+PW Heros
+========
+
+PW Heros is a modified version of TeX Gyre Heros 2.004, by B. Jackowski and
+J. M. Nowacki for the GUST e-foundry. It is not the original font.
+
+Original package: qhv2.004otf.zip from
+https://www.gust.org.pl/projects/e-foundry/tex-gyre/heros/
+(downloaded 5 October 2026)
+
+License: the GUST Font License 1.0 (GUST-FONT-LICENSE.txt in this folder),
+which applies the LaTeX Project Public License 1.3c or later.
+
+Changes made on 5 October 2026 for publicworks.nyc:
+
+- Kept two styles, Regular and Bold.
+- Subset to Basic Latin, Latin-1 and common punctuation, dashes, quotes
+  and arrows.
+- Kept the kern, liga, locl, tnum, lnum and pnum features. Removed hinting.
+- Converted to WOFF2.
+- Renamed the family to PW Heros, as the license requests for modified files.
+  The copyright notice in each file records the change.
+
+Files in this work:
+
+  pw-heros-regular.woff2   from texgyreheros-regular.otf
+  pw-heros-bold.woff2      from texgyreheros-bold.otf
