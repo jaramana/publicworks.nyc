@@ -4,16 +4,17 @@
    Everything here sits on top of a page of links. Without it,
    each tile jumps to its note further down the page.
 
-   On wide screens the panel beside the tiles shows one note,
-   level with the tile or row that opened it. At rest it shows
-   About. On narrow screens a note opens under its tile, and
-   About sits after the archive.
+   On wide screens the panel beside the tiles holds still and
+   shows one note, a page at a time. At rest it shows About. On
+   narrow screens a note opens whole under its tile, and About
+   sits after the archive.
 
    Keys. Nothing on the page explains them.
 
      /                 find; Enter opens the first match, Esc clears
      j k, arrows       move between tiles and archive rows
      Enter             open the focused project
+     ← →               turn the panel's pages while focus is in it
      Esc               return the panel to About
      shift-click       open the repository in a new tab
      shift-Enter       open the repository
@@ -52,7 +53,6 @@ new IntersectionObserver(([entry]) => mast.classList.toggle('is-stuck', !entry.i
 let current: string | null = null;
 let item: HTMLElement | null = null;
 let trigger: HTMLElement | null = null;
-let at: HTMLElement | 'rest' | number = 'rest';
 
 // The narrow screen's slot for a note under its tile or row.
 const drop = document.createElement('li');
@@ -60,15 +60,8 @@ drop.className = 'drop';
 
 const itemFor = (key: string) => document.querySelector<HTMLElement>(`[data-item="${key}"]`);
 const linkFor = (key: string) => document.querySelector<HTMLAnchorElement>(`[data-item="${key}"] a[data-open]`);
-const firstRow = () => $('.tile').getBoundingClientRect().top;
 
-// Level with the top of the window, under the masthead, but never above the first row.
-function viewSpot() {
-  const top = panel.getBoundingClientRect().top;
-  return Math.max(firstRow() - top, mast.getBoundingClientRect().bottom + 24 - top);
-}
-
-// Puts the current note where it belongs and shows it.
+// Puts the current note where it belongs and fits the panel's note to the window.
 function place() {
   const key = current ?? 'about';
   const note = notes.get(key)!;
@@ -83,28 +76,15 @@ function place() {
     const last = row[row.length - 1];
     if (last.nextElementSibling !== drop) last.after(drop);
     if (note.parentElement !== drop) drop.append(note);
+    unfit(note);
   } else {
     if (note.parentElement === drop) inner.append(note);
     drop.remove();
   }
 
-  const shown = under ? 'about' : key;
-  notes.forEach((n, k) => n.classList.toggle('is-shown', k === shown));
-  anchor();
-}
-
-// The panel's note sits level with its tile or row and scrolls with the page.
-// Near the bottom the panel grows, so the note never runs into the footer.
-function anchor() {
-  panel.style.minHeight = '';
-  if (narrow.matches) return;
-  const top = panel.getBoundingClientRect().top;
-  const y = at === 'rest' ? firstRow() - top
-    : typeof at === 'number' ? at
-    : at.getBoundingClientRect().top - top;
-  const need = y + inner.offsetHeight + 48;
-  if (need > panel.offsetHeight) panel.style.minHeight = need + 'px';
-  inner.style.setProperty('--y', Math.round(y) + 'px');
+  const shown = notes.get(under ? 'about' : key)!;
+  notes.forEach(n => n.classList.toggle('is-shown', n === shown));
+  fit(shown);
 }
 
 function mark() {
@@ -117,9 +97,9 @@ function open(key: string, from: HTMLElement | null = null) {
   current = key;
   trigger = from;
   item = key === 'about' ? null : itemFor(key);
-  at = item ?? viewSpot();
   mark();
   place();
+  turn(0);
   sync();
 
   const title = note.dataset.title!;
@@ -136,9 +116,9 @@ function close(refocus = true) {
   current = null;
   item = null;
   trigger = null;
-  at = 'rest';
   mark();
   place();
+  turn(0);
   sync();
   document.title = siteTitle;
   if (!refocus || !back) return;
@@ -160,13 +140,116 @@ for (const type of ['pointerover', 'focusin']) {
   });
 }
 
-let frame = 0;
-addEventListener('resize', () => {
-  cancelAnimationFrame(frame);
-  frame = requestAnimationFrame(place);
+/* ---- pages ----------------------------------------------------------- */
+
+// On wide screens the panel never scrolls. A note turns in pages: Overview,
+// Details and Take, or About's sections. A page taller than the window hands
+// its last blocks to a continuation page; Overview drops its thumbnail instead.
+
+const pager = $('[data-pager]');
+const pagerLabel = $('[data-pager-label]');
+const prevPage = $<HTMLButtonElement>('[data-turn="-1"]');
+const nextPage = $<HTMLButtonElement>('[data-turn="1"]');
+let page = 0;
+
+const pagesOf = (note: Element) => $$(':scope > .pg', note);
+const shownNote = () => $('.note.is-shown', inner);
+const overflows = () => inner.scrollHeight > inner.clientHeight + 1;
+
+function show(note: Element, i: number) {
+  pagesOf(note).forEach((p, n) => p.classList.toggle('is-page', n === i));
+}
+
+// A blank page of the same kind, with the same running title.
+function blankPage(like: HTMLElement, label: string) {
+  const pg = document.createElement('section');
+  pg.className = like.className.replace(/\s*\bis-page\b/, '');
+  pg.tabIndex = -1;
+  pg.dataset.label = label;
+  const head = like.querySelector('.pg-head');
+  if (head) pg.append(head.cloneNode(true));
+  return pg;
+}
+
+// About's text arrives as one block. Each of its headings starts a page.
+$$('.pg[data-split]').forEach(pg => {
+  const head = pg.querySelector('.pg-head');
+  const sections: HTMLElement[] = [];
+  for (const el of [...pg.children]) {
+    if (el === head) continue;
+    if (el.tagName === 'H2' || !sections.length) sections.push(blankPage(pg, el.tagName === 'H2' ? el.textContent!.trim() : pg.dataset.label!));
+    if (el.tagName === 'H2') el.classList.add('pg-title');
+    sections[sections.length - 1].append(el);
+  }
+  pg.replaceWith(...sections);
 });
-new ResizeObserver(anchor).observe(inner);
-document.fonts.ready.then(anchor);
+
+// Continuation pages rejoin the page they came from, and the thumbnail comes back.
+function unfit(note: Element) {
+  $$(':scope > .pg[data-cont]', note).reverse().forEach(cont => {
+    cont.previousElementSibling!.append(...[...cont.children].filter(el => !el.matches('.pg-head')));
+    cont.remove();
+  });
+  note.querySelector('.note-thumb')?.classList.remove('is-dropped');
+}
+
+function fit(note: HTMLElement) {
+  unfit(note);
+  if (narrow.matches) return;
+  for (let i = 0; i < pagesOf(note).length; i++) {
+    const pg = pagesOf(note)[i];
+    show(note, i);
+    if (i === 0) {
+      if (overflows()) pg.querySelector('.note-thumb')?.classList.add('is-dropped');
+      continue;
+    }
+    let rest: HTMLElement | null = null;
+    while (overflows()) {
+      const blocks = [...pg.children].filter(el => !el.matches('.pg-head, .pg-title'));
+      if (blocks.length < 2) break;
+      if (!rest) {
+        const base = pg.dataset.base ?? pg.dataset.label!;
+        rest = blankPage(pg, fill(pagerLabel.dataset.continued!, { label: base }));
+        rest.dataset.base = base;
+        rest.dataset.cont = '';
+        pg.after(rest);
+      }
+      const at = rest.querySelector('.pg-head');
+      if (at) at.after(blocks[blocks.length - 1]);
+      else rest.prepend(blocks[blocks.length - 1]);
+    }
+  }
+}
+
+function turn(to: number) {
+  const pgs = pagesOf(shownNote());
+  page = Math.max(0, Math.min(to, pgs.length - 1));
+  show(shownNote(), page);
+  pagerLabel.textContent = fill(pagerLabel.dataset.of!, { i: page + 1, n: pgs.length, label: pgs[page].dataset.label! });
+  prevPage.disabled = page === 0;
+  nextPage.disabled = page === pgs.length - 1;
+  pager.classList.toggle('is-single', pgs.length < 2);
+}
+
+// Focus that was in the panel stays there, on the new page if its old place is gone.
+function turnBy(step: number) {
+  const had = panel.contains(document.activeElement);
+  turn(page + step);
+  const active = document.activeElement as HTMLButtonElement | null;
+  if (had && (!active || !panel.contains(active) || active.closest('.pg:not(.is-page)') || active.disabled)) {
+    pagesOf(shownNote())[page].focus({ preventScroll: true });
+  }
+}
+
+// The window's height sets the pages, so a resize fits them again.
+let frame = 0;
+function refit() {
+  cancelAnimationFrame(frame);
+  frame = requestAnimationFrame(() => { place(); turn(page); });
+}
+addEventListener('resize', refit);
+new ResizeObserver(refit).observe(mast);
+document.fonts.ready.then(refit);
 
 /* ---- URL ------------------------------------------------------------- */
 
@@ -199,6 +282,9 @@ addEventListener('hashchange', () => {
 document.addEventListener('click', event => {
   if (raw || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey) return;
   const target = event.target as Element;
+
+  const turner = target.closest<HTMLElement>('[data-turn]');
+  if (turner) { turnBy(Number(turner.dataset.turn)); return; }
 
   const link = target.closest<HTMLAnchorElement>('a[data-open]');
   if (link) {
@@ -297,6 +383,12 @@ document.addEventListener('keydown', event => {
   }
 
   if (event.key === '/') { event.preventDefault(); openFind(); return; }
+
+  if (!narrow.matches && panel.contains(target) && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+    event.preventDefault();
+    turnBy(event.key === 'ArrowRight' ? 1 : -1);
+    return;
+  }
 
   const list = walkable();
   const onItem = list.indexOf(document.activeElement as HTMLAnchorElement);
@@ -400,7 +492,5 @@ if (initial && notes.has(initial)) {
 } else {
   if (initial) history.replaceState(null, '', urlFor(null));
   place();
+  turn(0);
 }
-
-// The note glides between tiles only after it has found its first place.
-requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('is-ready')));

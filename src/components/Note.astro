@@ -1,39 +1,42 @@
 ---
-/* One record's note. With JavaScript the panel shows one note at a time.
-   Without it every note sits in the page, one after another. */
+/* One record's note, in pages. On wide screens the panel shows one page at a
+   time. Elsewhere, and without JavaScript, the pages run one after another. */
 import Cover from './Cover.astro';
 import { fill } from '../i18n/works.js';
 const { r, t } = Astro.props;
 ---
 <article class="note" id={'record-' + r.key} data-note={r.key} data-title={r.title} aria-labelledby={'title-' + r.key}>
-  {r.cover && (
-    <figure class="note-thumb">
-      <Cover src={r.cover} alt={fill(t.shotAlt, { title: r.title })} sizes="288px" />
-    </figure>
-  )}
-  <div class="note-main">
-    <p class="note-meta">{r.meta}</p>
-    <h2 class="note-title" id={'title-' + r.key} tabindex="-1">{r.title}</h2>
-    <p class="note-lead">{r.lead ?? r.summary}</p>
-    {r.links.length > 0 && (
-      <ul class="note-links" role="list">
-        {r.links.map((l, i) => <li><a href={l.href}>{l.label}{i === 0 && <span aria-hidden="true"> →</span>}</a></li>)}
-      </ul>
+  <section class="pg pg-overview is-page" data-label={t.overview} tabindex="-1">
+    {r.cover && (
+      <figure class="note-thumb">
+        <Cover src={r.cover} alt={fill(t.shotAlt, { title: r.title })} sizes="288px" />
+      </figure>
     )}
-  </div>
-  {(r.specs.length > 0 || r.take) && (
-    <div class="note-side">
-      {r.specs.length > 0 && (
-        <dl class="note-specs">
-          {r.specs.map(s => <><dt>{s.label}</dt><dd>{s.value}</dd></>)}
-        </dl>
-      )}
-      {r.take && (
-        <div class="note-take">
-          <p class="label">{t.take}</p>
-          <p class="note-take-text">{r.take}</p>
-        </div>
+    <div class="note-main">
+      <p class="note-meta">{r.meta}</p>
+      <h2 class="note-title" id={'title-' + r.key} tabindex="-1">{r.title}</h2>
+      <p class="note-lead">{r.lead ?? r.summary}</p>
+      {r.links.length > 0 && (
+        <ul class="note-links" role="list">
+          {r.links.map((l, i) => <li><a href={l.href}>{l.label}{i === 0 && <span aria-hidden="true"> →</span>}</a></li>)}
+        </ul>
       )}
     </div>
+  </section>
+  {r.specs.length > 0 && (
+    <section class="pg" data-label={t.details} tabindex="-1">
+      <p class="pg-head">{r.title}</p>
+      <h3 class="pg-title">{t.details}</h3>
+      <dl class="note-specs">
+        {r.specs.map(s => <><dt>{s.label}</dt><dd>{s.value}</dd></>)}
+      </dl>
+    </section>
+  )}
+  {r.take && (
+    <section class="pg pg-prose" data-label={t.take} tabindex="-1">
+      <p class="pg-head">{r.title}</p>
+      <h3 class="pg-title">{t.take}</h3>
+      <p>{r.take}</p>
+    </section>
   )}
 </article>

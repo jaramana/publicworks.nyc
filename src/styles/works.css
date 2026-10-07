@@ -66,6 +66,7 @@ h1, h2, h3, p, ul, dl, dd, figure { margin: 0; padding: 0; }
 ul[role="list"] { list-style: none; }
 img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em; }
+button { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 1.5px solid var(--ink); outline-offset: 3px; }
 :focus:not(:focus-visible) { outline: none; }
@@ -189,10 +190,10 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em
 
 /* ---- note ----------------------------------------------------------- */
 
-.note { display: grid; gap: 1.5rem; align-content: start; }
+.note { display: grid; gap: 2rem; align-content: start; }
 .note-thumb { width: 100%; max-width: 18rem; }
 .note-thumb img { border-radius: calc(var(--radius) - 2px); box-shadow: 0 0 0 1px var(--shot-line), var(--soft); }
-.note-main, .note-side { display: grid; gap: .75rem; align-content: start; min-width: 0; }
+.note-main { display: grid; gap: .75rem; align-content: start; min-width: 0; }
 .note-meta { font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .note-title { font-size: 1.5rem; font-weight: 400; line-height: 1.12; letter-spacing: -.015em; }
 .note-title:focus { outline: none; }
@@ -204,20 +205,19 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em
 .note-specs { display: grid; grid-template-columns: minmax(5.5rem, max-content) minmax(0, 1fr); gap: .4rem 1.25rem; font-size: .8125rem; line-height: 1.45; }
 .note-specs dt { color: var(--muted); }
 .note-specs dd { overflow-wrap: anywhere; }
-.note-take { display: grid; gap: .4rem; margin-top: .5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
-.note-take-text { max-width: 44ch; font-size: .9375rem; line-height: 1.55; }
 
-.more summary { width: fit-content; font-size: .8125rem; color: var(--muted); list-style: none; cursor: pointer; }
-.more summary::-webkit-details-marker { display: none; }
-.more summary::before { content: "+ "; }
-.more[open] summary::before { content: "− "; }
-.more summary:hover { color: var(--ink); }
-.more-body { max-width: 60ch; margin-top: 1rem; font-size: .9375rem; line-height: 1.55; }
-.more-body h2 { margin: 1.5rem 0 .3rem; font-size: .9375rem; font-weight: 700; }
-.more-body > h2:first-child { margin-top: 0; }
-.more-body p + p { margin-top: .75em; }
-.more-body .byline { margin-top: 1.5rem; padding-top: .9rem; border-top: 1px solid var(--line); font-size: .8125rem; color: var(--muted); }
-.more-body .byline a { color: var(--ink); }
+/* A page: Overview, Details, Take, or a section of About. The title on
+   later pages shows only while the panel turns them. */
+.pg { display: grid; gap: .6rem; align-content: start; min-width: 0; }
+.pg:focus { outline: none; }
+.pg-overview { gap: 1.5rem; }
+.pg-head { display: none; font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pg-title, .pg-prose h2 { font-size: .9375rem; font-weight: 700; }
+.pg-prose { font-size: .9375rem; line-height: 1.55; }
+.pg-prose p { max-width: 60ch; }
+.pg-prose .byline { margin-top: .9rem; padding-top: .9rem; border-top: 1px solid var(--line); font-size: .8125rem; color: var(--muted); }
+.pg-prose .byline a { color: var(--ink); }
+.note-thumb.is-dropped { display: none; }
 
 /* ---- panel ---------------------------------------------------------- */
 
@@ -237,7 +237,10 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
 .drop .note-thumb { display: none; }
 @container (min-width: 40rem) {
   .drop .note { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 2rem; }
+  .drop .pg-overview { grid-row: span 2; }
 }
+
+.pager { display: none; }
 
 /* ---- frame ---------------------------------------------------------- */
 
@@ -258,12 +261,31 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
     align-items: start;
   }
 
-  /* The panel runs the page's length. Its note sits level with the tile
-     that opened it and scrolls with the page, under the glass. */
-  .has-js .side { position: relative; align-self: stretch; margin-top: 0; padding-top: 0; border-top: 0; border-left: 1px solid var(--line); }
-  .has-js .side-inner { position: absolute; top: var(--y, calc(clamp(2rem, 4vw, 3.5rem) + 2.63rem)); right: 0; left: calc(var(--panel-gap) / 2); }
-  .side.is-ready .side-inner { transition: top .45s var(--ease); }
+  /* The panel holds still under the masthead and never scrolls. A note
+     longer than the window turns in pages, by the pager or ← →. */
+  .has-js .side {
+    position: sticky;
+    top: var(--mast-h, 4rem);
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - var(--mast-h, 4rem));
+    margin-top: 0;
+    padding: clamp(2rem, 4vw, 3.5rem) 0 2rem calc(var(--panel-gap) / 2);
+    overflow: hidden;
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+  .has-js .side-inner { flex: 1; min-height: 0; overflow: hidden; }
   .has-js .side .note.is-shown { animation: fade .25s var(--ease); }
+  .has-js .side .pg:not(.is-page) { display: none; }
+  .has-js .side .pg-head { display: block; }
+  .has-js .side .pg-prose h2 { margin-top: .25rem; }
+
+  .has-js .pager { display: flex; align-items: center; gap: .75rem; padding-top: .9rem; border-top: 1px solid var(--line); font-size: .8125rem; color: var(--muted); }
+  .pager.is-single { visibility: hidden; }
+  .pager-label { flex: 1; text-align: center; font-variant-numeric: tabular-nums; }
+  .pager button { min-width: 2.25rem; min-height: 2.25rem; color: var(--ink); }
+  .pager button:disabled { opacity: .25; cursor: default; }
 }
 
 /* ---- preferences ---------------------------------------------------- */

@@ -86,23 +86,26 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
     <h2 class="label records-label">{t.records}</h2>
     <div class="side-inner" data-panel-inner>
       <article class="note is-shown" id="record-about" data-note="about" data-title={about.data.title} aria-labelledby="title-about">
-        <div class="note-main">
-          <p class="note-meta">{siteName}</p>
-          <h2 class="note-title" id="title-about" tabindex="-1">{about.data.title}</h2>
-          <p class="note-lead">{about.data.lead}</p>
-        </div>
-        <div class="note-side">
-          <details class="more">
-            <summary>{t.more}</summary>
-            <div class="more-body">
-              <AboutText />
-              <p class="byline" set:html={fill(t.byline, byline)} />
-            </div>
-          </details>
-        </div>
+        <section class="pg pg-overview is-page" data-label={t.overview} tabindex="-1">
+          <div class="note-main">
+            <p class="note-meta">{siteName}</p>
+            <h2 class="note-title" id="title-about" tabindex="-1">{about.data.title}</h2>
+            <p class="note-lead">{about.data.lead}</p>
+          </div>
+        </section>
+        <section class="pg pg-prose" data-label={t.more} data-split tabindex="-1">
+          <p class="pg-head">{about.data.title}</p>
+          <AboutText />
+          <p class="byline" set:html={fill(t.byline, byline)} />
+        </section>
       </article>
       {[...works, ...archive].map(r => <Note r={r} t={t} />)}
     </div>
+    <nav class="pager" aria-label={t.pages} data-pager>
+      <button type="button" data-turn="-1" aria-label={t.previousPage}><span aria-hidden="true">←</span></button>
+      <span class="pager-label" aria-live="polite" data-pager-label data-of={t.pageOf} data-continued={t.continued}></span>
+      <button type="button" data-turn="1" aria-label={t.nextPage}><span aria-hidden="true">→</span></button>
+    </nav>
   </aside>
 </div>
 
