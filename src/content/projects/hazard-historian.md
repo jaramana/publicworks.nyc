@@ -13,7 +13,6 @@ url: "https://hazardhistorian.publicworks.nyc"
 cover: "../../assets/media/hazardhistorian.png"
 repository: "https://github.com/jaramana/hazardhistorian.publicworks.nyc"
 source: "NYC Emergency Management, National Weather Service"
-accent: "#5c8eba"
 order: 4
 lang: "en"
 ---

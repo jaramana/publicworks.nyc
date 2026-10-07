@@ -74,7 +74,6 @@ const projects = defineCollection({
     source: z.string().optional(),
 
     // The product's identity color, at 4.5:1 or better on black. Drives --spot.
-    accent: z.string().regex(/^#[0-9a-f]{6}$/i).optional(),
 
     // Screenshot under src/assets. Required for works.
     cover: image().optional(),

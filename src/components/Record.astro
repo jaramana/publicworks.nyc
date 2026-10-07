@@ -5,7 +5,7 @@ import { fill } from '../i18n/works.js';
 const { r, t, prev, next, position } = Astro.props;
 const { Content } = await r.entry.render();
 ---
-<article class="record" id={'record-' + r.key} data-record={r.key} data-group={r.status} data-title={r.title} data-accent={r.accent} aria-labelledby={'title-' + r.key}>
+<article class="record" id={'record-' + r.key} data-record={r.key} data-group={r.status} data-title={r.title} aria-labelledby={'title-' + r.key}>
   <header class="record-head">
     {r.cover && (
       <figure class="record-cover">

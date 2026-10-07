@@ -12,7 +12,6 @@ url: "https://civilservice.publicworks.nyc"
 cover: "../../assets/media/civilservice.png"
 repository: "https://github.com/jaramana/civilservice.publicworks.nyc"
 source: "DCAS, NYC Open Data"
-accent: "#8fb4ee"
 order: 6
 lang: "en"
 ---

@@ -25,7 +25,7 @@ const panel = $<HTMLDialogElement>('[data-panel]');
 const panelName = $('[data-panel-name]');
 const prevButton = $<HTMLButtonElement>('[data-panel-prev]');
 const nextButton = $<HTMLButtonElement>('[data-panel-next]');
-const drawer = $<HTMLDetailsElement>('[data-drawer]');
+const archive = $('#archive');
 const announce = $('[data-announce]');
 const records = $$('[data-record]');
 const byKey = new Map(records.map(r => [r.dataset.record!, r]));
@@ -45,20 +45,7 @@ let current: string | null = null;
 let openedByPush = false;
 let raw = false;
 
-/* ---- spot: the color of the project in focus ------------------------ */
-
-const accentOf = (key?: string | null) => (key ? byKey.get(key)?.dataset.accent : undefined);
-
-function setSpot(accent?: string) {
-  if (accent) document.body.style.setProperty('--spot', accent);
-  else document.body.style.removeProperty('--spot');
-}
-
-function spotFrom(el: Element | null) {
-  if (panel.open || raw) return;
-  const tile = el?.closest<HTMLElement>('[data-tile]');
-  setSpot(accentOf(tile?.dataset.tile));
-}
+/* ---- hover ---------------------------------------------------------- */
 
 // Fetch the panel's cover before it is needed, so the panel opens on a picture.
 function warm(key?: string) {
@@ -73,13 +60,11 @@ document.addEventListener('pointerover', event => {
   const tile = target.closest<HTMLElement>('[data-tile]');
   if (tile === hovered) return;
   hovered = tile;
-  if (tile) { spotFrom(tile); warm(tile.dataset.tile); }
-  else if (!target.closest('.grid, .rows')) spotFrom(document.activeElement);
+  if (tile) warm(tile.dataset.tile);
 });
 document.addEventListener('focusin', event => {
   const tile = (event.target as Element).closest<HTMLElement>('[data-tile]');
   if (tile) warm(tile.dataset.tile);
-  spotFrom(tile ?? hovered);
 });
 
 // On a touch screen the tile nearest the middle of the screen lights.
@@ -89,7 +74,6 @@ function light(tile: HTMLElement | null) {
   lit?.classList.remove('is-lit');
   lit = tile;
   lit?.classList.add('is-lit');
-  spotFrom(lit);
 }
 const middle = new IntersectionObserver(entries => {
   if (!touch.matches) return;
@@ -138,7 +122,6 @@ function show(key: string, focusTitle = false) {
   nextButton.disabled = i >= list.length - 1;
   panelName.textContent = title;
   document.title = `${title} · ${siteTitle}`;
-  setSpot(record.dataset.accent);
 
   if (!panel.open) panel.showModal();
   panel.scrollTop = 0;
@@ -196,7 +179,6 @@ function step(direction: -1 | 1) {
 function returnFocus(key: string | null) {
   const trigger = key && $$<HTMLAnchorElement>(`main [data-open="${key}"], .masthead [data-open="${key}"]`)[0];
   if (!trigger) return;
-  if (drawer.contains(trigger)) drawer.open = true;
   trigger.focus({ preventScroll: true });
   trigger.closest('[data-tile]')?.scrollIntoView({ block: 'nearest' });
 }
@@ -212,7 +194,6 @@ panel.addEventListener('close', () => {
   }
   openedByPush = false;
   document.title = siteTitle;
-  setSpot();
   returnFocus(key);
 });
 
@@ -270,14 +251,6 @@ document.addEventListener('click', event => {
 
   if (event.shiftKey) return;
 
-  if (target.closest('[data-archive-link]')) {
-    event.preventDefault();
-    drawer.open = true;
-    $('#archive').scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth' });
-    $('summary', drawer).focus({ preventScroll: true });
-    return;
-  }
-
   // The wordmark returns the page to rest: no panel, no find, at the top.
   if (target.closest('[data-home]')) {
     event.preventDefault();
@@ -299,7 +272,7 @@ function applyFind(query: string) {
   const words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
   matches = findable.filter(el => words.every(w => el.dataset.find!.includes(w)));
   findable.forEach(el => el.classList.toggle('is-dim', words.length > 0 && !matches.includes(el)));
-  const inArchive = matches.filter(el => drawer.contains(el)).length;
+  const inArchive = matches.filter(el => archive.contains(el)).length;
   findCount.textContent = !words.length ? '' : matches.length ? fill(findCount.dataset.of!, { n: matches.length, total: findable.length }) : findCount.dataset.none!;
   archiveHits.textContent = words.length && inArchive ? fill(archiveHits.dataset.found!, { n: inArchive }) : '';
 }
@@ -325,11 +298,9 @@ findInput.addEventListener('keydown', event => {
     $('#works').focus({ preventScroll: true });
   } else if (event.key === 'Enter' && first) {
     event.preventDefault();
-    if (drawer.contains(first)) drawer.open = true;
     open(first.dataset.open!, first);
   } else if (event.key === 'ArrowDown' && first) {
     event.preventDefault();
-    if (drawer.contains(first)) drawer.open = true;
     moveTo(first);
   }
 });
@@ -337,7 +308,7 @@ findInput.addEventListener('blur', () => { if (!findInput.value.trim()) setTimeo
 
 /* ---- keyboard -------------------------------------------------------- */
 
-// Tiles, then archive rows when the drawer is open.
+// Tiles, then archive rows.
 const walkable = () => $$<HTMLAnchorElement>('.tile-link, .row-link').filter(a => a.getClientRects().length > 0);
 
 function moveTo(link: HTMLAnchorElement) {
@@ -449,12 +420,7 @@ document.addEventListener('keydown', event => {
   }
 });
 
-/* ---- print and load ------------------------------------------------- */
-
-// Print lists the archive too, so the drawer opens for it and closes after.
-let drawerWasOpen = false;
-addEventListener('beforeprint', () => { drawerWasOpen = drawer.open; drawer.open = true; });
-addEventListener('afterprint', () => { drawer.open = drawerWasOpen; });
+/* ---- load ------------------------------------------------------------ */
 
 // A shared link opens on its record. The title takes focus without a ring,
 // and the status line announces it.

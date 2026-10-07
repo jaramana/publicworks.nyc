@@ -1,0 +1,41 @@
+---
+/* One project's note. The lab copies it wherever the current study puts it. */
+import Cover from './Cover.astro';
+import { fill } from '../i18n/works.js';
+const { r, t } = Astro.props;
+const { Content } = await r.entry.render();
+
+// Code already appears as a link, so the spec list leaves it out.
+const specs = r.specs.filter(s => s.label !== t.code);
+---
+<article class="note" id={'note-' + r.key} data-note={r.key} data-status={r.status}>
+  {r.cover && (
+    <figure class="note-thumb">
+      <Cover src={r.cover} alt={fill(t.shotAlt, { title: r.title })} sizes="352px" />
+    </figure>
+  )}
+  <div class="note-main">
+    <p class="note-meta">{r.meta}</p>
+    <h2 class="note-title" tabindex="-1">{r.title}</h2>
+    <p class="note-lead">{r.lead ?? r.summary}</p>
+    {r.links.length > 0 && (
+      <ul class="note-links" role="list">
+        {r.links.map((l, i) => <li><a href={l.href}>{l.label}{i === 0 && <span aria-hidden="true"> →</span>}</a></li>)}
+      </ul>
+    )}
+  </div>
+  <div class="note-side">
+    {specs.length > 0 && (
+      <dl class="note-specs">
+        {specs.map(s => <><dt>{s.label}</dt><dd>{s.href ? <a href={s.href}>{s.value}</a> : s.value}</dd></>)}
+      </dl>
+    )}
+    <details class="more">
+      <summary>More</summary>
+      <div class="more-body">
+        {r.hasBody ? <Content /> : <p>{r.description}</p>}
+        {r.limit && <p class="note-limit"><span class="label">{t.limit}</span> {r.limit}</p>}
+      </div>
+    </details>
+  </div>
+</article>

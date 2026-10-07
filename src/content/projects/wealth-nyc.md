@@ -12,7 +12,6 @@ url: "https://wealth.publicworks.nyc"
 cover: "../../assets/media/wealth.png"
 repository: "https://github.com/jaramana/wealth.publicworks.nyc"
 source: "IRS Statistics of Income, Census Bureau ACS"
-accent: "#579672"
 lead: "Wealth NYC compares New York City income in tax records and in Census Bureau data, across 177 ZIP areas on one scale."
 specs:
   - label: "Data"

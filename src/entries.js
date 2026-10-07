@@ -51,7 +51,6 @@ export async function buildIndex(lang, t) {
       group: label[d.category],
       year: d.year,
       meta: [d.year, label[d.category], d.series === 'redux' && t.redux].filter(Boolean).join(' · '),
-      accent: d.accent,
       cover: d.cover,
       gallery: d.gallery,
       lead: d.lead,
@@ -77,7 +76,6 @@ export async function buildIndex(lang, t) {
     }))
     .filter(g => g.entries.length > 0);
   const archive = groups.flatMap(g => g.entries);
-  const years = archive.map(r => r.year);
 
-  return { works, archive, groups, from: Math.min(...years), to: Math.max(...years) };
+  return { works, archive, groups };
 }

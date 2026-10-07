@@ -12,7 +12,6 @@ url: "https://schools.publicworks.nyc"
 cover: "../../assets/media/schoolsfinder.png"
 repository: "https://github.com/jaramana/schools.publicworks.nyc"
 source: "School Quality Reports, Demographic Snapshot"
-accent: "#4f977c"
 order: 5
 lang: "en"
 ---

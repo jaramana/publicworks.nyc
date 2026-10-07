@@ -12,7 +12,6 @@ url: "https://paygap.publicworks.nyc"
 cover: "../../assets/media/thepaygap.png"
 repository: "https://github.com/jaramana/paygap.publicworks.nyc"
 source: "NYC Citywide Payroll Data"
-accent: "#7fa2ff"
 lead: "The Pay Gap brings New York City payroll into a search by title and agency, with overtime, tenure, inflation and rent comparisons."
 specs:
   - label: "Data"

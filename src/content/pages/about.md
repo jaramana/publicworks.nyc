@@ -7,7 +7,7 @@ lead: "publicworks.nyc lists websites built from public records, each with its s
 
 The Works are the current products. Each one has an About page and a Data page, and each links to its code.
 
-The Archive holds earlier projects, small tools and the maps of Cidade Labs, the sister lab in Galicia. It stays closed until you open it.
+The Archive holds earlier projects, small tools and the maps of Cidade Labs, the sister lab in Galicia.
 
 ## Redux
 

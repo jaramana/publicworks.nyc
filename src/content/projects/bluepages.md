@@ -14,7 +14,6 @@ dataUrl: "https://bluepages.publicworks.nyc/?view=data"
 cover: "../../assets/media/bluepages.png"
 repository: "https://github.com/jaramana/bluepages.publicworks.nyc"
 source: "NYC Agencies and Governance Organizations, Green Book, Citywide Payroll"
-accent: "#5389e2"
 order: 7
 lang: "en"
 ---

@@ -12,7 +12,6 @@ url: "https://wealthnj.publicworks.nyc"
 cover: "../../assets/media/wealthnj.png"
 repository: "https://github.com/jaramana/wealthnj.publicworks.nyc"
 source: "IRS Statistics of Income, Census Bureau ACS"
-accent: "#579672"
 order: 8
 lang: "en"
 ---

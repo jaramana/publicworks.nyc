@@ -11,18 +11,12 @@ import { getEntry } from 'astro:content';
 
 const { lang = defaultLang } = Astro.props;
 const t = copy[lang];
-const { works, archive, groups, from, to } = await buildIndex(lang, t);
+const { works, archive, groups } = await buildIndex(lang, t);
 const about = await getEntry('pages', 'about');
 const { Content: AboutText } = await about.render();
 
-// The wordmark's first dot takes the color of the project in focus.
 const dot = siteName.indexOf('.');
 const [wordA, wordB] = dot > 0 ? [siteName.slice(0, dot), siteName.slice(dot + 1)] : [siteName, ''];
-
-// One flagship spans the full width; the rest run in pairs. An odd one out
-// shares its row with a pointer to the archive.
-const [flagship, ...pairs] = works;
-const archiveTile = pairs.length % 2 === 1;
 
 const step = list => (r, i) => ({ r, prev: list[i - 1], next: list[i + 1], position: fill(t.of, { i: i + 1, n: list.length }) });
 const records = [...works.map(step(works)), ...archive.map(step(archive))];
@@ -32,7 +26,11 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
 <html lang={lang}>
 <head>
   <BaseHead description={t.intro} />
-  <script is:inline>document.documentElement.classList.add('has-js');</script>
+  <script is:inline>
+    document.documentElement.classList.add('has-js');
+    // Layout comparison: ?layout=c shows three across.
+    if (new URLSearchParams(location.search).get('layout') === 'c') document.documentElement.dataset.layout = 'c';
+  </script>
 </head>
 <body style={siteAccent ? `--site-spot:${siteAccent}` : undefined}>
 <a class="skip" href="#works">{t.skip}</a>
@@ -40,10 +38,9 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
 <header class="masthead" data-masthead>
   <div class="bar">
     <a class="wordmark" href={localizePath('/', lang)} data-home>{wordA}{wordB && <><span class="dot">.</span>{wordB}</>}</a>
-    <p class="count">{fill(t.count, { works: works.length, archive: archive.length })}</p>
     <nav class="nav" aria-label={t.sections}>
       <a href="#works">{t.works}</a>
-      <a href="#archive" data-archive-link>{t.archive}</a>
+      <a href="#archive">{t.archive}</a>
       <a href="#record-about" data-open="about">{t.about}</a>
       <a href={githubUrl}>{t.github}</a>
       {languages.length > 1 && languages.map(code => <a class="lang" href={localizePath(bare, code)} lang={code} aria-label={languageNames[code]} aria-current={code === lang ? 'page' : undefined}>{code}</a>)}
@@ -57,52 +54,37 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
 </header>
 
 <main id="main">
-  <section class="intro">
-    <h1>{t.intro}</h1>
-  </section>
+  <h1 class="sr-only">{siteName}</h1>
 
   <section class="works" id="works" aria-labelledby="works-label" tabindex="-1">
-    <div class="section-head"><h2 class="label" id="works-label">{t.works}</h2><span class="label">{String(works.length).padStart(2, '0')}</span></div>
+    <div class="section-head"><h2 class="label" id="works-label">{t.works}</h2></div>
     <ul class="grid" role="list">
-      {flagship && <Tile r={flagship} wide eager />}
-      {pairs.map((r, i) => <Tile r={r} eager={i < 2} />)}
-      {archiveTile && (
-        <li class="tile tile--note">
-          <a class="note-link" href="#archive" data-archive-link>
-            <span class="label">{t.archiveTile}</span>
-            <span class="note-title">{fill(t.archiveTileNote, { n: archive.length, from, to })}</span>
-            <span class="note-arrow" aria-hidden="true">↓</span>
-          </a>
-        </li>
-      )}
+      {works.map((r, i) => <Tile r={r} k={i + 1} eager={i < 3} />)}
     </ul>
   </section>
 
-  <section class="archive" id="archive" aria-labelledby="archive-label">
-    <details class="drawer" data-drawer>
-      <summary class="drawer-head">
-        <h2 class="drawer-title" id="archive-label">{t.archive}</h2>
-        <span class="drawer-note">{fill(t.archiveNote, { n: archive.length, from, to })}</span>
-        <span class="drawer-toggle label" aria-hidden="true"><span class="when-closed">{t.archiveOpen} +</span><span class="when-open">{t.archiveClose} −</span></span>
-        <span class="find-hits label" data-archive-hits data-found={t.findArchive}></span>
-      </summary>
-      {groups.map(g => (
-        <div class="group">
-          <h3 class="group-name label">{g.name}</h3>
-          <ul class="rows" role="list">
-            {g.entries.map(r => (
-              <li class="row" data-tile={r.key} data-find={r.find}>
-                <a class="row-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>
-                  <span class="row-title">{r.title}</span>
-                  <span class="row-summary">{r.summary}</span>
-                  <span class="row-year">{r.year}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </details>
+  <section class="archive" id="archive" aria-labelledby="archive-label" tabindex="-1">
+    <div class="section-head">
+      <h2 class="label" id="archive-label">{t.archive}</h2>
+      <p class="section-note">{t.archiveNote}</p>
+      <span class="find-hits label" data-archive-hits data-found={t.findArchive}></span>
+    </div>
+    {groups.map(g => (
+      <div class="group">
+        <h3 class="group-name label">{g.name}</h3>
+        <ul class="rows" role="list">
+          {g.entries.map(r => (
+            <li class="row" data-tile={r.key} data-find={r.find}>
+              <a class="row-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>
+                <span class="row-title">{r.title}</span>
+                <span class="row-summary">{r.summary}</span>
+                <span class="row-year">{r.year}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
   </section>
 
   <dialog class="panel" data-panel aria-labelledby="panel-name">
