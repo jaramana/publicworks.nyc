@@ -13,9 +13,6 @@ export const siteName = 'publicworks.nyc';
 export const githubUrl = 'https://github.com/jaramana';
 export const repoUrl = 'https://github.com/jaramana/publicworks.nyc';
 
-// --spot when no project is in focus. null falls back to the ink color.
-export const siteAccent = null;
-
 // The footer's byline and sister-site lines. Their wording lives in works.js.
 export const byline = { name: 'Allen Shaibani', url: 'https://allenshaibani.com' };
 export const sister = { name: 'Cidade Labs', url: 'https://cidadelabs.org' };

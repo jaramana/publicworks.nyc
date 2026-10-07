@@ -8,7 +8,7 @@ import { defineCollection, z } from 'astro:content';
    To ADD A POST:    create src/content/blog/, drop a .md file in
                      it, and restore the /blog page tree.
    Fill in the fields below at the top of each file (frontmatter).
-   The Markdown body of a project is its narrative in the panel.
+   A project's Markdown body is not shown on the page.
    ============================================================ */
 
 const blog = defineCollection({
@@ -34,7 +34,7 @@ const projects = defineCollection({
     // One line under the title on the tile and in the archive row.
     indexSummary: z.string(),
 
-    // The paragraph in the panel when the record has no narrative.
+    // Not shown on the page. Kept for a later cleanup.
     description: z.string(),
 
     // The type. Archive rows are grouped by it, in the order set by src/i18n/works.js.
@@ -73,25 +73,27 @@ const projects = defineCollection({
     // Data source credit, where a project names one.
     source: z.string().optional(),
 
-    // The product's identity color, at 4.5:1 or better on black. Drives --spot.
-
     // Screenshot under src/assets. Required for works.
     cover: image().optional(),
 
-    // Two to four captioned figures for the narrative.
+    // Not shown on the page. Kept for a later cleanup.
     gallery: z.array(z.object({ src: image(), alt: z.string(), caption: z.string() })).max(4).optional(),
 
-    // Label and value rows beside the narrative. Without them the panel
-    // lists source, built with, updated and code.
+    // Label and value rows. The note shows the Data and Built with rows;
+    // the others are kept for a later cleanup. Without specs the note
+    // uses source and builtWith.
     specs: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
 
-    // One sentence at the top of the panel.
+    // One sentence under the title in the note. Without it the note repeats indexSummary.
     lead: z.string().optional(),
 
-    // The stated limit. Must agree with the product's About and Data pages.
+    // The author's own take on a work, 60 to 100 words, shown last in its note.
+    take: z.string().optional(),
+
+    // Not shown on the page. Kept for a later cleanup.
     limit: z.string().optional(),
 
-    // When the product's data was last built. Set by hand.
+    // When the product's data was last built. Set by hand. Without it the note has no Updated row.
     updated: z.date().optional(),
 
     // Order within Works, or within a category in the archive.

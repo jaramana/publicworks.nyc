@@ -1,17 +1,12 @@
 ---
 /* One work in the grid. The title link stretches over the whole tile. */
 import Cover from './Cover.astro';
-const { r, k, eager = false } = Astro.props;
-const sizes = '(min-width: 90rem) 546px, (min-width: 64rem) 38vw, (min-width: 48rem) 46vw, calc(100vw - 32px)';
+const { r, eager = false } = Astro.props;
+const sizes = '(min-width: 35rem) 304px, calc(100vw - 40px)';
 ---
-<li class="tile" style={`--k:${k}`} data-tile={r.key} data-find={r.find}>
-  <div class="tile-media">
-    <Cover src={r.cover} sizes={sizes} eager={eager} />
-    {r.built && <p class="tile-facts">{r.built}</p>}
-  </div>
-  <div class="tile-text">
-    <p class="meta">{r.meta}</p>
-    <h3 class="tile-title"><a class="tile-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>{r.title}</a></h3>
-    <p class="tile-summary">{r.summary}</p>
-  </div>
+<li class="tile" data-item={r.key} data-find={r.find}>
+  <div class="tile-media"><Cover src={r.cover} sizes={sizes} eager={eager} /></div>
+  <p class="tile-meta">{r.meta}</p>
+  <h3 class="tile-title"><a class="tile-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>{r.title}</a></h3>
+  <p class="tile-summary">{r.summary}</p>
 </li>

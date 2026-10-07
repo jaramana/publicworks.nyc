@@ -14,6 +14,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <link rel="canonical" href={canonical} />
-<meta name="theme-color" content="#000000" />
-<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0c0c0d" media="(prefers-color-scheme: dark)" />
+<meta name="color-scheme" content="light dark" />
 <title>{title}</title>

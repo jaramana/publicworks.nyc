@@ -2,15 +2,19 @@
    WORKS: BEHAVIOR
    ------------------------------------------------------------
    Everything here sits on top of a page of links. Without it,
-   each tile jumps to its record further down the page.
+   each tile jumps to its note further down the page.
+
+   On wide screens the panel beside the tiles shows one note,
+   level with the tile or row that opened it. At rest it shows
+   About. On narrow screens a note opens under its tile, and
+   About sits after the archive.
 
    Keys. Nothing on the page explains them.
 
      /                 find; Enter opens the first match, Esc clears
-     j k, arrows       move between tiles and open archive rows
+     j k, arrows       move between tiles and archive rows
      Enter             open the focused project
-     ← →               previous and next inside the panel
-     Esc               close the panel
+     Esc               return the panel to About
      shift-click       open the repository in a new tab
      shift-Enter       open the repository
      letters           jump to a title
@@ -21,68 +25,148 @@ const $ = <T extends Element = HTMLElement>(s: string, root: ParentNode = docume
 const $$ = <T extends Element = HTMLElement>(s: string, root: ParentNode = document) => [...root.querySelectorAll<T>(s)];
 const fill = (text: string, values: Record<string, string | number>) => text.replace(/\{(\w+)\}/g, (_, k) => String(values[k] ?? ''));
 
-const panel = $<HTMLDialogElement>('[data-panel]');
-const panelName = $('[data-panel-name]');
-const prevButton = $<HTMLButtonElement>('[data-panel-prev]');
-const nextButton = $<HTMLButtonElement>('[data-panel-next]');
+const root = document.documentElement;
+const mast = $('[data-mast]');
+const panel = $('[data-panel]');
+const inner = $('[data-panel-inner]');
 const archive = $('#archive');
 const announce = $('[data-announce]');
-const records = $$('[data-record]');
-const byKey = new Map(records.map(r => [r.dataset.record!, r]));
+const notes = new Map($$('[data-note]').map(n => [n.dataset.note!, n]));
 const siteTitle = document.title;
+const narrow = matchMedia('(max-width: 55.99rem)');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
-const touch = matchMedia('(hover: none)');
+const smooth = (): ScrollBehavior => (reduceMotion.matches ? 'auto' : 'smooth');
 
-// Records step within their own group: works with works, archive with archive.
-const groups = new Map<string, string[]>();
-records.forEach(r => {
-  const list = groups.get(r.dataset.group!) ?? [];
-  list.push(r.dataset.record!);
-  groups.set(r.dataset.group!, list);
-});
-
-let current: string | null = null;
-let openedByPush = false;
 let raw = false;
 
-/* ---- hover ---------------------------------------------------------- */
+/* ---- masthead -------------------------------------------------------- */
 
-// Fetch the panel's cover before it is needed, so the panel opens on a picture.
+// --mast-h keeps anchor jumps clear of the sticky masthead.
+new ResizeObserver(() => root.style.setProperty('--mast-h', mast.offsetHeight + 'px')).observe(mast);
+
+// A hairline appears once the page scrolls under the glass.
+new IntersectionObserver(([entry]) => mast.classList.toggle('is-stuck', !entry.isIntersecting)).observe($('.mast-sentinel'));
+
+/* ---- notes ----------------------------------------------------------- */
+
+let current: string | null = null;
+let item: HTMLElement | null = null;
+let trigger: HTMLElement | null = null;
+let at: HTMLElement | 'rest' | number = 'rest';
+
+// The narrow screen's slot for a note under its tile or row.
+const drop = document.createElement('li');
+drop.className = 'drop';
+
+const itemFor = (key: string) => document.querySelector<HTMLElement>(`[data-item="${key}"]`);
+const linkFor = (key: string) => document.querySelector<HTMLAnchorElement>(`[data-item="${key}"] a[data-open]`);
+const firstRow = () => $('.tile').getBoundingClientRect().top;
+
+// Level with the top of the window, under the masthead, but never above the first row.
+function viewSpot() {
+  const top = panel.getBoundingClientRect().top;
+  return Math.max(firstRow() - top, mast.getBoundingClientRect().bottom + 24 - top);
+}
+
+// Puts the current note where it belongs and shows it.
+function place() {
+  const key = current ?? 'about';
+  const note = notes.get(key)!;
+  const under = narrow.matches ? item : null;
+
+  const stray = drop.firstElementChild;
+  if (stray && stray !== note) inner.append(stray);
+
+  if (under) {
+    // After the last item in its row, so the row stays whole.
+    const row = $$('[data-item]', under.parentElement!).filter(el => el.offsetTop === under.offsetTop);
+    const last = row[row.length - 1];
+    if (last.nextElementSibling !== drop) last.after(drop);
+    if (note.parentElement !== drop) drop.append(note);
+  } else {
+    if (note.parentElement === drop) inner.append(note);
+    drop.remove();
+  }
+
+  const shown = under ? 'about' : key;
+  notes.forEach((n, k) => n.classList.toggle('is-shown', k === shown));
+  anchor();
+}
+
+// The panel's note sits level with its tile or row and scrolls with the page.
+// Near the bottom the panel grows, so the note never runs into the footer.
+function anchor() {
+  panel.style.minHeight = '';
+  if (narrow.matches) return;
+  const top = panel.getBoundingClientRect().top;
+  const y = at === 'rest' ? firstRow() - top
+    : typeof at === 'number' ? at
+    : at.getBoundingClientRect().top - top;
+  const need = y + inner.offsetHeight + 48;
+  if (need > panel.offsetHeight) panel.style.minHeight = need + 'px';
+  inner.style.setProperty('--y', Math.round(y) + 'px');
+}
+
+function mark() {
+  $$('[data-item]').forEach(el => el.classList.toggle('is-current', el.dataset.item === current));
+}
+
+function open(key: string, from: HTMLElement | null = null) {
+  const note = notes.get(key);
+  if (!note) return;
+  current = key;
+  trigger = from;
+  item = key === 'about' ? null : itemFor(key);
+  at = item ?? viewSpot();
+  mark();
+  place();
+  sync();
+
+  const title = note.dataset.title!;
+  document.title = `${title} · ${siteTitle}`;
+  announce.textContent = title;
+  $('.note-title', note).focus({ preventScroll: true });
+  if (narrow.matches) (item ? drop : note).scrollIntoView({ block: item ? 'nearest' : 'start', behavior: smooth() });
+  else item?.scrollIntoView({ block: 'nearest', behavior: smooth() });
+}
+
+// No close button: the open tile again, Esc or About returns the panel to About.
+function close(refocus = true) {
+  const back = trigger ?? (current ? linkFor(current) : null);
+  current = null;
+  item = null;
+  trigger = null;
+  at = 'rest';
+  mark();
+  place();
+  sync();
+  document.title = siteTitle;
+  if (!refocus || !back) return;
+  back.focus({ preventScroll: true });
+  if (narrow.matches) back.closest('[data-item]')?.scrollIntoView({ block: 'nearest' });
+}
+
+// Fetch a note's thumbnail before it is needed, so the note opens on a picture.
 function warm(key?: string) {
-  const img = key && byKey.get(key)?.querySelector<HTMLImageElement>('.record-cover img');
+  if (narrow.matches || !key) return;
+  const img = notes.get(key)?.querySelector<HTMLImageElement>('.note-thumb img');
   if (img && img.loading !== 'eager') img.loading = 'eager';
 }
 
-let hovered: Element | null = null;
-document.addEventListener('pointerover', event => {
-  if (event.pointerType === 'touch') return;
-  const target = event.target as Element;
-  const tile = target.closest<HTMLElement>('[data-tile]');
-  if (tile === hovered) return;
-  hovered = tile;
-  if (tile) warm(tile.dataset.tile);
-});
-document.addEventListener('focusin', event => {
-  const tile = (event.target as Element).closest<HTMLElement>('[data-tile]');
-  if (tile) warm(tile.dataset.tile);
-});
-
-// On a touch screen the tile nearest the middle of the screen lights.
-let lit: HTMLElement | null = null;
-function light(tile: HTMLElement | null) {
-  if (tile === lit) return;
-  lit?.classList.remove('is-lit');
-  lit = tile;
-  lit?.classList.add('is-lit');
+for (const type of ['pointerover', 'focusin']) {
+  document.addEventListener(type, event => {
+    if ((event as PointerEvent).pointerType === 'touch') return;
+    warm((event.target as Element).closest<HTMLElement>('[data-item]')?.dataset.item);
+  });
 }
-const middle = new IntersectionObserver(entries => {
-  if (!touch.matches) return;
-  const hit = entries.filter(e => e.isIntersecting).pop();
-  if (hit) light(hit.target as HTMLElement);
-  else if (entries.some(e => e.target === lit && !e.isIntersecting)) light(null);
-}, { rootMargin: '-45% 0px -45% 0px' });
-$$('.tile[data-tile]').forEach(tile => middle.observe(tile));
-touch.addEventListener('change', () => { if (!touch.matches) light(null); });
+
+let frame = 0;
+addEventListener('resize', () => {
+  cancelAnimationFrame(frame);
+  frame = requestAnimationFrame(place);
+});
+new ResizeObserver(anchor).observe(inner);
+document.fonts.ready.then(anchor);
 
 /* ---- URL ------------------------------------------------------------- */
 
@@ -102,128 +186,12 @@ function urlFor(key: string | null) {
   return url;
 }
 
-/* ---- panel ----------------------------------------------------------- */
-
-function show(key: string, focusTitle = false) {
-  const record = byKey.get(key);
-  if (!record) return;
-
-  // Focus inside the record about to hide moves to the new title.
-  const stale = records.some(r => r !== record && r.contains(document.activeElement));
-  records.forEach(r => (r.hidden = r !== record));
-  current = key;
-
-  const title = record.dataset.title!;
-  const list = groups.get(record.dataset.group!)!;
-  const i = list.indexOf(key);
-  const single = list.length < 2;
-  prevButton.hidden = nextButton.hidden = single;
-  prevButton.disabled = i <= 0;
-  nextButton.disabled = i >= list.length - 1;
-  panelName.textContent = title;
-  document.title = `${title} · ${siteTitle}`;
-
-  if (!panel.open) panel.showModal();
-  panel.scrollTop = 0;
-  if (focusTitle || stale || !panel.contains(document.activeElement)) $('.record-title', record).focus({ preventScroll: true });
-  announce.textContent = title;
-}
-
-// The cover grows from the tile into the panel where the browser supports it.
-function openWithTransition(key: string, from?: Element) {
-  const start = (document as Document & { startViewTransition?: (cb: () => unknown) => { ready: Promise<void>; finished: Promise<void> } }).startViewTransition;
-  const tileImg = from?.closest('.tile')?.querySelector<HTMLImageElement>('.tile-media img');
-  const panelImg = byKey.get(key)?.querySelector<HTMLImageElement>('.record-cover img');
-  if (!start || !tileImg || !panelImg || reduceMotion.matches || panel.open || document.hidden) return show(key, true);
-
-  warm(key);
-  tileImg.style.viewTransitionName = 'cover';
-  panel.classList.add('no-anim');
-  const transition = start.call(document, async () => {
-    tileImg.style.viewTransitionName = '';
-    panelImg.style.viewTransitionName = 'cover';
-    show(key, true);
-    await Promise.race([panelImg.decode().catch(() => {}), new Promise(r => setTimeout(r, 350))]);
-  });
-  // The browser may skip the animation. The panel still opens, so a skip is not an error.
-  transition.ready.catch(() => {});
-  transition.finished.catch(() => {}).finally(() => {
-    panelImg.style.viewTransitionName = '';
-    panel.classList.remove('no-anim');
-  });
-}
-
-function open(key: string, from?: Element) {
-  if (!byKey.has(key)) return;
-  if (panel.open) {
-    history.replaceState({ p: key }, '', urlFor(key));
-    show(key, true);
-    return;
-  }
-  history.pushState({ p: key }, '', urlFor(key));
-  openedByPush = true;
-  openWithTransition(key, from);
-}
-
-function step(direction: -1 | 1) {
-  if (!current) return false;
-  const list = groups.get(byKey.get(current)!.dataset.group!)!;
-  const key = list[list.indexOf(current) + direction];
-  if (!key) return false;
-  history.replaceState({ p: key }, '', urlFor(key));
-  show(key);
-  return true;
-}
-
-// Focus goes back to whatever opens the record: its tile, its archive row, or the About link.
-function returnFocus(key: string | null) {
-  const trigger = key && $$<HTMLAnchorElement>(`main [data-open="${key}"], .masthead [data-open="${key}"]`)[0];
-  if (!trigger) return;
-  trigger.focus({ preventScroll: true });
-  trigger.closest('[data-tile]')?.scrollIntoView({ block: 'nearest' });
-}
-
-// Every way of closing ends here: the button, Esc, the backdrop, Back.
-panel.addEventListener('close', () => {
-  if (raw) return;
-  const key = current;
-  current = null;
-  if (keyFromUrl()) {
-    if (openedByPush) history.back();
-    else history.replaceState(null, '', urlFor(null));
-  }
-  openedByPush = false;
-  document.title = siteTitle;
-  returnFocus(key);
-});
-
-$('[data-panel-close]').addEventListener('click', () => panel.close());
-prevButton.addEventListener('click', () => step(-1));
-nextButton.addEventListener('click', () => step(1));
-
-// A click on the dimmed page beside the panel closes it.
-panel.addEventListener('click', event => {
-  if (event.target !== panel) return;
-  const box = panel.getBoundingClientRect();
-  if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) panel.close();
-});
-
-addEventListener('popstate', () => {
-  const key = keyFromUrl();
-  if (key && byKey.has(key)) {
-    openedByPush = !!history.state?.p;
-    show(key);
-  } else if (panel.open) {
-    panel.close();
-  }
-});
+const sync = () => history.replaceState(null, '', urlFor(current));
 
 addEventListener('hashchange', () => {
+  if (!location.hash.startsWith('#record-')) return;
   const key = keyFromUrl();
-  if (key && byKey.has(key)) {
-    history.replaceState({ p: key }, '', urlFor(key));
-    show(key, true);
-  }
+  if (key && notes.has(key)) open(key);
 });
 
 /* ---- links ----------------------------------------------------------- */
@@ -232,7 +200,7 @@ document.addEventListener('click', event => {
   if (raw || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey) return;
   const target = event.target as Element;
 
-  const link = target.closest<HTMLAnchorElement>('a[data-open], a[data-step]');
+  const link = target.closest<HTMLAnchorElement>('a[data-open]');
   if (link) {
     // Shift-click a tile or a row and you get the repository instead.
     if (event.shiftKey) {
@@ -240,22 +208,20 @@ document.addEventListener('click', event => {
       return;
     }
     event.preventDefault();
-    if (link.dataset.step) {
-      history.replaceState({ p: link.dataset.step }, '', urlFor(link.dataset.step));
-      show(link.dataset.step, true);
-    } else {
-      open(link.dataset.open!, link);
-    }
+    const key = link.dataset.open!;
+    if (current === key) close();
+    else open(key, link);
     return;
   }
 
   if (event.shiftKey) return;
 
-  // The wordmark returns the page to rest: no panel, no find, at the top.
+  // The wordmark returns the page to rest: About in the panel, no find, at the top.
   if (target.closest('[data-home]')) {
     event.preventDefault();
     closeFind();
-    scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+    if (current) close(false);
+    scrollTo({ top: 0, behavior: smooth() });
   }
 });
 
@@ -265,7 +231,7 @@ const finder = $('[data-finder]');
 const findInput = $<HTMLInputElement>('[data-find-input]');
 const findCount = $('[data-find-count]');
 const archiveHits = $('[data-archive-hits]');
-const findable = $$('[data-tile][data-find]');
+const findable = $$('[data-item][data-find]');
 let matches: HTMLElement[] = [];
 
 function applyFind(query: string) {
@@ -310,10 +276,11 @@ findInput.addEventListener('blur', () => { if (!findInput.value.trim()) setTimeo
 
 // Tiles, then archive rows.
 const walkable = () => $$<HTMLAnchorElement>('.tile-link, .row-link').filter(a => a.getClientRects().length > 0);
+const titleOf = (a: HTMLAnchorElement) => (a.querySelector('.row-title') ?? a).textContent!.trim().toLowerCase();
 
 function moveTo(link: HTMLAnchorElement) {
   link.focus({ preventScroll: true });
-  link.closest('[data-tile]')!.scrollIntoView({ block: 'nearest', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+  link.closest('[data-item]')!.scrollIntoView({ block: 'nearest', behavior: smooth() });
 }
 
 let buffer = '';
@@ -324,32 +291,35 @@ document.addEventListener('keydown', event => {
   const target = event.target as HTMLElement;
   if (target.matches('input, textarea, select, [contenteditable]')) return;
 
-  if (panel.open) {
-    if (event.key === 'ArrowLeft' && step(-1)) event.preventDefault();
-    if (event.key === 'ArrowRight' && step(1)) event.preventDefault();
+  if (event.key === 'Escape') {
+    if (current) { event.preventDefault(); close(); }
     return;
   }
 
   if (event.key === '/') { event.preventDefault(); openFind(); return; }
 
   const list = walkable();
-  const i = list.indexOf(document.activeElement as HTMLAnchorElement);
+  const onItem = list.indexOf(document.activeElement as HTMLAnchorElement);
+
+  // From inside an open note, j and k carry on from its tile or row.
+  const inNote = current && current !== 'about' && notes.get(current)!.contains(document.activeElement);
+  const i = onItem >= 0 ? onItem : inNote ? list.indexOf(linkFor(current!)!) : -1;
 
   // Shift-Enter only opens a repository when a tile or row has focus.
   if (event.key === 'Enter' && event.shiftKey) {
-    const repo = i >= 0 && list[i].dataset.repo;
+    const repo = onItem >= 0 && list[onItem].dataset.repo;
     if (repo) { event.preventDefault(); location.href = repo; }
     return;
   }
 
   // j and k work from anywhere. Arrows only once a tile has focus, so they still scroll the page.
   let next: number | undefined;
-  const forward = event.key === 'j' || (i >= 0 && (event.key === 'ArrowDown' || event.key === 'ArrowRight'));
-  const back = event.key === 'k' || (i >= 0 && (event.key === 'ArrowUp' || event.key === 'ArrowLeft'));
+  const forward = event.key === 'j' || (onItem >= 0 && (event.key === 'ArrowDown' || event.key === 'ArrowRight'));
+  const back = event.key === 'k' || (onItem >= 0 && (event.key === 'ArrowUp' || event.key === 'ArrowLeft'));
   if (forward) next = (i + 1) % list.length;
   else if (back) next = i < 0 ? list.length - 1 : (i - 1 + list.length) % list.length;
-  else if (i >= 0 && event.key === 'Home') next = 0;
-  else if (i >= 0 && event.key === 'End') next = list.length - 1;
+  else if (onItem >= 0 && event.key === 'Home') next = 0;
+  else if (onItem >= 0 && event.key === 'End') next = list.length - 1;
   if (next !== undefined && list[next]) { event.preventDefault(); moveTo(list[next]); return; }
 
   // Type-ahead. Digits are left alone so they can reach 1999 below.
@@ -357,7 +327,7 @@ document.addEventListener('keydown', event => {
     buffer += event.key.toLowerCase();
     clearTimeout(bufferTimer);
     bufferTimer = setTimeout(() => (buffer = ''), 800);
-    const titles = list.map(a => a.textContent!.trim().toLowerCase());
+    const titles = list.map(titleOf);
     let hit = titles.findIndex(t => t.startsWith(buffer));
     if (hit < 0) hit = titles.findIndex(t => t.includes(buffer));
     if (hit >= 0) { event.preventDefault(); moveTo(list[hit]); }
@@ -371,26 +341,26 @@ let yearTimer: ReturnType<typeof setTimeout>;
 
 function nineteenNinetyNine() {
   raw = true;
-  const list = records.filter(r => r.dataset.group !== 'about').map(r => ({
-    title: r.dataset.title!,
-    filed: $('.meta', r).childNodes[0].textContent!.split(' · ').join(', '),
-    href: r.querySelector<HTMLAnchorElement>('.record-links a')?.getAttribute('href'),
+  const list = [...notes.values()].filter(n => n.dataset.note !== 'about').map(n => ({
+    title: n.dataset.title!,
+    filed: $('.note-meta', n).textContent!.split(' · ').join(', '),
+    href: n.querySelector<HTMLAnchorElement>('.note-links a')?.getAttribute('href'),
   }));
   document.querySelectorAll<HTMLStyleElement | HTMLLinkElement>('style, link[rel=stylesheet]').forEach(s => (s.disabled = true));
   const heading = document.createElement('h1');
   heading.textContent = siteTitle;
   const ul = document.createElement('ul');
-  list.forEach(item => {
+  list.forEach(entry => {
     const li = document.createElement('li');
-    if (item.href) {
+    if (entry.href) {
       const a = document.createElement('a');
-      a.href = item.href;
-      a.textContent = item.title;
+      a.href = entry.href;
+      a.textContent = entry.title;
       li.append(a);
     } else {
-      li.append(item.title);
+      li.append(entry.title);
     }
-    li.append(' (' + item.filed + ')');
+    li.append(' (' + entry.filed + ')');
     ul.append(li);
   });
   document.body.replaceChildren(heading, ul);
@@ -400,7 +370,7 @@ function nineteenNinetyNine() {
 }
 
 // Reloading is the honest way back: replacing the body dropped every
-// listener with it, and ?p= brings the same record back.
+// listener with it, and ?p= brings the same note back.
 function restore() {
   if (raw) location.reload();
 }
@@ -422,12 +392,15 @@ document.addEventListener('keydown', event => {
 
 /* ---- load ------------------------------------------------------------ */
 
-// A shared link opens on its record. The title takes focus without a ring,
-// and the status line announces it.
+// A shared link opens on its note, with its tile at the top of the window.
 const initial = keyFromUrl();
-if (initial && byKey.has(initial)) {
-  history.replaceState({ p: initial }, '', urlFor(initial));
-  show(initial, true);
-} else if (initial) {
-  history.replaceState(null, '', urlFor(null));
+if (initial && notes.has(initial)) {
+  open(initial);
+  itemFor(initial)?.scrollIntoView({ block: 'start' });
+} else {
+  if (initial) history.replaceState(null, '', urlFor(null));
+  place();
 }
+
+// The note glides between tiles only after it has found its first place.
+requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('is-ready')));

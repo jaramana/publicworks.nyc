@@ -13,8 +13,6 @@ const date = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', y
 
 const page = (base, path) => new URL(path, base.endsWith('/') ? base : base + '/').href;
 
-const shortRepo = href => href.replace('https://github.com/', '');
-
 export async function buildIndex(lang, t) {
   const label = Object.fromEntries(categories.map(c => [c, t[c.toLowerCase()]]));
 
@@ -23,13 +21,14 @@ export async function buildIndex(lang, t) {
     const isWork = d.status === 'works';
     const code = d.repository ?? (d.url?.startsWith('https://github.com/') ? d.url : undefined);
 
-    // Spec rows. Hand-written specs replace the defaults; Updated and Code always close the list.
-    const specs = d.specs ? [...d.specs] : [
-      d.source && { label: t.source, value: d.source },
-      d.builtWith && { label: t.built, value: d.builtWith },
-    ].filter(Boolean);
-    if (d.updated) specs.push({ label: t.updated, value: date.format(d.updated) });
-    if (code) specs.push({ label: t.code, value: shortRepo(code), href: code });
+    // The note's rows: Data, Built with and Updated, in that order, where the
+    // record has them. A hand-written spec row wins over the plain field.
+    const given = Object.fromEntries((d.specs ?? []).map(s => [s.label, s.value]));
+    const specs = [
+      { label: t.source, value: given[t.source] ?? d.source },
+      { label: t.built, value: given[t.built] ?? d.builtWith },
+      { label: t.updated, value: d.updated && date.format(d.updated) },
+    ].filter(s => s.value);
 
     // Outbound links. A work links to its site, About, Data and code.
     const links = [];
@@ -42,37 +41,30 @@ export async function buildIndex(lang, t) {
 
     return {
       key: d.recordId,
-      entry: p,
       status: d.status,
+      order: d.order,
       title: d.title,
       summary: d.indexSummary,
-      description: d.description,
       category: d.category,
-      group: label[d.category],
       year: d.year,
       meta: [d.year, label[d.category], d.series === 'redux' && t.redux].filter(Boolean).join(' · '),
       cover: d.cover,
-      gallery: d.gallery,
       lead: d.lead,
-      limit: d.limit,
-      built: d.builtWith,
-      source: d.source,
+      take: isWork ? d.take : undefined,
       repository: code,
-      href: d.url,
       specs,
       links,
-      hasBody: p.body.trim().length > 0,
       find: [d.title, d.indexSummary, d.category, d.builtWith, d.source, ...d.keywords, d.series].filter(Boolean).join(' ').toLowerCase(),
     };
   });
 
-  const works = records.filter(r => r.status === 'works').sort((a, b) => a.entry.data.order - b.entry.data.order);
+  const works = records.filter(r => r.status === 'works').sort((a, b) => a.order - b.order);
 
   // The archive is grouped by type, in the category order above.
   const groups = categories
     .map(c => ({
       name: label[c],
-      entries: records.filter(r => r.status === 'archive' && r.category === c).sort((a, b) => a.entry.data.order - b.entry.data.order),
+      entries: records.filter(r => r.status === 'archive' && r.category === c).sort((a, b) => a.order - b.order),
     }))
     .filter(g => g.entries.length > 0);
   const archive = groups.flatMap(g => g.entries);

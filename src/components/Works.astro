@@ -3,9 +3,9 @@ import '../styles/fonts.css';
 import '../styles/works.css';
 import BaseHead from './BaseHead.astro';
 import Tile from './Tile.astro';
-import Record from './Record.astro';
+import Note from './Note.astro';
 import { works as copy, fill } from '../i18n/works.js';
-import { localizePath, defaultLang, languages, languageNames, siteName, siteAccent, githubUrl, repoUrl, byline, sister } from '../i18n/ui.js';
+import { localizePath, defaultLang, languages, languageNames, siteName, githubUrl, repoUrl, byline, sister } from '../i18n/ui.js';
 import { buildIndex } from '../entries.js';
 import { getEntry } from 'astro:content';
 
@@ -14,38 +14,27 @@ const t = copy[lang];
 const { works, archive, groups } = await buildIndex(lang, t);
 const about = await getEntry('pages', 'about');
 const { Content: AboutText } = await about.render();
-
-const dot = siteName.indexOf('.');
-const [wordA, wordB] = dot > 0 ? [siteName.slice(0, dot), siteName.slice(dot + 1)] : [siteName, ''];
-
-const step = list => (r, i) => ({ r, prev: list[i - 1], next: list[i + 1], position: fill(t.of, { i: i + 1, n: list.length }) });
-const records = [...works.map(step(works)), ...archive.map(step(archive))];
 const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c => c !== defaultLang).join('|') + ')(?=/|$)'), '') || '/';
 ---
 <!doctype html>
 <html lang={lang}>
 <head>
   <BaseHead description={t.intro} />
-  <script is:inline>
-    document.documentElement.classList.add('has-js');
-    // Layout comparison: ?layout=c shows three across.
-    if (new URLSearchParams(location.search).get('layout') === 'c') document.documentElement.dataset.layout = 'c';
-  </script>
+  <script is:inline>document.documentElement.classList.add('has-js');</script>
 </head>
-<body style={siteAccent ? `--site-spot:${siteAccent}` : undefined}>
+<body>
 <a class="skip" href="#works">{t.skip}</a>
 
-<header class="masthead" data-masthead>
-  <div class="bar">
-    <a class="wordmark" href={localizePath('/', lang)} data-home>{wordA}{wordB && <><span class="dot">.</span>{wordB}</>}</a>
-    <nav class="nav" aria-label={t.sections}>
-      <a href="#works">{t.works}</a>
-      <a href="#archive">{t.archive}</a>
-      <a href="#record-about" data-open="about">{t.about}</a>
-      <a href={githubUrl}>{t.github}</a>
-      {languages.length > 1 && languages.map(code => <a class="lang" href={localizePath(bare, code)} lang={code} aria-label={languageNames[code]} aria-current={code === lang ? 'page' : undefined}>{code}</a>)}
-    </nav>
-  </div>
+<div class="mast-sentinel" aria-hidden="true"></div>
+<header class="mast" data-mast>
+  <a class="wordmark" href={localizePath('/', lang)} data-home>{siteName}</a>
+  <nav class="nav" aria-label={t.sections}>
+    <a href="#works">{t.works}</a>
+    <a href="#archive">{t.archive}</a>
+    <a href="#record-about" data-open="about">{t.about}</a>
+    <a href={githubUrl}>{t.github}</a>
+    {languages.length > 1 && languages.map(code => <a href={localizePath(bare, code)} lang={code} aria-label={languageNames[code]} aria-current={code === lang ? 'page' : undefined}>{code}</a>)}
+  </nav>
   <div class="find" data-finder hidden>
     <label class="label" for="find-input">{t.find}</label>
     <input id="find-input" type="search" autocomplete="off" spellcheck="false" placeholder={t.findPlaceholder} data-find-input />
@@ -53,73 +42,71 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
   </div>
 </header>
 
-<main id="main">
-  <h1 class="sr-only">{siteName}</h1>
+<div class="page">
+  <main class="main" id="main">
+    <h1 class="sr-only">{siteName}</h1>
 
-  <section class="works" id="works" aria-labelledby="works-label" tabindex="-1">
-    <div class="section-head"><h2 class="label" id="works-label">{t.works}</h2></div>
-    <ul class="grid" role="list">
-      {works.map((r, i) => <Tile r={r} k={i + 1} eager={i < 3} />)}
-    </ul>
-  </section>
-
-  <section class="archive" id="archive" aria-labelledby="archive-label" tabindex="-1">
-    <div class="section-head">
-      <h2 class="label" id="archive-label">{t.archive}</h2>
-      <p class="section-note">{t.archiveNote}</p>
-      <span class="find-hits label" data-archive-hits data-found={t.findArchive}></span>
-    </div>
-    {groups.map(g => (
-      <div class="group">
-        <h3 class="group-name label">{g.name}</h3>
-        <ul class="rows" role="list">
-          {g.entries.map(r => (
-            <li class="row" data-tile={r.key} data-find={r.find}>
-              <a class="row-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>
-                <span class="row-title">{r.title}</span>
-                <span class="row-summary">{r.summary}</span>
-                <span class="row-year">{r.year}</span>
-              </a>
-            </li>
-          ))}
+    <section class="band" id="works" aria-labelledby="works-label" tabindex="-1">
+      <div class="band-head"><h2 class="label" id="works-label">{t.works}</h2></div>
+      <div class="band-body">
+        <ul class="tiles" role="list">
+          {works.map((r, i) => <Tile r={r} eager={i < 4} />)}
         </ul>
       </div>
-    ))}
-  </section>
+    </section>
 
-  <dialog class="panel" data-panel aria-labelledby="panel-name">
-    <div class="panel-bar">
-      <p class="panel-name" id="panel-name" data-panel-name>{t.records}</p>
-      <div class="panel-controls">
-        <button type="button" class="panel-btn" data-panel-prev aria-label={t.previous}><span aria-hidden="true">←</span></button>
-        <button type="button" class="panel-btn" data-panel-next aria-label={t.next}><span aria-hidden="true">→</span></button>
-        <button type="button" class="panel-btn panel-close" data-panel-close>{t.close}</button>
+    <section class="band" id="archive" aria-labelledby="archive-label" tabindex="-1">
+      <div class="band-head">
+        <h2 class="label" id="archive-label">{t.archive}</h2>
+        <span class="find-hits label" data-archive-hits data-found={t.findArchive}></span>
       </div>
-    </div>
-    <h2 class="records-label label">{t.records}</h2>
-    <div class="records">
-      {records.map(({ r, prev, next, position }) => <Record r={r} t={t} prev={prev} next={next} position={position} />)}
-      <article class="record record--about" id="record-about" data-record="about" data-group="about" data-title={about.data.title} aria-labelledby="title-about">
-        <header class="record-head">
-          <div class="record-titles">
-            <p class="meta">{siteName}</p>
-            <h2 class="record-title" id="title-about" tabindex="-1">{about.data.title}</h2>
+      <div class="band-body">
+        <p class="band-note">{t.archiveNote}</p>
+        {groups.map(g => (
+          <div class="group">
+            <h3 class="group-name label">{g.name}</h3>
+            <ul class="rows" role="list">
+              {g.entries.map(r => (
+                <li class="row" data-item={r.key} data-find={r.find}>
+                  <a class="row-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>
+                    <span class="row-title">{r.title}</span>
+                    <span class="row-summary">{r.summary}</span>
+                    <span class="row-year">{r.year}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-        </header>
-        <p class="record-lead">{about.data.lead}</p>
-        <div class="record-grid">
-          <div class="record-text">
-            <AboutText />
-            <p class="byline" set:html={fill(t.byline, byline)} />
-          </div>
-        </div>
-        <a class="record-back" href="#works">↑ {t.backToWorks}</a>
-      </article>
-    </div>
-  </dialog>
-</main>
+        ))}
+      </div>
+    </section>
+  </main>
 
-<footer class="footer">
+  <aside class="side" aria-label={t.record} data-panel>
+    <h2 class="label records-label">{t.records}</h2>
+    <div class="side-inner" data-panel-inner>
+      <article class="note is-shown" id="record-about" data-note="about" data-title={about.data.title} aria-labelledby="title-about">
+        <div class="note-main">
+          <p class="note-meta">{siteName}</p>
+          <h2 class="note-title" id="title-about" tabindex="-1">{about.data.title}</h2>
+          <p class="note-lead">{about.data.lead}</p>
+        </div>
+        <div class="note-side">
+          <details class="more">
+            <summary>{t.more}</summary>
+            <div class="more-body">
+              <AboutText />
+              <p class="byline" set:html={fill(t.byline, byline)} />
+            </div>
+          </details>
+        </div>
+      </article>
+      {[...works, ...archive].map(r => <Note r={r} t={t} />)}
+    </div>
+  </aside>
+</div>
+
+<footer class="foot">
   <p class="notice" set:html={t.notice} />
   <div class="colophon">
     <p set:html={fill(t.byline, byline)} />
