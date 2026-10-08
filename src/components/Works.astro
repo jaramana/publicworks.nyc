@@ -50,7 +50,7 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
       <div class="band-head"><h2 class="label" id="works-label">{t.works}</h2></div>
       <div class="band-body">
         <ul class="tiles" role="list">
-          {works.map((r, i) => <Tile r={r} eager={i < 4} />)}
+          {works.map((r, i) => <Tile r={r} eager={i < 2} priority={i === 0} />)}
         </ul>
       </div>
     </section>

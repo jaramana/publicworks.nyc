@@ -18,3 +18,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 <meta name="theme-color" content="#0c0c0d" media="(prefers-color-scheme: dark)" />
 <meta name="color-scheme" content="light dark" />
 <title>{title}</title>
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:card" content="summary" />

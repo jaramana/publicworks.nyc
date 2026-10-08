@@ -23,16 +23,15 @@
   --pad: clamp(20px, 4vw, 64px);
   --ease: cubic-bezier(.2, .7, .2, 1);
 
-  /* The frame: tiles and panel as one centered block. Spare width goes
-     to the outer margins, and the masthead and footer line up with it. */
-  --tile: 19rem;
-  --tile-gap: 3rem;
+  /* The frame: tiles and panel as one centered block, up to --max wide.
+     Tiles share each row and never drop below --tile-min, so a row always
+     reaches both edges. The masthead and footer line up with the frame. */
+  --tile-min: 17rem;
+  --tile-gap: clamp(2rem, 3vw, 3rem);
   --panel: 25rem;
   --panel-gap: 4.5rem;
-  --cols: 2;
-  --frame: calc(var(--cols) * var(--tile) + (var(--cols) - 1) * var(--tile-gap) + var(--panel-gap) + var(--panel));
+  --max: 100rem;
 }
-@media (min-width: 106rem) { :root { --cols: 3; } }
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -95,13 +94,25 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
   transition: border-color .2s var(--ease);
 }
 .mast.is-stuck { border-bottom-color: var(--line); }
+
+/* In a short window, a phone held sideways or at 400% zoom, the masthead
+   scrolls away instead of covering the page. */
+@media (max-height: 30rem) {
+  .mast { position: relative; }
+  html { scroll-padding-top: 1rem; }
+}
 @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
   .mast { background: var(--glass); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }
 }
 .wordmark { margin-right: auto; font-size: 1rem; font-weight: 700; letter-spacing: -.01em; text-decoration: none; }
-.nav { display: flex; flex-wrap: wrap; gap: 0 1.5rem; font-size: .8125rem; color: var(--muted); }
+/* Ink, not muted: on narrow screens tiles scroll under the glass, and
+   muted text over a screenshot falls below 4.5:1. */
+.nav { display: flex; flex-wrap: wrap; gap: 0 1.5rem; font-size: .8125rem; }
 .nav a { text-decoration: none; }
-.nav a:hover, .nav a[aria-current] { color: var(--ink); }
+.nav a:hover, .nav a[aria-current] { text-decoration: underline; }
+
+/* Find's muted label and placeholder need a solid background. */
+.mast:has(.find:not([hidden])) { background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; }
 
 .find { flex-basis: 100%; display: flex; align-items: baseline; gap: 1rem; padding-top: .5rem; }
 .find input {
@@ -137,8 +148,7 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 
 /* ---- tiles ---------------------------------------------------------- */
 
-.tiles { display: grid; gap: clamp(3rem, 5vw, 4.5rem) clamp(2rem, 4vw, 3.5rem); }
-@container (min-width: 32rem) { .tiles { grid-template-columns: repeat(auto-fill, var(--tile)); } }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--tile-min)), 1fr)); gap: clamp(3rem, 5vw, 4.5rem) var(--tile-gap); }
 
 .tile { position: relative; display: grid; gap: .3rem; align-content: start; }
 .tile-media {
@@ -160,8 +170,11 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .tile-link:focus-visible { outline: none; }
 .tile-summary { max-width: 40ch; font-size: .875rem; line-height: 1.45; color: var(--muted); }
 
-.tile:hover .tile-media { box-shadow: 0 0 0 1px var(--shot-line), var(--soft-lift); transform: translateY(-2px); }
-.tile:hover .tile-link, .tile.is-current .tile-link { text-decoration: underline; }
+@media (hover: hover) {
+  .tile:hover .tile-media { box-shadow: 0 0 0 1px var(--shot-line), var(--soft-lift); transform: translateY(-2px); }
+  .tile:hover .tile-link { text-decoration: underline; }
+}
+.tile.is-current .tile-link { text-decoration: underline; }
 .tile.is-current .tile-media { outline-color: var(--ink); }
 .tile:has(.tile-link:focus-visible) { outline: 1.5px solid var(--ink); outline-offset: 10px; border-radius: 4px; }
 
@@ -244,13 +257,13 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
 
 /* ---- frame ---------------------------------------------------------- */
 
-/* The wordmark lines up with the first tile, and the nav ends at the
-   panel's right edge. A hairline runs down the middle of the gap. */
-@media (min-width: 56rem) {
-  .mast { padding-inline: max(var(--pad), calc((100% - var(--frame)) / 2)); }
-  .page, .foot { max-width: calc(var(--frame) + 2 * var(--pad)); margin-inline: auto; }
+/* The panel joins once one tile fits beside it. The wordmark lines up
+   with the first tile, and the nav ends at the panel's right edge. A
+   hairline runs down the middle of the gap. */
+@media (min-width: 51rem) {
+  .mast { padding-inline: max(var(--pad), calc((100% - var(--max)) / 2)); }
+  .page, .foot { max-width: calc(var(--max) + 2 * var(--pad)); margin-inline: auto; }
   #works { padding-top: clamp(2rem, 4vw, 3.5rem); }
-  .tiles { grid-template-columns: repeat(var(--cols), minmax(0, var(--tile))); column-gap: var(--tile-gap); }
   .foot { grid-template-columns: minmax(0, 1fr) calc(var(--panel) + var(--panel-gap) / 2); column-gap: calc(var(--panel-gap) / 2); }
   .foot .colophon { padding-left: calc(var(--panel-gap) / 2 + 1px); }
 
@@ -275,6 +288,7 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
     border-top: 0;
     border-left: 1px solid var(--line);
   }
+  @media (max-height: 30rem) { .has-js .side { top: 0; } }
   .has-js .side-inner { flex: 1; min-height: 0; overflow: hidden; }
   .has-js .side .note.is-shown { animation: fade .25s var(--ease); }
   .has-js .side .pg:not(.is-page) { display: none; }
@@ -289,6 +303,11 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
 }
 
 /* ---- preferences ---------------------------------------------------- */
+
+/* Touch: taller hit areas for the small links, without moving anything. */
+@media (pointer: coarse) {
+  .nav a, .note-links a { display: inline-block; padding-block: .6rem; margin-block: -.6rem; }
+}
 
 @media (prefers-reduced-transparency: reduce) {
   .mast { background: var(--bg) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }

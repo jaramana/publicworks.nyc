@@ -12,5 +12,9 @@ export default defineConfig({
   build: {
     // Cleaner URLs: /blog/x/ instead of /blog/x.html
     format: 'directory',
+
+    // The styles are a few kilobytes, so they ship inside the page and
+    // never hold up the first paint.
+    inlineStylesheets: 'always',
   },
 });

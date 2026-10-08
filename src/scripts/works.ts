@@ -34,7 +34,7 @@ const archive = $('#archive');
 const announce = $('[data-announce]');
 const notes = new Map($$('[data-note]').map(n => [n.dataset.note!, n]));
 const siteTitle = document.title;
-const narrow = matchMedia('(max-width: 55.99rem)');
+const narrow = matchMedia('(max-width: 50.99rem)');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const smooth = (): ScrollBehavior => (reduceMotion.matches ? 'auto' : 'smooth');
 
@@ -295,6 +295,15 @@ document.addEventListener('click', event => {
     }
     event.preventDefault();
     const key = link.dataset.open!;
+
+    // On wide screens About is the panel at rest, so About closes whatever is open.
+    if (key === 'about' && !narrow.matches) {
+      if (current) close(false);
+      turn(0);
+      $('#title-about').focus({ preventScroll: true });
+      return;
+    }
+
     if (current === key) close();
     else open(key, link);
     return;

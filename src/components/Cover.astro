@@ -1,7 +1,8 @@
 ---
-/* A screenshot as AVIF with a WebP fallback, at every width up to the source's own. */
+/* A screenshot as AVIF with a WebP fallback, at every width up to the source's own.
+   eager: above the fold on a wide screen. priority: the page's largest image. */
 import { Picture } from 'astro:assets';
-const { src, alt = '', sizes, eager = false, class: className } = Astro.props;
+const { src, alt = '', sizes, eager = false, priority = false, class: className } = Astro.props;
 const widths = [360, 480, 720, 960, 1280, 1600, 1920, 2400].filter(w => w < src.width).concat(src.width);
 ---
 <Picture
@@ -13,7 +14,7 @@ const widths = [360, 480, 720, 960, 1280, 1600, 1920, 2400].filter(w => w < src.
   sizes={sizes}
   quality={72}
   loading={eager ? 'eager' : 'lazy'}
-  fetchpriority={eager ? 'high' : undefined}
+  fetchpriority={priority ? 'high' : undefined}
   decoding={eager ? 'sync' : 'async'}
   class={className}
 />

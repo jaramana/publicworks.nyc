@@ -15,7 +15,7 @@ is `src/content/config.ts`, and the build fails on a missing or misspelled field
 ```yaml
 title: "What the visitor reads"
 indexSummary: "One line, under the title on the tile and in the archive row."
-description: "The panel paragraph, used when the record has no narrative."
+description: "Not shown. Kept for a later cleanup."
 category: "Data"          # Data, Map, Essay, Site or Tools
 status: "works"           # works: a product in the public-works folder; archive: everything else
 series: "redux"           # only for a past professional project rebuilt from public sources
@@ -29,31 +29,26 @@ dataUrl: "https://..."               # works only, when Data is not url/data.htm
 cover: "../../assets/media/short-slug.png"  # required for works
 repository: "https://github.com/..." # omit when url is already the repository
 source: "Who publishes the data"     # omit where the project names none
-accent: "#579672"                    # works: the product's color, 4.5:1 or better on black
-lead: "One sentence at the top of the panel."
-specs:                               # replaces the default Data and Built with rows
+lead: "One sentence under the title in the note."  # without it the note repeats indexSummary
+take: "The author's own take, 60 to 100 words."   # works only; the note's last page
+specs:                               # the note shows the Data and Built with rows; others are kept, not shown
   - label: "Data"
     value: "..."
-limit: "The stated limit. Must agree with the product's About and Data pages."
-updated: 2026-10-02                  # when the product's data was last built
+limit: "Not shown. Kept for a later cleanup."
+updated: 2026-10-02                  # when the product's data was last built; without it the note has no Updated row
 order: 1                             # order in Works, or within a category in the archive
 draft: false
 lang: "en"
 ```
 
-The Markdown body below the frontmatter is the panel's narrative. Works use
-four sections: Why it exists, What it shows, How it is built, Limits. Write
-them from the product's own About page, Data page and README, and invent
-nothing. A record without a body shows its `indexSummary` as the lead and its
-`description` as the text.
+The Markdown body below the frontmatter is not shown. The Pay Gap, Wealth NYC
+and Chopper Noise keep their old narratives there for reference. A work's own
+words go in `take:`, which the author writes. Never draft a take for them.
 
 Screenshots live in `src/assets/media/` and are converted to AVIF and WebP at
-build time. Each Redux record says in its own text that it was rebuilt from
-public sources only.
-
-`accent` comes from the product's own `--accent`. Use its dark-theme value
-where it has one. Otherwise raise the light value's lightness in OKLCH, keeping
-the hue, until it reaches 6:1 on black.
+build time. A Redux record shows Redux in its meta line. About's Redux section
+says it was rebuilt from public sources only and names it, so add each new one
+there.
 
 Categories are ordered in `src/entries.js`, and their labels live in
 `src/i18n/works.js`.
@@ -69,16 +64,22 @@ below. The styles are in `src/styles/works.css`.
 
 | Part | Rule |
 | --- | --- |
-| Color | Black page (`#000`), `#0a0a0b` panel, `#f1f1ee` ink, `#8d8d92` muted. No gradients, glow or radius. |
-| Type | PW Heros only, regular and bold. Labels are 12px uppercase, tracked .06em, muted. |
-| `--spot` | The focused project's `accent`. It colors the wordmark's dot, the 4px tile bar, the title rule, the limit bar and `::selection`. Nothing else. |
-| Tiles | Covers rest at 55 percent brightness, partly desaturated, and come to full color on hover, focus or the middle of a touch screen. |
-| Glass | Two places only: the sticky masthead and the panel's control bar. Same gate as the product mastheads. Opaque under reduced transparency. |
-| Grid | Twelve columns, 1440px wide, 24px gutter. The first work spans the full width; the rest run in pairs. An odd one out shares its row with a pointer to the archive. |
+| Color | White page (`#fff`), `#161616` ink, `#6c6c70` muted, hairlines. Black and white only; the screenshots carry the color. Dark mode follows the system. |
+| Type | PW Heros, regular weight. The wordmark and section titles are bold. Labels are 11px uppercase, tracked .08em, muted. |
+| Project color | None. Records have no `accent` and the page has no `--spot`. |
+| Tiles | Fluid. Each row shares its width, and no tile drops below 17rem, so rows always reach both edges. 8px radius, soft shadow, full-color screenshots. They lift 2px on hover, on devices that can hover. |
+| Glass | The sticky masthead only: white at 72%, `saturate(180%) blur(18px)`. Opaque under reduced transparency. A hairline appears once the page scrolls. |
+| Grid | Tiles and panel form one centered frame, up to 100rem wide. Columns follow from the 17rem minimum: one beside the panel from 51rem, two from about 71.5rem, three from about 94rem. |
+| Panel | 25rem, from 51rem wide. It sticks under the masthead, fills the window's height and never scrolls. At rest it shows About. |
+| Pages | A note turns in pages: Overview, then Details and Take where the record has them. About turns by its sections. In a short window Overview drops its thumbnail first; a page that still overflows continues on a "continued" page. |
+| Under 51rem | A note opens whole under its tile, with no thumbnail and no pager. About sits after the archive. |
+| Masthead | Nav links are ink, because tiles scroll under the glass on narrow screens. Under 30rem tall the masthead scrolls away. |
+| Images | The tile's `sizes` in `Tile.astro` mirrors the grid. Change both together. Only the first tile's image has high priority. |
 
-Hidden keys, none explained on the page: `/` finds, `j` and `k` move between
-tiles, arrows move inside the panel, shift-click opens the repository, and
-typing 1999 shows the page as a plain list.
+Hidden keys, none explained on the page: `/` finds, `j`, `k` and the arrow
+keys move between tiles and archive rows, ← and → turn the panel's pages while
+focus is in it, Esc returns the panel to About, shift-click opens the
+repository, and typing 1999 shows the page as a plain list.
 
 ## The shared header
 

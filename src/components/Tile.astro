@@ -1,11 +1,20 @@
 ---
 /* One work in the grid. The title link stretches over the whole tile. */
 import Cover from './Cover.astro';
-const { r, eager = false } = Astro.props;
-const sizes = '(min-width: 35rem) 304px, calc(100vw - 40px)';
+const { r, eager = false, priority = false } = Astro.props;
+// The tile's rendered width at each step of the fluid grid in works.css.
+// Change both together.
+const sizes = [
+  '(min-width: 108rem) 21.5rem',
+  '(min-width: 93.75rem) calc(30.67vw - 11.83rem)',
+  '(min-width: 71.5rem) calc(44.5vw - 14.75rem)',
+  '(min-width: 51rem) calc(92vw - 29.5rem)',
+  '(min-width: 39.25rem) calc(46vw - 1rem)',
+  '92vw',
+].join(', ');
 ---
 <li class="tile" data-item={r.key} data-find={r.find}>
-  <div class="tile-media"><Cover src={r.cover} sizes={sizes} eager={eager} /></div>
+  <div class="tile-media"><Cover src={r.cover} sizes={sizes} eager={eager} priority={priority} /></div>
   <p class="tile-meta">{r.meta}</p>
   <h3 class="tile-title"><a class="tile-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>{r.title}</a></h3>
   <p class="tile-summary">{r.summary}</p>
