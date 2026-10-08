@@ -9,7 +9,7 @@ for those exceptions; do not copy the shared chrome into them by default.
 
 ## Adding a project
 
-Copy a file in `src/content/projects/`, edit the frontmatter, save. The schema
+Copy a file in `sites/publicworks/projects/`, edit the frontmatter, save. The schema
 is `src/content.config.ts`, and the build fails on a missing or misspelled field
 or a `recordId` that another record already uses. If the record is a work, run
 `npm run og` afterwards, because the share image lists the works by name.
@@ -28,7 +28,7 @@ builtWith: "What it was made with"   # omit the line entirely if nothing to list
 url: "https://where-it-lives"
 aboutUrl: "https://..."              # works only, when About is not url/about.html
 dataUrl: "https://..."               # works only, when Data is not url/data.html
-cover: "../../assets/media/short-slug.png"  # required for works
+cover: "../media/short-slug.png"     # required for works
 repository: "https://github.com/..." # omit when url is already the repository
 source: "Who publishes the data"     # omit where the project names none
 lead: "One sentence under the title in the note."  # without it the note repeats indexSummary
@@ -47,13 +47,13 @@ The Markdown body below the frontmatter is not shown. The Pay Gap, Wealth NYC
 and Chopper Noise keep their old narratives there for reference. A work's own
 words go in `take:`, which the author writes. Never draft a take for them.
 
-Screenshots live in `src/assets/media/` and are converted to AVIF and WebP at
+Screenshots live in `sites/publicworks/media/` and are converted to AVIF and WebP at
 build time. A Redux record shows Redux in its meta line. About's Redux section
 says it was rebuilt from public sources only and names it, so add each new one
 there.
 
 Categories are ordered in `src/entries.js`, and their labels live in
-`src/i18n/works.js`.
+`sites/publicworks/copy.js`.
 `builtWith` lists what the thing was actually made with. Claude is listed
 exactly like R or MapLibre, because it was a tool like R or MapLibre. Projects
 that predate it simply do not list it, which is what makes the field worth
@@ -79,7 +79,7 @@ below. The styles are in `src/styles/works.css`.
 | Images | The tile's `sizes` in `Tile.astro` mirrors the grid. Change both together. Only the first tile's image has high priority. |
 | Order | By `order`, lowest first. Ties, and records with no `order`, go by title. |
 | Print | A plain list. Each work and archive row prints its address under the title; the panel and screenshots are hidden. |
-| Share image | `public/og.png`, 1200×630: the wordmark, the intro and the works by name, drawn by `npm run og`. Names that don't fit on two lines end in "and N more". |
+| Share image | `sites/publicworks/public/og.png`, 1200×630: the wordmark, the intro and the works by name, drawn by `npm run og`. Names that don't fit on two lines end in "and N more". |
 | Not found | `src/pages/404.astro`, with the shared masthead and footer. GitHub Pages serves it for any missing address. |
 
 Hidden keys, none explained on the page: `/` finds, `j`, `k` and the arrow

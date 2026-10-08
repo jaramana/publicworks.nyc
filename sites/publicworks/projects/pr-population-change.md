@@ -9,7 +9,7 @@ year: 2020
 keywords: ["census", "municipios", "leaflet"]
 builtWith: "Leaflet, JavaScript"
 url: "https://popchange.publicworks.nyc"
-cover: "../../assets/media/pr-popchange.png"
+cover: "../media/pr-popchange.png"
 repository: "https://github.com/jaramana/pr-popchange"
 source: "2000 and 2010 Censuses"
 order: 7

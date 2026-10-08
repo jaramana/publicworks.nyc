@@ -9,7 +9,7 @@ year: 2026
 keywords: ["migration", "archive", "maps", "spanish"]
 builtWith: "HTML, MapLibre, Claude"
 url: "https://arabsincuba.com"
-cover: "../../assets/media/arabsincuba.png"
+cover: "../media/arabsincuba.png"
 repository: "https://github.com/jaramana/arabsincuba.com"
 source: "Rigoberto Menéndez Paredes"
 order: 1

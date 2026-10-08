@@ -9,7 +9,7 @@ year: 2020
 keywords: ["acs", "language", "leaflet", "houston"]
 builtWith: "Leaflet, JavaScript"
 url: "https://languages.publicworks.nyc"
-cover: "../../assets/media/hou-language.png"
+cover: "../media/hou-language.png"
 repository: "https://github.com/jaramana/hou-language-explorer"
 source: "American Community Survey, 5-year 2015"
 order: 5

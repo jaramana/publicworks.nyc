@@ -9,7 +9,7 @@ year: 2026
 keywords: ["buses", "gtfs", "a coruña", "maplibre"]
 builtWith: "MapLibre, GTFS, Claude"
 url: "https://busworks.cidadelabs.org"
-cover: "../../assets/media/busworks.png"
+cover: "../media/busworks.png"
 repository: "https://github.com/cidade-labs/bus-works"
 source: "Compañía de Tranvías de A Coruña"
 order: 2

@@ -9,7 +9,7 @@ year: 2026
 keywords: ["income", "irs", "census", "new jersey", "python"]
 builtWith: "Python, MapLibre, Claude, Codex"
 url: "https://wealthnj.publicworks.nyc"
-cover: "../../assets/media/wealthnj.png"
+cover: "../media/wealthnj.png"
 repository: "https://github.com/jaramana/wealthnj.publicworks.nyc"
 source: "IRS Statistics of Income, Census Bureau ACS"
 order: 8

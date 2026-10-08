@@ -1,8 +1,9 @@
 ---
 /* The masthead. On the home page its links jump within the page; on any
    other page they lead back to it. The home page slots find in after the nav. */
-import { works as copy } from '../i18n/works.js';
-import { localizePath, defaultLang, languages, languageNames, siteName, githubUrl } from '../i18n/ui.js';
+import { copy } from '@site/copy.js';
+import { defaultLang, languages, languageNames, siteName, githubUrl } from '@site/site.js';
+import { localizePath } from '../i18n.js';
 const { lang = defaultLang, home = false, bare = '/' } = Astro.props;
 const t = copy[lang];
 const root = home ? '' : localizePath('/', lang);

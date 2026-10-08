@@ -1,26 +1,28 @@
-/* Draw the share image, public/og.png, from the site's name, intro and works.
+/* Draw the share image, the site's public/og.png, from its name, intro and works.
 
    Run it after adding, removing, renaming or reordering a work:
 
      npm run og
 
    It writes a 1200×630 card as HTML and screenshots it with headless Chrome.
-   CHROME overrides the browser's path. Names that don't fit on two lines
-   end in "and N more". */
+   SITE picks the site, as for the build. CHROME overrides the browser's
+   path. Names that don't fit on two lines end in "and N more". */
 
 import { readFileSync, readdirSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { siteName, defaultLang } from '../src/i18n/ui.js';
-import { works as copy } from '../src/i18n/works.js';
+import { site } from '../src/current-site.js';
 
 const root = new URL('..', import.meta.url).pathname;
+const siteDir = join(root, 'sites', site);
+const { siteName, defaultLang } = await import(new URL(`../sites/${site}/site.js`, import.meta.url).href);
+const { copy } = await import(new URL(`../sites/${site}/copy.js`, import.meta.url).href);
 const chrome = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const out = join(root, 'public/og.png');
+const out = join(siteDir, 'public/og.png');
 
 // Works in page order, read from the records' frontmatter.
-const dir = join(root, 'src/content/projects');
+const dir = join(siteDir, 'projects');
 const field = (text, name) => text.match(new RegExp(`^${name}:\\s*"?(.*?)"?\\s*$`, 'm'))?.[1];
 const works = readdirSync(dir).filter(f => f.endsWith('.md')).sort()
   .map(f => readFileSync(join(dir, f), 'utf8').split(/^---$/m)[1])
@@ -30,7 +32,7 @@ const works = readdirSync(dir).filter(f => f.endsWith('.md')).sort()
   .map(w => w.title);
 
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const font = file => 'data:font/woff2;base64,' + readFileSync(join(root, 'public/fonts', file)).toString('base64');
+const font = file => 'data:font/woff2;base64,' + readFileSync(join(root, 'src/fonts', file)).toString('base64');
 
 const html = `<!doctype html>
 <meta charset="utf-8">
@@ -68,4 +70,4 @@ execFileSync(chrome, [
   '--window-size=1200,630', '--virtual-time-budget=3000',
   '--screenshot=' + out, 'file://' + page,
 ], { stdio: 'ignore' });
-console.log(`public/og.png: ${siteName}, ${works.length} works`);
+console.log(`sites/${site}/public/og.png: ${siteName}, ${works.length} works`);

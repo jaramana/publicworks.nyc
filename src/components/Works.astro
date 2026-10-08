@@ -6,8 +6,9 @@ import Mast from './Mast.astro';
 import Foot from './Foot.astro';
 import Tile from './Tile.astro';
 import Note from './Note.astro';
-import { works as copy, fill } from '../i18n/works.js';
-import { defaultLang, languages, siteName, byline } from '../i18n/ui.js';
+import { copy } from '@site/copy.js';
+import { defaultLang, languages, siteName, byline } from '@site/site.js';
+import { fill } from '../i18n.js';
 import { buildIndex } from '../entries.js';
 import { getEntry, render } from 'astro:content';
 

@@ -1,6 +1,6 @@
 /* The web app manifest: the name and icon a phone uses when the site is saved
    to its home screen. Built from siteName, so another site on this code gets its own. */
-import { siteName } from '../i18n/ui.js';
+import { siteName } from '@site/site.js';
 
 export function GET() {
   const manifest = {

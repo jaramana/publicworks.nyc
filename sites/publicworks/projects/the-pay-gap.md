@@ -9,7 +9,7 @@ year: 2026
 keywords: ["payroll", "open data", "r", "salaries"]
 builtWith: "R, dplyr, Claude"
 url: "https://paygap.publicworks.nyc"
-cover: "../../assets/media/thepaygap.png"
+cover: "../media/thepaygap.png"
 repository: "https://github.com/jaramana/paygap.publicworks.nyc"
 source: "NYC Citywide Payroll Data"
 lead: "The Pay Gap brings New York City payroll into a search by title and agency, with overtime, tenure, inflation and rent comparisons."

@@ -9,7 +9,7 @@ year: 2026
 keywords: ["income", "irs", "census", "zip codes", "python"]
 builtWith: "Python, MapLibre, Claude, Codex"
 url: "https://wealth.publicworks.nyc"
-cover: "../../assets/media/wealth.png"
+cover: "../media/wealth.png"
 repository: "https://github.com/jaramana/wealth.publicworks.nyc"
 source: "IRS Statistics of Income, Census Bureau ACS"
 lead: "Wealth NYC compares New York City income in tax records and in Census Bureau data, across 177 ZIP areas on one scale."

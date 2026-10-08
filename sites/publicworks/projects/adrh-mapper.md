@@ -9,7 +9,7 @@ year: 2026
 keywords: ["income", "inequality", "ine", "a coruña"]
 builtWith: "MapLibre, INE data, Claude"
 url: "https://adrh.cidadelabs.org"
-cover: "../../assets/media/adrh.png"
+cover: "../media/adrh.png"
 repository: "https://github.com/cidade-labs/adrh-mapper"
 source: "Instituto Nacional de Estadística (INE)"
 order: 3

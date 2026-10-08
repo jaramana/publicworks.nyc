@@ -9,7 +9,7 @@ year: 2026
 keywords: ["helicopters", "noise", "flights", "census", "python"]
 builtWith: "Python, MapLibre, Claude"
 url: "https://choppernoise.publicworks.nyc"
-cover: "../../assets/media/choppernoise.png"
+cover: "../media/choppernoise.png"
 repository: "https://github.com/jaramana/choppernoise.publicworks.nyc"
 source: "adsb.lol, U.S. Census Bureau, FAA, Iowa Environmental Mesonet, UK Civil Aviation Authority"
 lead: "Chopper Noise counts the residents who hear each helicopter flight over New York City and the Hudson waterfront, and how many flights each block hears in a day."

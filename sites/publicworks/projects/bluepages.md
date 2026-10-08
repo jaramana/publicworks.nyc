@@ -11,7 +11,7 @@ builtWith: "HTML, CSS, JavaScript, Python, Claude"
 url: "https://bluepages.publicworks.nyc"
 aboutUrl: "https://bluepages.publicworks.nyc/?view=about"
 dataUrl: "https://bluepages.publicworks.nyc/?view=data"
-cover: "../../assets/media/bluepages.png"
+cover: "../media/bluepages.png"
 repository: "https://github.com/jaramana/bluepages.publicworks.nyc"
 source: "NYC Agencies and Governance Organizations, Green Book, Citywide Payroll"
 order: 7

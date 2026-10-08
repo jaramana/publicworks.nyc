@@ -9,7 +9,7 @@ year: 2026
 keywords: ["schools", "nycps", "python", "statistics"]
 builtWith: "Python, MapLibre, Claude"
 url: "https://schools.publicworks.nyc"
-cover: "../../assets/media/schoolsfinder.png"
+cover: "../media/schoolsfinder.png"
 repository: "https://github.com/jaramana/schools.publicworks.nyc"
 source: "School Quality Reports, Demographic Snapshot"
 order: 5

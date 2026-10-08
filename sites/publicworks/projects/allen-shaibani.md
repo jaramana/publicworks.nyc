@@ -8,7 +8,7 @@ recordId: "allenshaibani"
 year: 2026
 keywords: ["one page", "static", "css"]
 url: "https://allenshaibani.com"
-cover: "../../assets/media/allenshaibani.png"
+cover: "../media/allenshaibani.png"
 repository: "https://github.com/jaramana/allenshaibani.com"
 order: 2
 lang: "en"

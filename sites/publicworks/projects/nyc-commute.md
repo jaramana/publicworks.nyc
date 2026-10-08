@@ -9,7 +9,7 @@ year: 2020
 keywords: ["commuting", "leaflet", "transit"]
 builtWith: "Leaflet, JavaScript"
 url: "https://commute.publicworks.nyc"
-cover: "../../assets/media/nyc-commute.png"
+cover: "../media/nyc-commute.png"
 repository: "https://github.com/jaramana/nyc-commute"
 source: "American Community Survey, 5-year 2017"
 order: 6

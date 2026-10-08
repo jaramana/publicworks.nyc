@@ -1,8 +1,8 @@
-/* PW Heros: TeX Gyre Heros, subset and renamed. See public/fonts/MANIFEST-pw-heros.txt. */
+/* PW Heros: TeX Gyre Heros, subset and renamed. See src/fonts/MANIFEST-pw-heros.txt. */
 
 @font-face {
   font-family: "PW Heros";
-  src: url("/fonts/pw-heros-regular.woff2") format("woff2");
+  src: url("../fonts/pw-heros-regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -11,7 +11,7 @@
 
 @font-face {
   font-family: "PW Heros";
-  src: url("/fonts/pw-heros-bold.woff2") format("woff2");
+  src: url("../fonts/pw-heros-bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;

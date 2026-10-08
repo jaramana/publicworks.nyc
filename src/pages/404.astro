@@ -6,8 +6,9 @@ import '../styles/works.css';
 import BaseHead from '../components/BaseHead.astro';
 import Mast from '../components/Mast.astro';
 import Foot from '../components/Foot.astro';
-import { works as copy, fill } from '../i18n/works.js';
-import { localizePath, defaultLang, siteName } from '../i18n/ui.js';
+import { copy } from '@site/copy.js';
+import { defaultLang, siteName } from '@site/site.js';
+import { localizePath, fill } from '../i18n.js';
 
 const lang = defaultLang;
 const t = copy[lang];

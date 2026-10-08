@@ -9,7 +9,7 @@ year: 2026
 keywords: ["schools", "catchments", "galiza", "xunta"]
 builtWith: "MapLibre, Claude"
 url: "https://escolares.cidadelabs.org"
-cover: "../../assets/media/escolares.png"
+cover: "../media/escolares.png"
 repository: "https://github.com/cidade-labs/zonas-escolares"
 source: "Xunta de Galicia"
 order: 4

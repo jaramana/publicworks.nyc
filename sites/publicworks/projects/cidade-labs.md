@@ -9,7 +9,7 @@ year: 2026
 keywords: ["civic tech", "astro", "trilingual", "galiza"]
 builtWith: "Astro, Claude"
 url: "https://cidadelabs.org"
-cover: "../../assets/media/corunalabs.png"
+cover: "../media/corunalabs.png"
 repository: "https://github.com/cidade-labs/website"
 order: 1
 lang: "en"

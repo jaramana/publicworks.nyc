@@ -1,7 +1,8 @@
 ---
 /* The footer: the independence notice, then the colophon. Every page ends with it. */
-import { works as copy, fill } from '../i18n/works.js';
-import { defaultLang, repoUrl, byline, sister } from '../i18n/ui.js';
+import { copy } from '@site/copy.js';
+import { defaultLang, repoUrl, byline, sister } from '@site/site.js';
+import { fill } from '../i18n.js';
 const { lang = defaultLang } = Astro.props;
 const t = copy[lang];
 ---

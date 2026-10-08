@@ -9,7 +9,7 @@ year: 2020
 keywords: ["covid", "dohmh", "charts", "archived"]
 builtWith: "JavaScript, R"
 url: "https://covidtracker.publicworks.nyc"
-cover: "../../assets/media/covidtracker.png"
+cover: "../media/covidtracker.png"
 repository: "https://github.com/jaramana/covidtracker.nyc"
 source: "NYC Department of Health and Mental Hygiene"
 order: 5

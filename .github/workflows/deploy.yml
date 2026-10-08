@@ -1,7 +1,7 @@
 # Builds the site and publishes dist/ to GitHub Pages.
 #
 # One-time setup in the repository: Settings → Pages → Source → GitHub Actions.
-# The CNAME lives in public/, so the custom domain survives every build.
+# The CNAME lives in sites/publicworks/public/, so the custom domain survives every build.
 name: Deploy
 
 on:

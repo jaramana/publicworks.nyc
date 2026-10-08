@@ -10,7 +10,7 @@ year: 2026
 keywords: ["hazards", "events", "open data", "weather service"]
 builtWith: "Python, MapLibre, Claude"
 url: "https://hazardhistorian.publicworks.nyc"
-cover: "../../assets/media/hazardhistorian.png"
+cover: "../media/hazardhistorian.png"
 repository: "https://github.com/jaramana/hazardhistorian.publicworks.nyc"
 source: "NYC Emergency Management, National Weather Service"
 order: 4

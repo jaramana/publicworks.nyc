@@ -2,7 +2,7 @@
 /* One record's note, in pages. On wide screens the panel shows one page at a
    time. Elsewhere, and without JavaScript, the pages run one after another. */
 import Cover from './Cover.astro';
-import { fill } from '../i18n/works.js';
+import { fill } from '../i18n.js';
 const { r, t } = Astro.props;
 ---
 <article class="note" id={'record-' + r.key} data-note={r.key} data-title={r.title} aria-labelledby={'title-' + r.key}>

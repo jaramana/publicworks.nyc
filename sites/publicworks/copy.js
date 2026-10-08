@@ -1,5 +1,5 @@
 /* Page copy for the site. One block per language; English is the only one filed. */
-export const works = {
+export const copy = {
   "en": {
     "intro": "Tools and maps built from public records in and around New York City.",
     "skip": "Skip to works",
@@ -51,8 +51,3 @@ export const works = {
     "tools": "Tools"
   }
 };
-
-/* Fill {name} slots in a string. */
-export function fill(text, values) {
-  return text.replace(/\{(\w+)\}/g, (_, key) => values[key] ?? '');
-}

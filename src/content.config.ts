@@ -1,18 +1,20 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { site } from './current-site.js';
 
 /* ============================================================
    CONTENT COLLECTIONS
    ------------------------------------------------------------
    The shape of a project record and of a page like About.
-   To add a project, drop a .md file in src/content/projects/
-   and fill in the fields below at the top (frontmatter).
+   Records load from the chosen site's folder in sites/. To add
+   a project, drop a .md file in its projects/ folder and fill
+   in the fields below at the top (frontmatter).
    A project's Markdown body is not shown on the page.
    ============================================================ */
 
 const projects = defineCollection({
-  loader: glob({ pattern: '*.md', base: './src/content/projects' }),
+  loader: glob({ pattern: '*.md', base: `./sites/${site}/projects` }),
   schema: ({ image }) => z.object({
     title: z.string(),
 
@@ -22,7 +24,7 @@ const projects = defineCollection({
     // Not shown on the page. Kept for a later cleanup.
     description: z.string(),
 
-    // The type. Archive rows are grouped by it, in the order set by src/i18n/works.js.
+    // The type. Archive rows are grouped by it, in the order set by src/entries.js.
     category: z.enum(['Data', 'Map', 'Essay', 'Site', 'Tools']),
 
     // works: a product in the public-works folder. archive: everything else.
@@ -91,9 +93,9 @@ const projects = defineCollection({
   }).refine(d => d.status !== 'works' || d.cover, { message: 'A work needs a cover.', path: ['cover'] }),
 });
 
-// Panels that are not projects. about.md is the About panel.
+// Panels that are not projects. The site's about.md is the About panel.
 const pages = defineCollection({
-  loader: glob({ pattern: '*.md', base: './src/content/pages' }),
+  loader: glob({ pattern: 'about.md', base: `./sites/${site}` }),
   schema: z.object({
     title: z.string(),
     lead: z.string(),

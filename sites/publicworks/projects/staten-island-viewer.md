@@ -9,7 +9,7 @@ year: 2026
 keywords: ["3d", "maplibre", "open data", "buildings"]
 builtWith: "Python, MapLibre, Claude"
 url: "https://jaramana.github.io/staten-island-data-viewer/"
-cover: "../../assets/media/staten-island.png"
+cover: "../media/staten-island.png"
 repository: "https://github.com/jaramana/staten-island-data-viewer"
 source: "NYC Open Data"
 order: 1

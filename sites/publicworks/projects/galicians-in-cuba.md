@@ -9,7 +9,7 @@ year: 2026
 keywords: ["migration", "galiza", "schools", "galician"]
 builtWith: "HTML, MapLibre, Claude"
 url: "https://galiciansincuba.com"
-cover: "../../assets/media/galiciansincuba.png"
+cover: "../media/galiciansincuba.png"
 repository: "https://github.com/jaramana/galiciansincuba.com"
 source: "Xan Fraga Rodríguez"
 order: 2

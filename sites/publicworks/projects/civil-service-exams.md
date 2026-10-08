@@ -9,7 +9,7 @@ year: 2026
 keywords: ["exams", "job titles", "open data", "python"]
 builtWith: "Python, JavaScript, Claude"
 url: "https://civilservice.publicworks.nyc"
-cover: "../../assets/media/civilservice.png"
+cover: "../media/civilservice.png"
 repository: "https://github.com/jaramana/civilservice.publicworks.nyc"
 source: "DCAS, NYC Open Data"
 order: 6
