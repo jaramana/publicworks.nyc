@@ -9,13 +9,13 @@ import Note from './Note.astro';
 import { works as copy, fill } from '../i18n/works.js';
 import { defaultLang, languages, siteName, byline } from '../i18n/ui.js';
 import { buildIndex } from '../entries.js';
-import { getEntry } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 
 const { lang = defaultLang } = Astro.props;
 const t = copy[lang];
 const { works, archive, groups } = await buildIndex(lang, t);
 const about = await getEntry('pages', 'about');
-const { Content: AboutText } = await about.render();
+const { Content: AboutText } = await render(about);
 const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c => c !== defaultLang).join('|') + ')(?=/|$)'), '') || '/';
 ---
 <!doctype html>

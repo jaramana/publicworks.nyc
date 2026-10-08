@@ -12,6 +12,6 @@
     "og": "node tools/og.mjs"
   },
   "dependencies": {
-    "astro": "^4.15.0"
+    "astro": "^7.3.7"
   }
 }

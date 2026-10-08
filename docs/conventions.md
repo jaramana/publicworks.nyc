@@ -10,7 +10,7 @@ for those exceptions; do not copy the shared chrome into them by default.
 ## Adding a project
 
 Copy a file in `src/content/projects/`, edit the frontmatter, save. The schema
-is `src/content/config.ts`, and the build fails on a missing or misspelled field
+is `src/content.config.ts`, and the build fails on a missing or misspelled field
 or a `recordId` that another record already uses. If the record is a work, run
 `npm run og` afterwards, because the share image lists the works by name.
 

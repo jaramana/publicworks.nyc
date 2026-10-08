@@ -1,4 +1,6 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
 
 /* ============================================================
    CONTENT COLLECTIONS
@@ -10,7 +12,7 @@ import { defineCollection, z } from 'astro:content';
    ============================================================ */
 
 const projects = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '*.md', base: './src/content/projects' }),
   schema: ({ image }) => z.object({
     title: z.string(),
 
@@ -91,7 +93,7 @@ const projects = defineCollection({
 
 // Panels that are not projects. about.md is the About panel.
 const pages = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '*.md', base: './src/content/pages' }),
   schema: z.object({
     title: z.string(),
     lead: z.string(),
