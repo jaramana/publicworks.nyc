@@ -10,7 +10,9 @@ for those exceptions; do not copy the shared chrome into them by default.
 ## Adding a project
 
 Copy a file in `src/content/projects/`, edit the frontmatter, save. The schema
-is `src/content/config.ts`, and the build fails on a missing or misspelled field.
+is `src/content/config.ts`, and the build fails on a missing or misspelled field
+or a `recordId` that another record already uses. If the record is a work, run
+`npm run og` afterwards, because the share image lists the works by name.
 
 ```yaml
 title: "What the visitor reads"
@@ -75,6 +77,10 @@ below. The styles are in `src/styles/works.css`.
 | Under 51rem | A note opens whole under its tile, with no thumbnail and no pager. About sits after the archive. |
 | Masthead | Nav links are ink, because tiles scroll under the glass on narrow screens. Under 30rem tall the masthead scrolls away. |
 | Images | The tile's `sizes` in `Tile.astro` mirrors the grid. Change both together. Only the first tile's image has high priority. |
+| Order | By `order`, lowest first. Ties, and records with no `order`, go by title. |
+| Print | A plain list. Each work and archive row prints its address under the title; the panel and screenshots are hidden. |
+| Share image | `public/og.png`, 1200×630: the wordmark, the intro and the works by name, drawn by `npm run og`. Names that don't fit on two lines end in "and N more". |
+| Not found | `src/pages/404.astro`, with the shared masthead and footer. GitHub Pages serves it for any missing address. |
 
 Hidden keys, none explained on the page: `/` finds, `j`, `k` and the arrow
 keys move between tiles and archive rows, ← and → turn the panel's pages while

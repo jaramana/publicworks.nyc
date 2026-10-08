@@ -1,0 +1,21 @@
+---
+/* The masthead. On the home page its links jump within the page; on any
+   other page they lead back to it. The home page slots find in after the nav. */
+import { works as copy } from '../i18n/works.js';
+import { localizePath, defaultLang, languages, languageNames, siteName, githubUrl } from '../i18n/ui.js';
+const { lang = defaultLang, home = false, bare = '/' } = Astro.props;
+const t = copy[lang];
+const root = home ? '' : localizePath('/', lang);
+---
+<div class="mast-sentinel" aria-hidden="true"></div>
+<header class="mast" data-mast>
+  <a class="wordmark" href={localizePath('/', lang)} data-home>{siteName}</a>
+  <nav class="nav" aria-label={t.sections}>
+    <a href={root + '#works'}>{t.works}</a>
+    <a href={root + '#archive'}>{t.archive}</a>
+    <a href={root + '#record-about'} data-open={home ? 'about' : undefined}>{t.about}</a>
+    <a href={githubUrl}>{t.github}</a>
+    {languages.length > 1 && languages.map(code => <a href={localizePath(bare, code)} lang={code} aria-label={languageNames[code]} aria-current={code === lang ? 'page' : undefined}>{code}</a>)}
+  </nav>
+  <slot />
+</header>

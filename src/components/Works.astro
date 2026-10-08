@@ -2,10 +2,12 @@
 import '../styles/fonts.css';
 import '../styles/works.css';
 import BaseHead from './BaseHead.astro';
+import Mast from './Mast.astro';
+import Foot from './Foot.astro';
 import Tile from './Tile.astro';
 import Note from './Note.astro';
 import { works as copy, fill } from '../i18n/works.js';
-import { localizePath, defaultLang, languages, languageNames, siteName, githubUrl, repoUrl, byline, sister } from '../i18n/ui.js';
+import { defaultLang, languages, siteName, byline } from '../i18n/ui.js';
 import { buildIndex } from '../entries.js';
 import { getEntry } from 'astro:content';
 
@@ -25,22 +27,13 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
 <body>
 <a class="skip" href="#works">{t.skip}</a>
 
-<div class="mast-sentinel" aria-hidden="true"></div>
-<header class="mast" data-mast>
-  <a class="wordmark" href={localizePath('/', lang)} data-home>{siteName}</a>
-  <nav class="nav" aria-label={t.sections}>
-    <a href="#works">{t.works}</a>
-    <a href="#archive">{t.archive}</a>
-    <a href="#record-about" data-open="about">{t.about}</a>
-    <a href={githubUrl}>{t.github}</a>
-    {languages.length > 1 && languages.map(code => <a href={localizePath(bare, code)} lang={code} aria-label={languageNames[code]} aria-current={code === lang ? 'page' : undefined}>{code}</a>)}
-  </nav>
+<Mast lang={lang} home bare={bare}>
   <div class="find" data-finder hidden>
     <label class="label" for="find-input">{t.find}</label>
     <input id="find-input" type="search" autocomplete="off" spellcheck="false" placeholder={t.findPlaceholder} data-find-input />
     <output class="find-count" for="find-input" data-find-count data-of={t.findCount} data-none={t.findNone}></output>
   </div>
-</header>
+</Mast>
 
 <div class="page">
   <main class="main" id="main">
@@ -72,6 +65,7 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
                     <span class="row-title">{r.title}</span>
                     <span class="row-summary">{r.summary}</span>
                     <span class="row-year">{r.year}</span>
+                    {r.address && <span class="row-addr">{r.address}</span>}
                   </a>
                 </li>
               ))}
@@ -109,14 +103,7 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
   </aside>
 </div>
 
-<footer class="foot">
-  <p class="notice" set:html={t.notice} />
-  <div class="colophon">
-    <p set:html={fill(t.byline, byline)} />
-    <p set:html={fill(t.sister, sister)} />
-    <p><a href={repoUrl}>{t.sourceCode}</a> · {t.privacy}</p>
-  </div>
-</footer>
+<Foot lang={lang} />
 
 <p class="sr-only" role="status" data-announce></p>
 

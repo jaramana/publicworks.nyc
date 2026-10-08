@@ -170,6 +170,9 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .tile-link:focus-visible { outline: none; }
 .tile-summary { max-width: 40ch; font-size: .875rem; line-height: 1.45; color: var(--muted); }
 
+/* Addresses show only in print, where the links can't be followed. */
+.tile-addr, .row-addr { display: none; }
+
 @media (hover: hover) {
   .tile:hover .tile-media { box-shadow: 0 0 0 1px var(--shot-line), var(--soft-lift); transform: translateY(-2px); }
   .tile:hover .tile-link { text-decoration: underline; }
@@ -333,6 +336,8 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
   .tiles { display: block; }
   .tile { padding: .5rem 0; border-bottom: 1px solid #bbb; break-inside: avoid; }
   .tile-summary { color: #000; }
+  .tile-addr, .row-addr { display: block; font-size: 9pt; color: #444; overflow-wrap: anywhere; }
+  .row-addr { grid-column: 1 / -1; }
   .row-link { break-inside: avoid; }
   .foot { margin-top: 1.5rem; }
   .foot .colophon { padding-left: 0; margin-top: .5rem; }

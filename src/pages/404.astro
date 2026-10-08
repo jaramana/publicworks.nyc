@@ -1,0 +1,41 @@
+---
+/* GitHub Pages serves this for any address with no page behind it,
+   at whatever path was asked for, so every link here is absolute. */
+import '../styles/fonts.css';
+import '../styles/works.css';
+import BaseHead from '../components/BaseHead.astro';
+import Mast from '../components/Mast.astro';
+import Foot from '../components/Foot.astro';
+import { works as copy, fill } from '../i18n/works.js';
+import { localizePath, defaultLang, siteName } from '../i18n/ui.js';
+
+const lang = defaultLang;
+const t = copy[lang];
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+  <BaseHead title={t.lostTab + ' · ' + siteName} description={t.lostText} noindex />
+</head>
+<body>
+<Mast lang={lang} />
+
+<div class="page">
+  <main class="main lost" id="main">
+    <p class="label">404</p>
+    <h1 class="note-title">{t.lostTitle}</h1>
+    <p class="note-lead">{t.lostText}</p>
+    <p class="lost-home" set:html={fill(t.lostHome, { home: localizePath('/', lang) })} />
+  </main>
+</div>
+
+<Foot lang={lang} />
+</body>
+</html>
+
+<style>
+  .lost { display: grid; gap: .75rem; padding-top: clamp(4rem, 12vw, 9rem); }
+  .lost .note-lead { text-wrap: balance; }
+  .lost-home { margin-top: .75rem; font-size: .875rem; color: var(--muted); }
+  .lost-home :global(a) { color: var(--ink); }
+</style>

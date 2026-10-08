@@ -3,28 +3,11 @@ import { defineCollection, z } from 'astro:content';
 /* ============================================================
    CONTENT COLLECTIONS
    ------------------------------------------------------------
-   These define the "shape" of a project record and a blog post.
-   To ADD A PROJECT: drop a .md file in src/content/projects/
-   To ADD A POST:    create src/content/blog/, drop a .md file in
-                     it, and restore the /blog page tree.
-   Fill in the fields below at the top of each file (frontmatter).
+   The shape of a project record and of a page like About.
+   To add a project, drop a .md file in src/content/projects/
+   and fill in the fields below at the top (frontmatter).
    A project's Markdown body is not shown on the page.
    ============================================================ */
-
-const blog = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    indexSummary: z.string().optional(),
-    pubDate: z.date(),
-    author: z.string().default('publicworks.nyc'),
-    lang: z.enum(['en']).default('en'),
-    draft: z.boolean().default(false),
-    source: z.string().optional(),
-    repository: z.string().url().optional(),
-  }),
-});
 
 const projects = defineCollection({
   type: 'content',
@@ -115,4 +98,4 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { blog, projects, pages };
+export const collections = { projects, pages };

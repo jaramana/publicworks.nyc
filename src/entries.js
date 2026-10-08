@@ -13,6 +13,9 @@ const date = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', y
 
 const page = (base, path) => new URL(path, base.endsWith('/') ? base : base + '/').href;
 
+// An address as it reads on paper: no scheme, no trailing slash.
+const bare = href => href.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
 export async function buildIndex(lang, t) {
   const label = Object.fromEntries(categories.map(c => [c, t[c.toLowerCase()]]));
 
@@ -52,19 +55,30 @@ export async function buildIndex(lang, t) {
       lead: d.lead,
       take: isWork ? d.take : undefined,
       repository: code,
+      address: (d.url ?? code) && bare(d.url ?? code),
       specs,
       links,
       find: [d.title, d.indexSummary, d.category, d.builtWith, d.source, ...d.keywords, d.series].filter(Boolean).join(' ').toLowerCase(),
     };
   });
 
-  const works = records.filter(r => r.status === 'works').sort((a, b) => a.order - b.order);
+  // Two records with one recordId would share a ?p= link.
+  const seen = new Set();
+  for (const r of records) {
+    if (seen.has(r.key)) throw new Error(`Two records use recordId "${r.key}".`);
+    seen.add(r.key);
+  }
+
+  // Lower order first. Ties, and records with no order, go by title.
+  const byOrder = (a, b) => a.order - b.order || a.title.localeCompare(b.title);
+
+  const works = records.filter(r => r.status === 'works').sort(byOrder);
 
   // The archive is grouped by type, in the category order above.
   const groups = categories
     .map(c => ({
       name: label[c],
-      entries: records.filter(r => r.status === 'archive' && r.category === c).sort((a, b) => a.order - b.order),
+      entries: records.filter(r => r.status === 'archive' && r.category === c).sort(byOrder),
     }))
     .filter(g => g.entries.length > 0);
   const archive = groups.flatMap(g => g.entries);

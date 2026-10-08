@@ -1,0 +1,15 @@
+---
+/* The footer: the independence notice, then the colophon. Every page ends with it. */
+import { works as copy, fill } from '../i18n/works.js';
+import { defaultLang, repoUrl, byline, sister } from '../i18n/ui.js';
+const { lang = defaultLang } = Astro.props;
+const t = copy[lang];
+---
+<footer class="foot">
+  <p class="notice" set:html={t.notice} />
+  <div class="colophon">
+    <p set:html={fill(t.byline, byline)} />
+    <p set:html={fill(t.sister, sister)} />
+    <p><a href={repoUrl}>{t.sourceCode}</a> · {t.privacy}</p>
+  </div>
+</footer>

@@ -17,5 +17,6 @@ const sizes = [
   <div class="tile-media"><Cover src={r.cover} sizes={sizes} eager={eager} priority={priority} /></div>
   <p class="tile-meta">{r.meta}</p>
   <h3 class="tile-title"><a class="tile-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>{r.title}</a></h3>
+  {r.address && <p class="tile-addr">{r.address}</p>}
   <p class="tile-summary">{r.summary}</p>
 </li>

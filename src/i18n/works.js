@@ -1,4 +1,4 @@
-/* Page copy for the Works page. One block per language; English is the only one filed. */
+/* Page copy for the site. One block per language; English is the only one filed. */
 export const works = {
   "en": {
     "intro": "Tools and maps built from public records in and around New York City.",
@@ -40,7 +40,10 @@ export const works = {
     "sister": "<a href=\"{url}\">{name}</a> is the sister lab, in Galicia.",
     "sourceCode": "Source code",
     "privacy": "No cookies or analytics.",
-    "place": "New York",
+    "lostTab": "Not found",
+    "lostTitle": "Our apologies.",
+    "lostText": "This is, almost certainly, not the page you were looking for.",
+    "lostHome": "Every project is listed on the <a href=\"{home}\">home page</a>.",
     "data": "Data",
     "map": "Map",
     "essay": "Essay",
