@@ -87,15 +87,15 @@ The first full run, before and after that day's fixes. Each cell gives a site's 
 | Schools Finder | 99 | 100 | 100 | 100 | 0.00 | 2.0 s → 1.8 s | 0 |
 | NYC Civil Service Exams | 77 → 99 | 79 → 100 | 100 | 90 → 100 | 0.64 → 0.04 | 2.1 s | 0 |
 | The Blue Pages | 95 | 97 → 98 | 97 → 100 | 100 | 0.03 | 2.9 s | 1 → 0 |
-| Wealth NYC | 84 → 89 | 99 | 98 → 100 | 100 | 0.14 → 0.02 | 3.7 s | 2 → 1 |
-| Wealth NJ | 71 → 78 | 98 | 98 → 100 | 100 | 0.16 → 0.02 | 6.0 s | 2 → 1 |
+| Wealth NYC | 84 → 91 | 99 → 100 | 98 → 100 | 100 | 0.14 → 0.02 | 3.7 s → 3.5 s | 2 → 1 |
+| Wealth NJ | 71 → 80 | 98 → 100 | 98 → 100 | 100 | 0.16 → 0.02 | 6.0 s → 5.6 s | 2 → 1 |
 | Chopper Noise | 91 → 92 | 100 | 98 → 100 | 100 | 0.06 → 0.00 | 2.3 s → 1.2 s | 6 → 0 |
 | publicworks.nyc | 99 | 100 | 100 | 100 | 0.00 | 2.3 s | 0 |
 | Cidade Labs | 99 → 100 | 100 | 96 | 100 | 0.00 | 2.0 s → 1.9 s | 0 |
 
 What still holds a score down:
 
-- Wealth NYC and Wealth NJ, phone performance. The map's largest paint waits for its GeoJSON, 582 KB compressed for New Jersey. A preload starts the download at once; a smaller map-only file is an owner decision.
+- Wealth NYC and Wealth NJ, phone performance. The map's largest paint waits for its GeoJSON. The map file now carries only the fields the map reads, 496 KB compressed for New Jersey, and a preload starts it at once. Shapes are most of what remains.
 - Hazard Historian, SEO 60. `dataflow.html` carries `noindex`.
 - Hazard Historian's Event page, largest paint 2.7 s. The event file waits behind MapLibre, which loads first.
 - The Blue Pages, phone performance 95. The agency rail loads full-size logos into 30-pixel thumbnails, about 1.3 MB more than it needs.
