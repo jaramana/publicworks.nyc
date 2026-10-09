@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { existsSync } from 'node:fs';
 import { site } from './current-site.js';
 import { languages, defaultLang } from '@site/site.js';
 
@@ -109,4 +110,38 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { projects, pages };
+// Journal entries, one file per language like the projects. The file name
+// without its language is the address: /blog/<name>/. A site with no
+// journal/ folder has no journal, and the home page and nav leave it out.
+const journalDir = `./sites/${site}/journal`;
+const journal = defineCollection({
+  loader: existsSync(journalDir) ? glob({ pattern: '*.md', base: journalDir }) : () => [],
+  schema: z.object({
+    title: z.string(),
+
+    // One line under the title in the home page's Journal list.
+    indexSummary: z.string(),
+
+    // The lead under the title, in the note and on the entry's page.
+    description: z.string(),
+
+    pubDate: z.date(),
+
+    // The ?p= value. Shares one namespace with the projects.
+    recordId: z.string().regex(/^[a-z0-9-]+$/),
+
+    // Not shown on the page.
+    author: z.string().optional(),
+    kind: z.enum(['research', 'note']).default('note'),
+
+    // The place an entry covers, its sources and its code, shown in Details.
+    scope: z.string().optional(),
+    source: z.string().optional(),
+    repository: z.string().url().optional(),
+
+    draft: z.boolean().default(false),
+    lang,
+  }),
+});
+
+export const collections = { projects, pages, journal };

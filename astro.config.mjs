@@ -1,19 +1,28 @@
 import { defineConfig } from 'astro/config';
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { site } from './src/current-site.js';
 
 // The chosen site's folder: its records, copy, screenshots and public files.
 const dir = fileURLToPath(new URL(`./sites/${site}/`, import.meta.url));
 if (!existsSync(dir)) throw new Error(`SITE is "${site}", but there is no sites/${site}/ folder.`);
-const { siteUrl, redirects = {} } = await import(new URL(`./sites/${site}/site.js`, import.meta.url).href);
+const { siteUrl, redirects = {}, languages, defaultLang } = await import(new URL(`./sites/${site}/site.js`, import.meta.url).href);
+
+// A site with journal entries sends /blog/, the journal's old list page, to
+// the Journal on the home page, in each language.
+const journal = new URL('journal/', `file://${dir}`);
+const hasJournal = existsSync(journal) && readdirSync(journal).some(f => f.endsWith('.md'));
+const blogRedirects = hasJournal ? Object.fromEntries(languages.map(lang => {
+  const home = lang === defaultLang ? '/' : `/${lang}/`;
+  return [`${home}blog`, `${home}#journal`];
+})) : {};
 
 export default defineConfig({
   // The production domain, from the site's site.js.
   site: siteUrl,
 
   // Old addresses that now lead elsewhere, from the site's site.js.
-  redirects,
+  redirects: { ...blogRedirects, ...redirects },
 
   // Icons, CNAME and share image. Shared files like the fonts live in src/.
   publicDir: `./sites/${site}/public`,

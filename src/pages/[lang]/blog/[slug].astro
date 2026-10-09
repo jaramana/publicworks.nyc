@@ -1,0 +1,13 @@
+---
+/* Journal entries in each language after the first, at /<lang>/blog/<slug>/. */
+import Entry from '../../../components/Entry.astro';
+import { defaultLang } from '@site/site.js';
+import { getJournal, journalSlug } from '../../../entries.js';
+
+export async function getStaticPaths() {
+  return (await getJournal())
+    .filter(entry => entry.data.lang !== defaultLang)
+    .map(entry => ({ params: { lang: entry.data.lang, slug: journalSlug(entry) }, props: { entry } }));
+}
+---
+<Entry entry={Astro.props.entry} />

@@ -1,0 +1,259 @@
+/* ============================================================
+   JOURNAL
+   An entry's own page, on the tokens in works.css. The text
+   runs in one column; wide figures reach past it to the frame.
+   The figures' own colors are data and stay as they are.
+   ============================================================ */
+
+:root {
+  --text: 42rem;
+  --wide: 72rem;
+}
+
+/* ---- the entry ------------------------------------------------------ */
+
+.entry { padding-top: clamp(2.5rem, 7vw, 5.5rem); }
+.entry-head, .entry-side, .entry-body { max-width: var(--text); margin-inline: auto; }
+
+.entry-head { display: grid; gap: 1.1rem; }
+.entry-head .label a { text-decoration: none; }
+.entry-head .label a:hover { text-decoration: underline; }
+.entry-title { font-size: clamp(2rem, 4.6vw, 3.25rem); font-weight: 400; line-height: 1.08; letter-spacing: -.02em; text-wrap: balance; }
+.entry-lead { max-width: 44ch; font-size: 1.25rem; line-height: 1.4; color: var(--muted); text-wrap: pretty; }
+
+/* Coverage, source and code under the lead. The contents list shows only
+   in the panel layout. */
+.entry-side { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.entry-side .note-specs a { color: var(--ink); }
+.entry-contents { display: none; }
+
+.entry-body { margin-top: clamp(2.5rem, 6vw, 4.5rem); font-size: 1.125rem; line-height: 1.65; }
+.entry-body:focus { outline: none; }
+.entry-body p, .entry-body ul, .entry-body ol, .entry-body blockquote { margin-bottom: 1.15em; }
+.entry-body ul, .entry-body ol { padding-left: 1.25em; }
+.entry-body li + li { margin-top: .35em; }
+.entry-body h2 { margin: 2.6em 0 .7em; font-size: 1.5rem; font-weight: 400; line-height: 1.2; letter-spacing: -.01em; text-wrap: balance; }
+.entry-body h3 { margin: 2em 0 .6em; font-size: 1.125rem; font-weight: 700; }
+.entry-body blockquote { margin-inline: 0; padding-left: 1.25rem; border-left: 1px solid var(--ink); }
+.entry-body .lede { font-size: 1.25rem; line-height: 1.5; }
+
+/* ---- figures -------------------------------------------------------- */
+
+.figure { margin: 2.75rem 0; }
+.figure img, .figure video { width: 100%; height: auto; }
+.figure figcaption { max-width: var(--text); margin-top: .75rem; font-size: .875rem; line-height: 1.5; color: var(--muted); }
+.figure-credit { display: block; margin-top: .3rem; font-size: .75rem; }
+.figure-title { margin: 0 0 .25rem; font-size: 1.0625rem; font-weight: 700; }
+.figure-sub { max-width: var(--text); margin: 0 0 1rem; font-size: .875rem; color: var(--muted); }
+.entry-body .figure-kicker, .entry-body .figure-date { margin: 0 0 .6rem; font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* Charts sit on white in both color schemes, edged with a hairline. */
+.figure:not(.figure-wide) > img { background: #fff; box-shadow: 0 0 0 1px var(--shot-line); }
+
+/* Photographs and maps reach past the text to the frame, centered on it. */
+.figure-wide {
+  --w: min(calc(100vw - 2 * var(--pad)), var(--wide));
+  width: var(--w);
+  margin-inline: calc((100% - var(--w)) / 2);
+}
+.figure-wide img, .slider-frame, .year-frame, .figure video { border-radius: calc(var(--radius) / 2); background: var(--surface); }
+.figure-portrait { width: min(100%, 27.5rem); margin-inline: auto; }
+
+/* Two photographs side by side, one above the other on narrow screens. */
+.figure-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.5rem; }
+.figure-comparison > figure { min-width: 0; }
+.entry-body .figure-comparison-note { grid-column: 1 / -1; max-width: var(--text); margin: 1.1rem 0 0; font-size: .875rem; line-height: 1.5; color: var(--muted); }
+@media (max-width: 56rem) {
+  .figure-comparison { grid-template-columns: 1fr; gap: 1.5rem; }
+  .entry-body .figure-comparison-note { margin-top: 0; }
+}
+
+/* Photographs open full size. */
+.figure-image-link { display: block; overflow: hidden; border-radius: calc(var(--radius) / 2); cursor: zoom-in; }
+.figure-image-link img { transition: transform .4s var(--ease); }
+@media (hover: hover) { .figure-image-link:hover img { transform: scale(1.015); } }
+
+/* Figures rise gently into view where the browser can tie it to scrolling. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .figure-wide, .figure-portrait {
+      animation: figure-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 25%;
+    }
+    @keyframes figure-rise { from { opacity: 0; translate: 0 14px; } }
+  }
+}
+
+/* ---- toggles: the Gini scales and La Solana's years ----------------- */
+
+/* The radio inputs are hidden; their labels are the buttons. */
+.gini-fig > input, .figure-years > input { position: absolute; opacity: 0; pointer-events: none; }
+.gini-tabs, .year-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.gini-tabs label, .year-tabs label {
+  padding: .4rem .95rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: .8125rem;
+  line-height: 1.3;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease);
+}
+.gini-tabs label:hover, .year-tabs label:hover { border-color: var(--ink); color: var(--ink); }
+
+.gini-fig > input.sa:checked ~ .gini-tabs label[data-for="a"],
+.gini-fig > input.sb:checked ~ .gini-tabs label[data-for="b"],
+.figure-years > input:nth-of-type(1):checked ~ .year-tabs label:nth-of-type(1),
+.figure-years > input:nth-of-type(2):checked ~ .year-tabs label:nth-of-type(2),
+.figure-years > input:nth-of-type(3):checked ~ .year-tabs label:nth-of-type(3),
+.figure-years > input:nth-of-type(4):checked ~ .year-tabs label:nth-of-type(4),
+.figure-years > input:nth-of-type(5):checked ~ .year-tabs label:nth-of-type(5) {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+}
+.gini-fig > input.sa:focus-visible ~ .gini-tabs label[data-for="a"],
+.gini-fig > input.sb:focus-visible ~ .gini-tabs label[data-for="b"],
+.figure-years > input:nth-of-type(1):focus-visible ~ .year-tabs label:nth-of-type(1),
+.figure-years > input:nth-of-type(2):focus-visible ~ .year-tabs label:nth-of-type(2),
+.figure-years > input:nth-of-type(3):focus-visible ~ .year-tabs label:nth-of-type(3),
+.figure-years > input:nth-of-type(4):focus-visible ~ .year-tabs label:nth-of-type(4),
+.figure-years > input:nth-of-type(5):focus-visible ~ .year-tabs label:nth-of-type(5) {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.gini-pane { display: none; }
+.gini-fig > input.sa:checked ~ .gini-body .pane-a,
+.gini-fig > input.sb:checked ~ .gini-body .pane-b { display: block; }
+
+.year-frame { position: relative; overflow: hidden; }
+.year-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s var(--ease); }
+.figure-years > input:nth-of-type(1):checked ~ .year-frame img:nth-of-type(1),
+.figure-years > input:nth-of-type(2):checked ~ .year-frame img:nth-of-type(2),
+.figure-years > input:nth-of-type(3):checked ~ .year-frame img:nth-of-type(3),
+.figure-years > input:nth-of-type(4):checked ~ .year-frame img:nth-of-type(4),
+.figure-years > input:nth-of-type(5):checked ~ .year-frame img:nth-of-type(5) { opacity: 1; }
+
+/* The Gini legend's colors match the maps. */
+.gini-legend { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; margin: .9rem 0 0; padding: 0; list-style: none; font-size: .75rem; color: var(--muted); }
+.gini-legend li { display: flex; align-items: center; gap: .45rem; margin: 0; }
+.gini-legend i { display: block; flex: none; width: 1.6rem; height: .6rem; border-radius: 2px; }
+.gini-legend .k1 { background: #1b4965; }
+.gini-legend .k2 { background: #5a8299; }
+.gini-legend .k3 { background: #c98a72; }
+.gini-legend .k4 { background: #c0503a; }
+.gini-legend .k5 { background: #a5251d; }
+.gini-legend .k0 { background: #dadcde; }
+
+/* A formula set apart from the text. */
+.formula { margin: 1.75rem 0; padding: 1.1rem 1.25rem; border-left: 1px solid var(--ink); border-radius: 0 var(--radius) var(--radius) 0; background: var(--surface); }
+.formula p { margin: 0 0 .4rem; font-size: 1rem; }
+.formula p:last-child { margin-bottom: 0; }
+.formula .eq { font-size: 1.0625rem; line-height: 1.5; }
+/* .note is also the home page's record note, so its layout is undone here. */
+.entry-body .formula .note { display: block; padding: 0; border: 0; font-size: .875rem; color: var(--muted); }
+
+/* ---- before and after ----------------------------------------------- */
+
+/* Two aligned pictures in one frame. The range input over them sets how
+   much of the earlier one shows; arrow keys move it too. The slider's
+   handle and tags sit on photographs, so their colors are fixed. */
+.slider-frame { position: relative; overflow: hidden; }
+.slider-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; }
+.slider-before { clip-path: inset(0 calc(100% - var(--pos, 50%)) 0 0); }
+.slider-divider { position: absolute; inset-block: 0; left: var(--pos, 50%); width: 0; border-left: 2px solid #fff; box-shadow: 0 0 0 .5px rgba(0, 0, 0, .45); pointer-events: none; }
+.slider-divider::before {
+  content: "⇔";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .2), 0 6px 16px -6px rgba(0, 0, 0, .45);
+  color: #161616;
+  font-size: .9375rem;
+  line-height: 2.25rem;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+.slider-tag { position: absolute; top: .75rem; padding: .15rem .55rem; border-radius: 3px; background: rgba(255, 255, 255, .9); color: #161616; font-size: .6875rem; letter-spacing: .08em; font-variant-numeric: tabular-nums; pointer-events: none; }
+.slider-tag-before { left: .75rem; }
+.slider-tag-after { right: .75rem; }
+.figure-slider input[type="range"] { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; touch-action: pan-y; }
+.figure-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 2.5rem; height: 100%; }
+.figure-slider input[type="range"]::-moz-range-thumb { width: 2.5rem; height: 100%; border: 0; background: transparent; }
+.figure-slider input[type="range"]:focus-visible ~ .slider-divider::before { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* ---- the panel layout, on trial: ?v=panel ---------------------------- */
+
+/* The home page's frame: the entry in the wide column, its details and
+   contents holding still in the panel. Narrow screens keep one column. */
+@media (min-width: 51rem) {
+  [data-layout="panel"] .entry {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) calc(var(--panel) + var(--panel-gap) / 2);
+    grid-template-rows: auto auto 1fr;
+    column-gap: calc(var(--panel-gap) / 2);
+    padding-top: clamp(2rem, 4vw, 3.5rem);
+  }
+  [data-layout="panel"] .entry-head,
+  [data-layout="panel"] .entry-body { grid-column: 1; margin-inline: 0; }
+  [data-layout="panel"] .entry-head,
+  [data-layout="panel"] .entry-body > :not(.figure-wide) { max-width: var(--text); }
+  [data-layout="panel"] .entry-body { max-width: none; }
+  [data-layout="panel"] .entry-side {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    position: sticky;
+    top: var(--mast-h, 4rem);
+    align-self: start;
+    display: grid;
+    gap: 2.5rem;
+    align-content: start;
+    min-height: calc(100dvh - var(--mast-h, 4rem));
+    max-width: none;
+    margin: 0;
+    padding: .5rem 0 2rem calc(var(--panel-gap) / 2);
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+  [data-layout="panel"] .entry-contents { display: grid; gap: .6rem; }
+  [data-layout="panel"] .entry-contents ol { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; font-size: .875rem; line-height: 1.35; }
+  [data-layout="panel"] .entry-contents a { text-decoration: none; }
+  [data-layout="panel"] .entry-contents a:hover { text-decoration: underline; }
+  [data-layout="panel"] .figure-wide { --w: 100%; }
+  [data-layout="panel"] .figure-comparison { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+@media (min-width: 72rem) {
+  [data-layout="panel"] .figure-comparison { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ---- preferences ---------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .year-frame img, .figure-image-link img { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .gini-tabs label, .year-tabs label { border-color: CanvasText; }
+  .slider-divider { border-left-color: CanvasText; }
+}
+
+@media print {
+  .skip, .entry-contents { display: none !important; }
+  .entry, .entry-head, .entry-side, .entry-body { display: block; max-width: none; padding-top: 0; }
+  .entry-title { font-size: 20pt; }
+  .entry-lead { font-size: 12pt; color: #000; }
+  .entry-body { font-size: 10.5pt; }
+  .figure-wide { --w: 100%; }
+  .figure, .figure-comparison { break-inside: avoid; }
+  .figure-wide, .figure-portrait { animation: none !important; }
+  .slider-before, .figure-slider input, .slider-divider, .slider-tag, .gini-tabs, .year-tabs { display: none; }
+  .year-frame img { position: static; display: none; opacity: 1; }
+  .year-frame img:first-of-type { display: block; }
+}

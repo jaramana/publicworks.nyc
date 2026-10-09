@@ -1,0 +1,85 @@
+---
+/* One journal entry as its own page, with the shared masthead and footer.
+   Two layouts are on trial. The default is one centered column. With
+   ?v=panel the page keeps the home page's frame, and the entry's details
+   and contents hold still in the side panel. */
+import '../styles/fonts.css';
+import '../styles/works.css';
+import '../styles/journal.css';
+import BaseHead from './BaseHead.astro';
+import Mast from './Mast.astro';
+import Foot from './Foot.astro';
+import { copy } from '@site/copy.js';
+import { siteName, languages } from '@site/site.js';
+import { localizePath } from '../i18n.js';
+import { dates, getJournal, journalSlug } from '../entries.js';
+import { render } from 'astro:content';
+
+const { entry } = Astro.props;
+const d = entry.data;
+const lang = d.lang;
+const t = copy[lang];
+const slug = journalSlug(entry);
+const bare = `/blog/${slug}/`;
+
+// The languages this entry is written in. The others link to their home page.
+const written = (await getJournal()).filter(e => journalSlug(e) === slug).map(e => e.data.lang);
+const available = languages.filter(code => written.includes(code));
+
+const { Content, headings } = await render(entry);
+const contents = headings.filter(h => h.depth === 2);
+const details = [
+  { label: t.journalCoverage, value: d.scope },
+  { label: t.journalSource, value: d.source },
+].filter(r => r.value);
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+  <BaseHead lang={lang} bare={bare} available={available} title={`${d.title} · ${siteName}`} description={d.description} type="article" />
+  <script is:inline>if (new URLSearchParams(location.search).get('v') === 'panel') document.documentElement.dataset.layout = 'panel';</script>
+</head>
+<body>
+<a class="skip" href="#text">{t.skipText}</a>
+<Mast lang={lang} bare={bare} available={available} />
+
+<div class="page">
+  <main class="main" id="main">
+    <article class="entry">
+      <header class="entry-head">
+        <p class="label"><a href={localizePath('/', lang) + '#journal'}>{t.journal}</a> · <time datetime={d.pubDate.toISOString().slice(0, 10)}>{dates(lang).format(d.pubDate)}</time></p>
+        <h1 class="entry-title">{d.title}</h1>
+        <p class="entry-lead">{d.description}</p>
+      </header>
+
+      <aside class="entry-side" aria-label={t.details}>
+        {(details.length > 0 || d.repository) && (
+          <dl class="note-specs">
+            {details.map(r => <><dt>{r.label}</dt><dd>{r.value}</dd></>)}
+            {d.repository && <><dt>{t.code}</dt><dd><a href={d.repository}>{d.repository.replace('https://github.com/', '')}</a></dd></>}
+          </dl>
+        )}
+        {contents.length > 1 && (
+          <nav class="entry-contents" aria-label={t.contents}>
+            <p class="label">{t.contents}</p>
+            <ol role="list">
+              {contents.map(h => <li><a href={'#' + h.slug}>{h.text}</a></li>)}
+            </ol>
+          </nav>
+        )}
+      </aside>
+
+      <div class="entry-body" id="text" tabindex="-1">
+        <Content />
+      </div>
+    </article>
+  </main>
+</div>
+
+<Foot lang={lang} bare={bare} available={available} />
+
+<script>
+  import '../scripts/journal.ts';
+</script>
+</body>
+</html>

@@ -1,22 +1,37 @@
 ---
 /* The masthead. On the home page its links jump within the page; on any
-   other page they lead back to it. The home page slots find in after the nav. */
+   other page they lead back to it. The home page slots find in after the nav.
+
+   Language links, on trial until the owner picks: beside the wordmark (the
+   default), a menu after the nav, or the footer. The menu and footer only
+   render in `astro dev`, where Trial.astro switches between them. */
+import Langs from './Langs.astro';
 import { copy } from '@site/copy.js';
 import { defaultLang, languages, languageNames, siteName, githubUrl } from '@site/site.js';
 import { localizePath } from '../i18n.js';
-const { lang = defaultLang, home = false, bare = '/' } = Astro.props;
+import { getJournal } from '../entries.js';
+const { lang = defaultLang, home = false, bare = '/', available = languages } = Astro.props;
 const t = copy[lang];
 const root = home ? '' : localizePath('/', lang);
+const hasJournal = (await getJournal(lang)).length > 0;
+const multi = languages.length > 1;
 ---
 <div class="mast-sentinel" aria-hidden="true"></div>
 <header class="mast" data-mast>
   <a class="wordmark" href={localizePath('/', lang)} data-home>{siteName}</a>
+  {multi && <span class="langs langs-beside"><Langs lang={lang} bare={bare} available={available} /></span>}
   <nav class="nav" aria-label={t.sections}>
     <a href={root + '#works'}>{t.works}</a>
+    {hasJournal && <a href={root + '#journal'}>{t.journal}</a>}
     <a href={root + '#archive'}>{t.archive}</a>
     <a href={root + '#record-about'} data-open={home ? 'about' : undefined}>{t.about}</a>
     <a href={githubUrl}>{t.github}</a>
-    {languages.length > 1 && <span class="langs">{languages.map(code => <a href={localizePath(bare, code)} lang={code} data-language aria-label={languageNames[code]} aria-current={code === lang ? 'page' : undefined}>{code}</a>)}</span>}
   </nav>
+  {multi && import.meta.env.DEV && (
+    <details class="langs-menu">
+      <summary>{languageNames[lang]}</summary>
+      <div class="langs-list"><Langs lang={lang} bare={bare} available={available} names /></div>
+    </details>
+  )}
   <slot />
 </header>

@@ -12,7 +12,7 @@
    Keys. Nothing on the page explains them.
 
      /                 find; Enter opens the first match, Esc clears
-     j k, arrows       move between tiles and archive rows
+     j k, arrows       move between tiles and rows
      Enter             open the focused project
      ← →               turn the panel's pages while focus is in it
      Esc               return the panel to About
@@ -22,15 +22,15 @@
      1 9 9 9           show the page as a plain list
    ============================================================ */
 
+import './mast.ts';
+
 const $ = <T extends Element = HTMLElement>(s: string, root: ParentNode = document) => root.querySelector<T>(s)!;
 const $$ = <T extends Element = HTMLElement>(s: string, root: ParentNode = document) => [...root.querySelectorAll<T>(s)];
 const fill = (text: string, values: Record<string, string | number>) => text.replace(/\{(\w+)\}/g, (_, k) => String(values[k] ?? ''));
 
-const root = document.documentElement;
 const mast = $('[data-mast]');
 const panel = $('[data-panel]');
 const inner = $('[data-panel-inner]');
-const archive = $('#archive');
 const announce = $('[data-announce]');
 const notes = new Map($$('[data-note]').map(n => [n.dataset.note!, n]));
 const siteTitle = document.title;
@@ -39,14 +39,6 @@ const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const smooth = (): ScrollBehavior => (reduceMotion.matches ? 'auto' : 'smooth');
 
 let raw = false;
-
-/* ---- masthead -------------------------------------------------------- */
-
-// --mast-h keeps anchor jumps clear of the sticky masthead.
-new ResizeObserver(() => root.style.setProperty('--mast-h', mast.offsetHeight + 'px')).observe(mast);
-
-// A hairline appears once the page scrolls under the glass.
-new IntersectionObserver(([entry]) => mast.classList.toggle('is-stuck', !entry.isIntersecting)).observe($('.mast-sentinel'));
 
 /* ---- notes ----------------------------------------------------------- */
 
@@ -334,7 +326,7 @@ document.addEventListener('click', event => {
 const finder = $('[data-finder]');
 const findInput = $<HTMLInputElement>('[data-find-input]');
 const findCount = $('[data-find-count]');
-const archiveHits = $('[data-archive-hits]');
+const bandHits = $$('[data-band-hits]');
 const findable = $$('[data-item][data-find]');
 let matches: HTMLElement[] = [];
 
@@ -342,9 +334,14 @@ function applyFind(query: string) {
   const words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
   matches = findable.filter(el => words.every(w => el.dataset.find!.includes(w)));
   findable.forEach(el => el.classList.toggle('is-dim', words.length > 0 && !matches.includes(el)));
-  const inArchive = matches.filter(el => archive.contains(el)).length;
   findCount.textContent = !words.length ? '' : matches.length ? fill(findCount.dataset.of!, { n: matches.length, total: findable.length }) : findCount.dataset.none!;
-  archiveHits.textContent = words.length && inArchive ? fill(archiveHits.dataset.found!, { n: inArchive }) : '';
+
+  // The bands below Works count their own matches, which may be out of sight.
+  bandHits.forEach(hits => {
+    const band = hits.closest('.band')!;
+    const n = matches.filter(el => band.contains(el)).length;
+    hits.textContent = words.length && n ? fill(hits.dataset.found!, { n }) : '';
+  });
 }
 
 function openFind() {
@@ -378,7 +375,7 @@ findInput.addEventListener('blur', () => { if (!findInput.value.trim()) setTimeo
 
 /* ---- keyboard -------------------------------------------------------- */
 
-// Tiles, then archive rows.
+// Tiles, then journal and archive rows.
 const walkable = () => $$<HTMLAnchorElement>('.tile-link, .row-link').filter(a => a.getClientRects().length > 0);
 const titleOf = (a: HTMLAnchorElement) => (a.querySelector('.row-title') ?? a).textContent!.trim().toLowerCase();
 
@@ -503,10 +500,13 @@ document.addEventListener('keydown', event => {
 /* ---- load ------------------------------------------------------------ */
 
 // A shared link opens on its note, with its tile at the top of the window.
+// On wide screens it stops short of the footer, which would push the panel up.
 const initial = keyFromUrl();
 if (initial && notes.has(initial)) {
   open(initial);
   itemFor(initial)?.scrollIntoView({ block: 'start' });
+  const end = $('.page').getBoundingClientRect().bottom;
+  if (!narrow.matches && end < innerHeight) scrollBy(0, end - innerHeight);
 } else {
   if (initial) history.replaceState(null, '', urlFor(null));
   place();

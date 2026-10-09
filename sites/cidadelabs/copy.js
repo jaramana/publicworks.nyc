@@ -48,7 +48,15 @@ export const copy = {
     "map": "Mapa",
     "essay": "Ensaio",
     "site": "Sitio",
-    "tools": "Ferramentas"
+    "tools": "Ferramentas",
+    "journal": "Diario",
+    "journalNote": "Textos sobre urbanismo, mobilidade e datos públicos en Galicia.",
+    "findJournal": "{n} no diario",
+    "read": "Ler",
+    "journalSource": "Fonte",
+    "journalCoverage": "Cobertura",
+    "skipText": "Saltar ao texto",
+    "contents": "Contidos"
   },
   "es": {
     "intro": "Mapas y herramientas con datos públicos, para Galicia.",
@@ -98,7 +106,15 @@ export const copy = {
     "map": "Mapa",
     "essay": "Ensayo",
     "site": "Sitio",
-    "tools": "Herramientas"
+    "tools": "Herramientas",
+    "journal": "Diario",
+    "journalNote": "Textos sobre urbanismo, movilidad y datos públicos en Galicia.",
+    "findJournal": "{n} en el diario",
+    "read": "Leer",
+    "journalSource": "Fuente",
+    "journalCoverage": "Cobertura",
+    "skipText": "Saltar al texto",
+    "contents": "Contenido"
   },
   "en": {
     "intro": "Open maps and tools on public data, for Galicia.",
@@ -148,6 +164,14 @@ export const copy = {
     "map": "Map",
     "essay": "Essay",
     "site": "Site",
-    "tools": "Tools"
+    "tools": "Tools",
+    "journal": "Journal",
+    "journalNote": "Writing on urbanism, mobility, and public data in Galicia.",
+    "findJournal": "{n} found in the journal",
+    "read": "Read",
+    "journalSource": "Source",
+    "journalCoverage": "Coverage",
+    "skipText": "Skip to the text",
+    "contents": "Contents"
   }
 };

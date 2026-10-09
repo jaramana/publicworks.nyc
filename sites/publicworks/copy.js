@@ -48,6 +48,14 @@ export const copy = {
     "map": "Map",
     "essay": "Essay",
     "site": "Site",
-    "tools": "Tools"
+    "tools": "Tools",
+    "journal": "Journal",
+    "journalNote": "",
+    "findJournal": "{n} found in the journal",
+    "read": "Read",
+    "journalSource": "Source",
+    "journalCoverage": "Coverage",
+    "skipText": "Skip to the text",
+    "contents": "Contents"
   }
 };

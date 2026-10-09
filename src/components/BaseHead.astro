@@ -4,11 +4,11 @@ import { copy } from '@site/copy.js';
 import { localizePath } from '../i18n.js';
 import regular from '../fonts/pw-heros-regular.woff2?url';
 import bold from '../fonts/pw-heros-bold.woff2?url';
-const { lang = defaultLang, bare = null, title = siteName, description, noindex = false } = Astro.props;
+const { lang = defaultLang, bare = null, available = languages, title = siteName, description, noindex = false, type = 'website' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
 // The same page in the site's other languages, when it has them.
-const alternates = bare && languages.length > 1 ? languages.map(code => ({ code, href: new URL(localizePath(bare, code), Astro.site) })) : [];
+const alternates = bare && available.length > 1 ? available.map(code => ({ code, href: new URL(localizePath(bare, code), Astro.site) })) : [];
 
 // The site's public/og.png, drawn by `npm run og`.
 const shareImage = new URL('/og.png', Astro.site);
@@ -26,12 +26,13 @@ const shareAlt = `${siteName}. ${copy[defaultLang].intro}`;
 <link rel="manifest" href="/site.webmanifest" />
 {!noindex && <link rel="canonical" href={canonical} />}
 {!noindex && alternates.map(a => <link rel="alternate" hreflang={a.code} href={a.href} />)}
-{!noindex && alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={new URL(localizePath(bare, defaultLang), Astro.site)} />}
+{!noindex && available.includes(defaultLang) && alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={new URL(localizePath(bare, defaultLang), Astro.site)} />}
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0c0c0d" media="(prefers-color-scheme: dark)" />
 <meta name="color-scheme" content="light dark" />
 <title>{title}</title>
-<meta property="og:type" content="website" />
+{import.meta.env.DEV && languages.length > 1 && <script is:inline>try { const v = new URLSearchParams(location.search).get('langs') || localStorage.getItem('langs-trial'); if (v) document.documentElement.dataset.langs = v; } catch {}</script>}
+<meta property="og:type" content={type} />
 <meta property="og:site_name" content={siteName} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />

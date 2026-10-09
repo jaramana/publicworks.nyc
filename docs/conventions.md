@@ -59,6 +59,29 @@ exactly like R or MapLibre, because it was a tool like R or MapLibre. Projects
 that predate it simply do not list it, which is what makes the field worth
 reading.
 
+## Adding a journal entry
+
+A site's journal lives in `sites/<site>/journal/`, one Markdown file per entry
+and language: `name.md` in the site's first language, `name.es.md` and so on
+for the others. The file name without its language is the address,
+`/blog/name/`. The body is the entry and may hold HTML figures; their styles
+are in `src/styles/journal.css`, and pictures go in the site's
+`public/journal/`. Folders and files with no entries show no Journal anywhere.
+
+```yaml
+title: "What the reader sees"
+indexSummary: "One line in the home page's Journal list."
+description: "The lead under the title, in the note and on the page."
+pubDate: 2026-09-23
+recordId: "short-slug"    # the ?p= value; shared with the projects
+scope: "A Coruña"          # shown as Coverage; optional
+source: "Who publishes the data"   # optional
+repository: "https://github.com/..."   # optional
+kind: "note"              # note or research; not shown
+draft: false
+lang: "gl"
+```
+
 ## The portfolio page
 
 The index is one page in its own design, separate from the product chrome
@@ -81,9 +104,10 @@ below. The styles are in `src/styles/works.css`.
 | Print | A plain list. Each work and archive row prints its address under the title; the panel and screenshots are hidden. |
 | Share image | `sites/publicworks/public/og.png`, 1200×630: the wordmark, the intro and the works by name, drawn by `npm run og`. Names that don't fit on two lines end in "and N more". |
 | Not found | `src/pages/404.astro`, with the shared masthead and footer. GitHub Pages serves it for any missing address. |
+| Journal | A band between Works and the archive, rows like the archive's, newest first. A row opens a note whose first link is the entry. Entry pages share the masthead and footer; wide figures reach past the text to the frame. Two entry layouts are on trial until the owner picks: one centered column, and `?v=panel` with details and contents in the side panel. |
 
 Hidden keys, none explained on the page: `/` finds, `j`, `k` and the arrow
-keys move between tiles and archive rows, ← and → turn the panel's pages while
+keys move between tiles and rows, ← and → turn the panel's pages while
 focus is in it, Esc returns the panel to About, shift-click opens the
 repository, and typing 1999 shows the page as a plain list.
 

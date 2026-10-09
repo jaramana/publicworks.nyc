@@ -6,6 +6,7 @@ import Mast from './Mast.astro';
 import Foot from './Foot.astro';
 import Tile from './Tile.astro';
 import Note from './Note.astro';
+import Row from './Row.astro';
 import { copy } from '@site/copy.js';
 import { defaultLang, languages, siteName, byline } from '@site/site.js';
 import { fill } from '../i18n.js';
@@ -14,7 +15,7 @@ import { getCollection, render } from 'astro:content';
 
 const { lang = defaultLang } = Astro.props;
 const t = copy[lang];
-const { works, archive, groups } = await buildIndex(lang, t);
+const { works, archive, groups, journal } = await buildIndex(lang, t);
 const [about] = await getCollection('pages', p => p.data.lang === lang);
 if (!about) throw new Error(`There is no About page in "${lang}".`);
 const { Content: AboutText } = await render(about);
@@ -50,10 +51,25 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
       </div>
     </section>
 
+    {journal.length > 0 && (
+      <section class="band" id="journal" aria-labelledby="journal-label" tabindex="-1">
+        <div class="band-head">
+          <h2 class="label" id="journal-label">{t.journal}</h2>
+          <span class="find-hits label" data-band-hits data-found={t.findJournal}></span>
+        </div>
+        <div class="band-body">
+          {t.journalNote && <p class="band-note">{t.journalNote}</p>}
+          <ul class="rows" role="list">
+            {journal.map(r => <Row r={r} />)}
+          </ul>
+        </div>
+      </section>
+    )}
+
     <section class="band" id="archive" aria-labelledby="archive-label" tabindex="-1">
       <div class="band-head">
         <h2 class="label" id="archive-label">{t.archive}</h2>
-        <span class="find-hits label" data-archive-hits data-found={t.findArchive}></span>
+        <span class="find-hits label" data-band-hits data-found={t.findArchive}></span>
       </div>
       <div class="band-body">
         <p class="band-note">{t.archiveNote}</p>
@@ -61,16 +77,7 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
           <div class="group">
             <h3 class="group-name label">{g.name}</h3>
             <ul class="rows" role="list">
-              {g.entries.map(r => (
-                <li class="row" data-item={r.key} data-find={r.find}>
-                  <a class="row-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>
-                    <span class="row-title">{r.title}</span>
-                    <span class="row-summary">{r.summary}</span>
-                    <span class="row-year">{r.year}</span>
-                    {r.address && <span class="row-addr">{r.address}</span>}
-                  </a>
-                </li>
-              ))}
+              {g.entries.map(r => <Row r={r} />)}
             </ul>
           </div>
         ))}
@@ -95,7 +102,7 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
           {byline && <p class="byline" set:html={fill(t.byline, byline)} />}
         </section>
       </article>
-      {[...works, ...archive].map(r => <Note r={r} t={t} />)}
+      {[...works, ...journal, ...archive].map(r => <Note r={r} t={t} />)}
     </div>
     <nav class="pager" aria-label={t.pages} data-pager>
       <button type="button" data-turn="-1" aria-label={t.previousPage}><span aria-hidden="true">←</span></button>
@@ -105,7 +112,7 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
   </aside>
 </div>
 
-<Foot lang={lang} />
+<Foot lang={lang} bare={bare} />
 
 <p class="sr-only" role="status" data-announce></p>
 

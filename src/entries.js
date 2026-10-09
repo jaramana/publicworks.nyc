@@ -6,17 +6,33 @@
    field left out here does not appear on the page.
    ============================================================ */
 import { getCollection } from 'astro:content';
-import { workPages } from '@site/site.js';
+import { existsSync } from 'node:fs';
+import { site } from './current-site.js';
+import { workPages, languages, siteUrl } from '@site/site.js';
+import { localizePath } from './i18n.js';
 
 const categories = ['Data', 'Map', 'Essay', 'Site', 'Tools'];
 
 // English dates read day first, as across the suite.
-const dates = lang => new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : lang, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+export const dates = lang => new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : lang, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 const page = (base, path) => new URL(path, base.endsWith('/') ? base : base + '/').href;
 
 // An address as it reads on paper: no scheme, query or trailing slash.
 const bare = href => href.replace(/^https?:\/\//, '').replace(/[?#].*$/, '').replace(/\/$/, '');
+
+// A journal entry's address: /blog/ and its file name without the language.
+export const journalSlug = entry => entry.filePath.split('/').pop().replace(new RegExp(`(\\.(${languages.join('|')}))?\\.md$`), '');
+export const journalPath = (entry, lang = entry.data.lang) => localizePath('/blog/' + journalSlug(entry), lang);
+
+// Published journal entries, newest first. Every language unless one is named.
+// A site without a journal/ folder has none, and Astro is spared the question.
+const hasJournal = existsSync(`./sites/${site}/journal`);
+export async function getJournal(lang) {
+  if (!hasJournal) return [];
+  return (await getCollection('journal', e => !e.data.draft && (!lang || e.data.lang === lang)))
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+}
 
 export async function buildIndex(lang, t) {
   const label = Object.fromEntries(categories.map(c => [c, t[c.toLowerCase()]]));
@@ -68,9 +84,31 @@ export async function buildIndex(lang, t) {
     };
   });
 
+  // Journal entries open a note like any record. Its first link is the entry.
+  const journal = (await getJournal(lang)).map(e => {
+    const d = e.data;
+    const href = journalPath(e);
+    return {
+      key: d.recordId,
+      title: d.title,
+      summary: d.indexSummary,
+      year: d.pubDate.getUTCFullYear(),
+      meta: date.format(d.pubDate),
+      lead: d.description,
+      repository: d.repository,
+      address: bare(new URL(href, siteUrl).href),
+      specs: [
+        { label: t.coverage, value: d.scope },
+        { label: t.sources, value: d.source },
+      ].filter(s => s.value),
+      links: [{ label: t.read, href }, d.repository && { label: t.code, href: d.repository }].filter(Boolean),
+      find: [d.title, d.indexSummary, d.description, d.scope, d.source, t.journal].filter(Boolean).join(' ').toLowerCase(),
+    };
+  });
+
   // Two records with one recordId would share a ?p= link.
   const seen = new Set();
-  for (const r of records) {
+  for (const r of [...records, ...journal]) {
     if (seen.has(r.key)) throw new Error(`Two records use recordId "${r.key}".`);
     seen.add(r.key);
   }
@@ -89,5 +127,5 @@ export async function buildIndex(lang, t) {
     .filter(g => g.entries.length > 0);
   const archive = groups.flatMap(g => g.entries);
 
-  return { works, archive, groups };
+  return { works, archive, groups, journal };
 }

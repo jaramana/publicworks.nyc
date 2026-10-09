@@ -53,6 +53,7 @@ fonts. Each site has a folder in `sites/` with its own files.
 | `copy.js` | Page copy, one block per language |
 | `about.md` | The About panel, plus `about.<lang>.md` for each other language |
 | `projects/` | One Markdown record per project, per language |
+| `journal/` | Journal entries, one file per language. Optional. |
 | `media/` | Screenshots for the records |
 | `public/` | Icons, `CNAME` and `og.png`, copied to the site as they are |
 
@@ -67,6 +68,12 @@ A site's first language is served at `/`, and each other language at
 `sites/cidadelabs/` holds Cidade Labs, in Galician at `/` and in Spanish and
 English under `/es/` and `/en/`. `npm run dev:cidade` previews it and
 `npm run build:cidade` builds it.
+
+A site with a `journal/` folder gets a Journal band on its home page, a
+Journal link in the masthead and a page per entry at `/blog/<name>/`. Its
+pictures live in the site's `public/journal/`. publicworks.nyc has no journal
+yet, so none of this shows there. Adding an entry is described in
+[docs/conventions.md](docs/conventions.md).
 
 Work on one site at a time. Both sites share Astro's `.astro/` folder, so
 building one breaks the other's running dev server until it restarts.

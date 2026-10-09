@@ -1,0 +1,47 @@
+---
+/* Dev only, never built: switches the language links between the placements
+   on trial. The choice is kept in this browser and set before first paint by
+   the script in BaseHead.astro. Remove once the owner picks. */
+const options = [['beside', 'Beside the name'], ['menu', 'Menu'], ['footer', 'Footer']];
+---
+<div class="trial" role="group" aria-label="Language links on trial">
+  <span>Language links</span>
+  {options.map(([value, label]) => <button type="button" data-langs-pick={value}>{label}</button>)}
+</div>
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-langs-pick]');
+    const mark = () => buttons.forEach(b => b.setAttribute('aria-pressed', String((root.dataset.langs || 'beside') === b.dataset.langsPick)));
+    buttons.forEach(b => b.addEventListener('click', () => {
+      root.dataset.langs = b.dataset.langsPick;
+      try { localStorage.setItem('langs-trial', b.dataset.langsPick); } catch {}
+      mark();
+    }));
+    mark();
+  })();
+</script>
+
+<style>
+  .trial {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 60;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem;
+    max-width: calc(100vw - 2rem);
+    padding: .45rem .55rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--bg);
+    box-shadow: var(--soft);
+    font-size: .75rem;
+  }
+  .trial span { padding: 0 .4rem; color: var(--muted); }
+  .trial button { padding: .3rem .7rem; border: 1px solid var(--line); border-radius: 999px; }
+  .trial button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+</style>
