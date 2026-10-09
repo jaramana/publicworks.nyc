@@ -42,8 +42,8 @@ Two local tools sit in `tools/`. Neither runs during the build.
 ## One codebase, two sites
 
 The site shares its origins with
-[Cidade Labs](https://github.com/cidade-labs/website), and the code is being
-arranged so both sites build from this repository. Shared code lives in
+[Cidade Labs](https://github.com/cidade-labs/website), and both sites build
+from this repository. Shared code lives in
 `src/`: components, styles, scripts, page templates, the record schema and the
 fonts. Each site has a folder in `sites/` with its own files.
 
@@ -63,3 +63,10 @@ imports the chosen site's files as `@site/site.js` and `@site/copy.js`.
 
 A site's first language is served at `/`, and each other language at
 `/<lang>/`. The masthead shows language links once a site has more than one.
+
+`sites/cidadelabs/` holds Cidade Labs, in Galician at `/` and in Spanish and
+English under `/es/` and `/en/`. `npm run dev:cidade` previews it and
+`npm run build:cidade` builds it.
+
+Work on one site at a time. Both sites share Astro's `.astro/` folder, so
+building one breaks the other's running dev server until it restarts.
