@@ -6,8 +6,9 @@
    sites/. Page copy lives in copy.js.
 
    The site ships in English only, served at the root (/). A
-   second language is an entry in `languages` plus a copy block
-   in copy.js.
+   second language is an entry in `languages` and `locales`, a
+   copy block in copy.js, an about.<lang>.md and a record file
+   per project in that language.
    ============================================================ */
 
 export const siteName = 'publicworks.nyc';
@@ -19,10 +20,14 @@ export const siteUrl = 'https://publicworks.nyc';
 export const githubUrl = 'https://github.com/jaramana';
 export const repoUrl = 'https://github.com/jaramana/publicworks.nyc';
 
+// Every work has an About and a Data page at its url + about.html and data.html.
+export const workPages = true;
+
 // The footer's byline and sister-site lines. Their wording lives in copy.js.
 export const byline = { name: 'Allen Shaibani', url: 'https://allenshaibani.com' };
 export const sister = { name: 'Cidade Labs', url: 'https://cidadelabs.org' };
 
 export const languageNames = { en: 'English' };
+export const locales = { en: 'en-US' };
 export const languages = ['en'];
 export const defaultLang = 'en';

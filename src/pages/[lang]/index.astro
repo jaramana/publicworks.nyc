@@ -1,0 +1,13 @@
+---
+/* The home page in each language after the first, at /<lang>/. A site with
+   one language builds nothing here. */
+import Works from '../../components/Works.astro';
+import { languages, defaultLang } from '@site/site.js';
+
+export function getStaticPaths() {
+  return languages.filter(code => code !== defaultLang).map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+---
+<Works lang={lang} />

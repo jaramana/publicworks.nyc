@@ -111,6 +111,9 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .nav a { text-decoration: none; }
 .nav a:hover, .nav a[aria-current] { text-decoration: underline; }
 
+/* The language links wrap as one group. */
+.langs { display: flex; gap: inherit; }
+
 /* Find's muted label and placeholder need a solid background. */
 .mast:has(.find:not([hidden])) { background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; }
 

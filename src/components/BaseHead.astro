@@ -1,10 +1,14 @@
 ---
-import { siteName, defaultLang } from '@site/site.js';
+import { siteName, defaultLang, languages, locales } from '@site/site.js';
 import { copy } from '@site/copy.js';
+import { localizePath } from '../i18n.js';
 import regular from '../fonts/pw-heros-regular.woff2?url';
 import bold from '../fonts/pw-heros-bold.woff2?url';
-const { title = siteName, description, noindex = false } = Astro.props;
+const { lang = defaultLang, bare = null, title = siteName, description, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// The same page in the site's other languages, when it has them.
+const alternates = bare && languages.length > 1 ? languages.map(code => ({ code, href: new URL(localizePath(bare, code), Astro.site) })) : [];
 
 // The site's public/og.png, drawn by `npm run og`.
 const shareImage = new URL('/og.png', Astro.site);
@@ -21,6 +25,8 @@ const shareAlt = `${siteName}. ${copy[defaultLang].intro}`;
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
 {!noindex && <link rel="canonical" href={canonical} />}
+{!noindex && alternates.map(a => <link rel="alternate" hreflang={a.code} href={a.href} />)}
+{!noindex && alternates.length > 0 && <link rel="alternate" hreflang="x-default" href={new URL(localizePath(bare, defaultLang), Astro.site)} />}
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0c0c0d" media="(prefers-color-scheme: dark)" />
 <meta name="color-scheme" content="light dark" />
@@ -30,7 +36,7 @@ const shareAlt = `${siteName}. ${copy[defaultLang].intro}`;
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 {!noindex && <meta property="og:url" content={canonical} />}
-<meta property="og:locale" content="en_US" />
+<meta property="og:locale" content={locales[lang].replace('-', '_')} />
 <meta property="og:image" content={shareImage} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />

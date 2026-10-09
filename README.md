@@ -49,14 +49,17 @@ fonts. Each site has a folder in `sites/` with its own files.
 
 | File in `sites/publicworks/` | What it holds |
 | --- | --- |
-| `site.js` | Name, domain, links and languages |
+| `site.js` | Name, domain, links, languages and old addresses to redirect |
 | `copy.js` | Page copy, one block per language |
-| `about.md` | The About panel |
-| `projects/` | One Markdown record per project |
+| `about.md` | The About panel, plus `about.<lang>.md` for each other language |
+| `projects/` | One Markdown record per project, per language |
 | `media/` | Screenshots for the records |
 | `public/` | Icons, `CNAME` and `og.png`, copied to the site as they are |
 
 `SITE` picks the folder and defaults to `publicworks`, so `npm run dev` and
 `npm run build` work as before. `SITE=<folder> npm run build` builds another
-site. Shared code imports the chosen site's files as `@site/site.js` and
-`@site/copy.js`.
+site into `dist-<folder>/`; publicworks.nyc builds into `dist/`. Shared code
+imports the chosen site's files as `@site/site.js` and `@site/copy.js`.
+
+A site's first language is served at `/`, and each other language at
+`/<lang>/`. The masthead shows language links once a site has more than one.

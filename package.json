@@ -9,7 +9,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "og": "node tools/og.mjs"
+    "og": "node tools/og.mjs",
+    "dev:cidade": "SITE=cidadelabs astro dev",
+    "build:cidade": "SITE=cidadelabs astro build",
+    "preview:cidade": "SITE=cidadelabs astro preview",
+    "og:cidade": "SITE=cidadelabs node tools/og.mjs"
   },
   "dependencies": {
     "astro": "^7.3.7"

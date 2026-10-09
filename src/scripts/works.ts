@@ -269,7 +269,16 @@ function urlFor(key: string | null) {
   return url;
 }
 
-const sync = () => history.replaceState(null, '', urlFor(current));
+// The language links carry the open note, so switching keeps it open.
+function sync() {
+  history.replaceState(null, '', urlFor(current));
+  $$<HTMLAnchorElement>('[data-language]').forEach(a => {
+    const url = new URL(a.href);
+    if (current) url.searchParams.set('p', current);
+    else url.searchParams.delete('p');
+    a.href = url.href;
+  });
+}
 
 addEventListener('hashchange', () => {
   if (!location.hash.startsWith('#record-')) return;

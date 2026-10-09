@@ -10,19 +10,20 @@ import { copy } from '@site/copy.js';
 import { defaultLang, languages, siteName, byline } from '@site/site.js';
 import { fill } from '../i18n.js';
 import { buildIndex } from '../entries.js';
-import { getEntry, render } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 
 const { lang = defaultLang } = Astro.props;
 const t = copy[lang];
 const { works, archive, groups } = await buildIndex(lang, t);
-const about = await getEntry('pages', 'about');
+const [about] = await getCollection('pages', p => p.data.lang === lang);
+if (!about) throw new Error(`There is no About page in "${lang}".`);
 const { Content: AboutText } = await render(about);
 const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c => c !== defaultLang).join('|') + ')(?=/|$)'), '') || '/';
 ---
 <!doctype html>
 <html lang={lang}>
 <head>
-  <BaseHead description={t.intro} />
+  <BaseHead lang={lang} bare={bare} description={t.intro} />
   <script is:inline>document.documentElement.classList.add('has-js');</script>
 </head>
 <body>
@@ -91,7 +92,7 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
         <section class="pg pg-prose" data-label={t.more} data-split tabindex="-1">
           <p class="pg-head">{about.data.title}</p>
           <AboutText />
-          <p class="byline" set:html={fill(t.byline, byline)} />
+          {byline && <p class="byline" set:html={fill(t.byline, byline)} />}
         </section>
       </article>
       {[...works, ...archive].map(r => <Note r={r} t={t} />)}

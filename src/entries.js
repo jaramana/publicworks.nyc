@@ -6,18 +6,21 @@
    field left out here does not appear on the page.
    ============================================================ */
 import { getCollection } from 'astro:content';
+import { workPages } from '@site/site.js';
 
 const categories = ['Data', 'Map', 'Essay', 'Site', 'Tools'];
 
-const date = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+// English dates read day first, as across the suite.
+const dates = lang => new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : lang, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 const page = (base, path) => new URL(path, base.endsWith('/') ? base : base + '/').href;
 
-// An address as it reads on paper: no scheme, no trailing slash.
-const bare = href => href.replace(/^https?:\/\//, '').replace(/\/$/, '');
+// An address as it reads on paper: no scheme, query or trailing slash.
+const bare = href => href.replace(/^https?:\/\//, '').replace(/[?#].*$/, '').replace(/\/$/, '');
 
 export async function buildIndex(lang, t) {
   const label = Object.fromEntries(categories.map(c => [c, t[c.toLowerCase()]]));
+  const date = dates(lang);
 
   const records = (await getCollection('projects', p => p.data.lang === lang && !p.data.draft)).map(p => {
     const d = p.data;
@@ -34,11 +37,14 @@ export async function buildIndex(lang, t) {
     ].filter(s => s.value);
 
     // Outbound links. A work links to its site, About, Data and code.
+    // Where a site's works have no such pages, only the ones a record names.
     const links = [];
     if (d.url && d.url !== code) links.push({ label: isWork ? t.openSite : t.openRecord, href: d.url });
     if (isWork && d.url) {
-      links.push({ label: t.aboutPage, href: d.aboutUrl ?? page(d.url, 'about.html') });
-      links.push({ label: t.dataPage, href: d.dataUrl ?? page(d.url, 'data.html') });
+      const about = d.aboutUrl ?? (workPages && page(d.url, 'about.html'));
+      const data = d.dataUrl ?? (workPages && page(d.url, 'data.html'));
+      if (about) links.push({ label: t.aboutPage, href: about });
+      if (data) links.push({ label: t.dataPage, href: data });
     }
     if (code) links.push({ label: t.code, href: code });
 
@@ -58,7 +64,7 @@ export async function buildIndex(lang, t) {
       address: (d.url ?? code) && bare(d.url ?? code),
       specs,
       links,
-      find: [d.title, d.indexSummary, d.category, d.builtWith, d.source, ...d.keywords, d.series].filter(Boolean).join(' ').toLowerCase(),
+      find: [d.title, d.indexSummary, label[d.category], d.builtWith, d.source, ...d.keywords, d.series].filter(Boolean).join(' ').toLowerCase(),
     };
   });
 

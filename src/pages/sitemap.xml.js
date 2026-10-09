@@ -1,6 +1,8 @@
 /* The sitemap. Add a path here when the site gains a page worth indexing. */
+import { languages } from '@site/site.js';
+import { localizePath } from '../i18n.js';
 
-const paths = ['/'];
+const paths = ['/'].flatMap(path => languages.map(lang => localizePath(path, lang)));
 
 export function GET({ site }) {
   const urls = paths.map(p => `  <url><loc>${new URL(p, site)}</loc></url>`).join('\n');

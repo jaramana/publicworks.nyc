@@ -21,12 +21,13 @@ const { copy } = await import(new URL(`../sites/${site}/copy.js`, import.meta.ur
 const chrome = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const out = join(siteDir, 'public/og.png');
 
-// Works in page order, read from the records' frontmatter.
+// Works in page order, read from the records' frontmatter, in the default language.
 const dir = join(siteDir, 'projects');
 const field = (text, name) => text.match(new RegExp(`^${name}:\\s*"?(.*?)"?\\s*$`, 'm'))?.[1];
 const works = readdirSync(dir).filter(f => f.endsWith('.md')).sort()
   .map(f => readFileSync(join(dir, f), 'utf8').split(/^---$/m)[1])
   .filter(fm => field(fm, 'status') === 'works' && field(fm, 'draft') !== 'true')
+  .filter(fm => (field(fm, 'lang') ?? defaultLang) === defaultLang)
   .map(fm => ({ title: field(fm, 'title'), order: Number(field(fm, 'order') ?? 99) }))
   .sort((a, b) => a.order - b.order)
   .map(w => w.title);

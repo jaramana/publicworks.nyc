@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { site } from './current-site.js';
+import { languages, defaultLang } from '@site/site.js';
 
 /* ============================================================
    CONTENT COLLECTIONS
@@ -9,9 +10,13 @@ import { site } from './current-site.js';
    The shape of a project record and of a page like About.
    Records load from the chosen site's folder in sites/. To add
    a project, drop a .md file in its projects/ folder and fill
-   in the fields below at the top (frontmatter).
+   in the fields below at the top (frontmatter). A site with more
+   than one language has one file per language, each with its lang.
    A project's Markdown body is not shown on the page.
    ============================================================ */
+
+// A record's language: one of the site's languages, the default unless named.
+const lang = z.enum(languages).default(defaultLang);
 
 const projects = defineCollection({
   loader: glob({ pattern: '*.md', base: `./sites/${site}/projects` }),
@@ -89,16 +94,18 @@ const projects = defineCollection({
     // Hides the record from the build.
     draft: z.boolean().default(false),
 
-    lang: z.enum(['en']).default('en'),
+    lang,
   }).refine(d => d.status !== 'works' || d.cover, { message: 'A work needs a cover.', path: ['cover'] }),
 });
 
-// Panels that are not projects. The site's about.md is the About panel.
+// Panels that are not projects. The site's about.md is the About panel,
+// with about.<lang>.md for each other language.
 const pages = defineCollection({
-  loader: glob({ pattern: 'about.md', base: `./sites/${site}` }),
+  loader: glob({ pattern: 'about*.md', base: `./sites/${site}` }),
   schema: z.object({
     title: z.string(),
     lead: z.string(),
+    lang,
   }),
 });
 

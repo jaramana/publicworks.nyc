@@ -9,7 +9,7 @@ const t = copy[lang];
 <footer class="foot">
   <p class="notice" set:html={t.notice} />
   <div class="colophon">
-    <p set:html={fill(t.byline, byline)} />
+    {byline && <p set:html={fill(t.byline, byline)} />}
     <p set:html={fill(t.sister, sister)} />
     <p><a href={repoUrl}>{t.sourceCode}</a> · {t.privacy}</p>
   </div>

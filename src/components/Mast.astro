@@ -16,7 +16,7 @@ const root = home ? '' : localizePath('/', lang);
     <a href={root + '#archive'}>{t.archive}</a>
     <a href={root + '#record-about'} data-open={home ? 'about' : undefined}>{t.about}</a>
     <a href={githubUrl}>{t.github}</a>
-    {languages.length > 1 && languages.map(code => <a href={localizePath(bare, code)} lang={code} aria-label={languageNames[code]} aria-current={code === lang ? 'page' : undefined}>{code}</a>)}
+    {languages.length > 1 && <span class="langs">{languages.map(code => <a href={localizePath(bare, code)} lang={code} data-language aria-label={languageNames[code]} aria-current={code === lang ? 'page' : undefined}>{code}</a>)}</span>}
   </nav>
   <slot />
 </header>
