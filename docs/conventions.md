@@ -283,6 +283,31 @@ address. It says the page was not found and links to the home page and the
 Data page. A 404 page that sets `<base href="/">` so its links work from any
 depth carries no skip link, because `#main` would resolve to the home page.
 
+## Page metadata
+
+Every product page carries these tags under its meta description. The 404
+page and the redirect stubs are the exceptions.
+
+| Tag | Content |
+| --- | --- |
+| `link rel="canonical"` | The page's `https://` address, `/` for the home page and the `.html` name for the rest |
+| `og:title` | The page's `<title>` |
+| `og:description` | The page's meta description |
+| `og:type` | `website` |
+
+- A page whose content is chosen by its query string, such as a school, an
+  exam or an event, carries no canonical. One would tell search engines that
+  every school is the same page. A query that only filters or sorts a page
+  keeps the canonical. The Blue Pages serves every agency from one page, so it
+  carries none.
+- No page carries `og:url`. Facebook and LinkedIn treat it as the page's
+  permanent address, so a shared link with a query or hash would open the
+  bare page.
+- No site has a share image yet. Add `og:image` with the portfolio's card
+  images.
+
+`tools/audit/` flags a page that breaks these rules.
+
 ## Boxes
 
 There are two, they mean different things, and both are defined identically on

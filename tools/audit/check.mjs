@@ -267,7 +267,8 @@ async function facts(page) {
     return {
       title: document.title, lang: document.documentElement.lang,
       description: meta('description'), canonical: document.querySelector('link[rel=canonical]')?.href || null,
-      ogTitle: meta('og:title'), ogImage: meta('og:image'), themeColor: meta('theme-color'),
+      ogTitle: meta('og:title'), ogDescription: meta('og:description'), ogUrl: meta('og:url'),
+      ogImage: meta('og:image'), themeColor: meta('theme-color'),
       icon: !!document.querySelector('link[rel~=icon]'), touchIcon: !!document.querySelector('link[rel=apple-touch-icon]'),
       viewport: meta('viewport'),
       h1: [...document.querySelectorAll('h1')].filter(h => h.getClientRects().length).length, skips,

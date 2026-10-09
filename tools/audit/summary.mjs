@@ -50,8 +50,13 @@ function findings(r) {
     if (p.facts.h1 !== 1) add(p.url, `${p.facts.h1} h1 elements`);
     for (const k of p.facts.skips) add(p.url, `heading skip ${k}`);
     if (p.facts.brokenFragments.length) add(p.url, `same-page anchors with no target: #${p.facts.brokenFragments.join(', #')}`);
-    const missing = ['description', 'canonical', 'ogTitle', 'ogImage', 'icon'].filter(k => !p.facts[k]);
+    // A page chosen by its query string carries no canonical, and The Blue Pages serves every
+    // view from one page. No site has a share image yet.
+    const canonical = !p.url.includes('?') && r.site !== 'bluepages';
+    const wanted = ['description', ...(canonical ? ['canonical'] : []), 'ogTitle', 'ogDescription', 'icon'];
+    const missing = wanted.filter(k => !p.facts[k]);
     if (missing.length && p.kind !== '404') add(p.url, `metadata missing: ${missing.join(', ')}`);
+    if (p.facts.ogUrl) add(p.url, 'og:url sends shared links with a query or hash to the bare page');
   }
   for (const l of r.links?.broken || []) add('links', `broken link ${l}`);
   for (const [id, v] of Object.entries(r.html || {})) add('html', `html-validate ${id} ×${v.count}: ${v.sample.join('; ')}`);

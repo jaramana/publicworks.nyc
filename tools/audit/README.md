@@ -65,7 +65,7 @@ To check that a fix changed nothing else, shoot before and after and compare. Ma
 | Media | Reduced motion, print |
 | Robustness | JavaScript off, console errors, failed requests, other hosts, cookies and storage |
 | Links | Every same-site link on the audited pages, fetched once; same-page anchors with no target |
-| Metadata | Title, description, canonical, Open Graph, icons, one `h1`, heading levels |
+| Metadata | Title, description, canonical, Open Graph text and no `og:url`, as in `docs/conventions.md`; icons, one `h1`, heading levels |
 | Suite contract | The `A publicworks.nyc project.` line, the home-page notice, About and Data heading order, one-word Data headings, the Data page date |
 
 The contract checks follow `alignment.md` in the parent folder. Wealth's Data page is checked with Process first, its agreed exception.
@@ -109,7 +109,7 @@ What still holds a score down:
 - axe leaves symbol buttons "incomplete" for label-in-name: the portfolio pager's arrows, Schools' chip chevrons and Compare's × buttons. Each has a text name, and WCAG 2.5.3 doesn't apply to symbols.
 - Lighthouse counts MapLibre as unused JavaScript on map pages. It loads only when a map is on screen.
 - GitHub Pages can't set security headers. A `<meta>` CSP is optional and of low value for pages that load nothing from other hosts but map tiles.
-- The metadata line is advisory. Canonical links and Open Graph tags are not yet a suite rule.
+- A page audited with a query string, such as a school or an exam, is not asked for a canonical, and neither is The Blue Pages, which serves every view from one page. No page is asked for `og:image` until the sites have share images.
 - The Blue Pages' agency rail holds 307 links on every view, so the keyboard walk passes 250 stops, and its group headings come before the view's `h1`. The skip link jumps past the rail. Wealth NJ's Data table does the same with 598 rows.
 - Wealth's map pages put "Use the data table" beside the skip link, outside any landmark, so a keyboard user reaches the table before the map. axe calls this `region`.
 - Schools clamps a long school description with a "Read the full description" button, and The Blue Pages' Org Chart is a clipped pan-and-zoom canvas. Text spacing clips both by design, and the full text stays reachable.
