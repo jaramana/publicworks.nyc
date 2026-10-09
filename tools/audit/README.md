@@ -83,7 +83,7 @@ The first full run, before and after that day's fixes. Each cell gives a site's 
 | Site | Performance, phone | Performance, desktop | Accessibility | SEO | Worst layout shift | Slowest phone LCP | axe rules failed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | The Pay Gap | 82 → 100 | 78 → 100 | 95 → 100 | 100 | 0.59 → 0.06 | 1.5 s | 3 → 0 |
-| NYC Hazard Historian | 89 → 96 | 99 → 100 | 98 → 100 | 60 | 0.19 → 0.01 | 2.6 s → 2.7 s | 1 → 0 |
+| NYC Hazard Historian | 89 → 97 | 99 → 100 | 98 → 100 | 60 → 100 | 0.19 → 0.01 | 2.6 s | 1 → 0 |
 | Schools Finder | 99 | 100 | 100 | 100 | 0.00 | 2.0 s → 1.8 s | 0 |
 | NYC Civil Service Exams | 77 → 99 | 79 → 100 | 100 | 90 → 100 | 0.64 → 0.04 | 2.1 s | 0 |
 | The Blue Pages | 95 | 97 → 98 | 97 → 100 | 100 | 0.03 | 2.9 s | 1 → 0 |
@@ -96,8 +96,7 @@ The first full run, before and after that day's fixes. Each cell gives a site's 
 What still holds a score down:
 
 - Wealth NYC and Wealth NJ, phone performance. The map's largest paint waits for its GeoJSON. The map file now carries only the fields the map reads, 496 KB compressed for New Jersey, and a preload starts it at once. Shapes are most of what remains.
-- Hazard Historian, SEO 60. `dataflow.html` carries `noindex`.
-- Hazard Historian's Event page, largest paint 2.7 s. The event file waits behind MapLibre, which loads first.
+- Hazard Historian's Event page, largest paint 2.6 s. The event file waits behind MapLibre, which loads first.
 - The Blue Pages, phone performance 95. The agency rail loads full-size logos into 30-pixel thumbnails, about 1.3 MB more than it needs.
 - Chopper Noise, phone performance 92. The map page's scripts block the main thread for about 350 ms on Lighthouse's slower phone.
 - Cidade Labs, accessibility 96. The language links beside the wordmark are under 24 pixels on a phone. They are on trial until the owner picks a placement.
