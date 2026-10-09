@@ -32,12 +32,13 @@ npm install
 npm run dev
 ```
 
-Two local tools sit in `tools/`. Neither runs during the build.
+Three local tools sit in `tools/`. None runs during the build.
 
 | Command | What it does |
 | --- | --- |
 | `npm run og` | Redraws the share image, `sites/publicworks/public/og.png`, from the site's name, intro and works. Run it after adding, removing, renaming or reordering a work. |
 | `node tools/shoot.mjs <url> <file>` | Screenshots a product for its cover. Needs Chrome running with `--remote-debugging-port=9222`. |
+| `tools/audit/` | The standards audit for every product and both sites: Lighthouse, axe, markup, layout, keyboard and the suite's own rules. It has its own `npm install`; see its README. |
 
 ## One codebase, two sites
 

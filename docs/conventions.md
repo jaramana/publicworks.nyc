@@ -1,10 +1,10 @@
 # Conventions
 
 Notes that used to live in the README. The shared header, footer, boxes and
-announcement banner apply to The Pay Gap, Hazard Historian and Schools Finder.
-Wealth NYC uses the same footer structure without a Sources column, and its
-own masthead styling. Civil Service Exams and The Blue Pages have their own
-chrome. The portfolio index has its own layout too. Follow each site's implementation
+announcement banner apply to The Pay Gap, Hazard Historian, Schools Finder and
+Chopper Noise. Wealth NYC and Wealth NJ use the same footer structure without a
+Sources column, and their own masthead styling. Civil Service Exams and The
+Blue Pages have their own chrome. The portfolio index has its own layout too. Follow each site's implementation
 for those exceptions; do not copy the shared chrome into them by default.
 
 ## Adding a project
@@ -179,6 +179,25 @@ sticks to the top of the viewport has to clear `--masthead-h` too. And the bar
 goes opaque under `prefers-reduced-transparency: reduce`, and static under
 `@media (max-height: 34rem)`, which is what a reader at 200 per cent zoom has.
 
+## Stable first paint
+
+A slot that script fills holds its filled height from the first paint, so
+the page under it does not jump. Each site keeps these rules in a "Stable first
+paint" block in its stylesheet.
+
+- The masthead slot, `header[data-chrome="masthead"]:empty`, holds the height
+  the drawn masthead has at each width: one row, or the nav wrapping.
+- Status lines, search boxes and other filled lines hold their measured height
+  the same way.
+- `main` is at least a screen tall, so the footer starts below the fold.
+- A page whose body is all data carries `class="is-loading"` on `main`. Its
+  sections stay hidden until the script draws them and removes the class.
+
+The heights are measurements, not design values. Re-measure them when the nav,
+the masthead or the filled text changes. `tools/audit/cls.mjs` names whatever
+still moves. A page whose script draws the main content also carries a
+`noscript` note pointing to the Data page.
+
 ## The footer
 
 Four columns, then the colophon, then the portfolio mark on its own line.
@@ -189,6 +208,9 @@ Four columns, then the colophon, then the portfolio mark on its own line.
 | Reference | `data.html` and `about.html`. Nothing else. |
 | Sources | The upstream publishers, linked out. |
 | Project | The repository and the issue tracker. Code, not pages. |
+
+Column titles are `<h2 class="footer-head">`, set as small uppercase labels.
+An `h4` there skipped levels in the page outline.
 
 Every link points at a page. None points at a section within a page: four
 entries that all open one page at a different anchor read as four
@@ -205,15 +227,15 @@ It is the cabinet these projects are filed in, not a section of any one site,
 so it is announced once at the foot and does not compete with the site's own
 navigation.
 
-The Pay Gap, Hazard Historian, Schools Finder, Civil Service Exams, The Blue
-Pages and Wealth NYC all end with this exact line. Civil Service Exams and The Blue Pages keep
-their own footer layouts. Civil Service Exams now uses the full independence
+Every product ends with this exact line. Civil Service Exams and The Blue
+Pages keep their own footer layouts. A view that fills the window carries the
+line in its own foot bar instead: the Wealth maps and The Blue Pages' Org Chart. Civil Service Exams now uses the full independence
 notice in its footer, naming DCAS as the authoritative publisher. Source dates
 belong beside the data or in the source notes, never in the portfolio line.
 
 ## About pages
 
-The six current products share the same core sections, in this order: Why,
+The eight products share the same core sections, in this order: Why,
 Scope, Built, Independence, Credits, Reuse and Contact. A one-sentence lead sits
 under the heading. Keep product-specific sections between Scope and Built where
 they carry necessary facts: The Pay Gap has History, Schools Finder has Language
@@ -243,10 +265,23 @@ live in `alignment.md`. The visual parts are shared.
 | Columns | A `details.columns` directly under the downloads. It holds the column definitions, generated from the pipeline's dictionary. |
 | Process | `ol.process`, a vertical numbered list. A filled accent circle carries the number, and a line joins the steps. Wealth NYC is the exception. It opens its Data page with Process, shown as two parallel calculations in cards, each with its own `ol.pipeline` and equation. |
 
+One line gives the build date, written out and filled from the pipeline's
+metadata: `<p class="data-note" id="built">`, reading "Data built 9 October
+2026." It sits under the Downloads note and holds a `&nbsp;` until filled.
+Civil Service Exams gives its "current as of" and "checked" dates at the top
+instead, and The Blue Pages its snapshot date.
+
 Section headings are single words. The order is Downloads, Sources, Process, an
 optional product section, Limits. Anchors are `#downloads`, `#sources`,
 `#process` and `#limits`. The old `method.html` and `methodology.html` URLs
 remain as redirect stubs that keep the anchor.
+
+## 404 pages
+
+Every product has a `docs/404.html`, which GitHub Pages serves for any missing
+address. It says the page was not found and links to the home page and the
+Data page. A 404 page that sets `<base href="/">` so its links work from any
+depth carries no skip link, because `#main` would resolve to the home page.
 
 ## Boxes
 

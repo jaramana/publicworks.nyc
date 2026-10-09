@@ -1,0 +1,17 @@
+{
+  "name": "publicworks-audit",
+  "private": true,
+  "type": "module",
+  "description": "Local standards audit for the publicworks.nyc products. Never runs in CI.",
+  "scripts": {
+    "audit": "node run.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "4.14.0",
+    "html-validate": "11.16.2",
+    "lighthouse": "13.5.0",
+    "pixelmatch": "8.0.0",
+    "pngjs": "7.0.0",
+    "puppeteer-core": "25.12.0"
+  }
+}
