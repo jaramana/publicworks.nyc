@@ -8,8 +8,7 @@ import Tile from './Tile.astro';
 import Note from './Note.astro';
 import Row from './Row.astro';
 import { copy } from '@site/copy.js';
-import { defaultLang, languages, siteName, byline } from '@site/site.js';
-import { fill } from '../i18n.js';
+import { defaultLang, languages, siteName } from '@site/site.js';
 import { buildIndex } from '../entries.js';
 import { getCollection, render } from 'astro:content';
 
@@ -96,11 +95,12 @@ const bare = Astro.url.pathname.replace(new RegExp('^/(' + languages.filter(c =>
             <p class="note-lead">{about.data.lead}</p>
           </div>
         </section>
-        <section class="pg pg-prose" data-label={t.more} data-split tabindex="-1">
-          <p class="pg-head">{about.data.title}</p>
-          <AboutText />
-          {byline && <p class="byline" set:html={fill(t.byline, byline)} />}
-        </section>
+        {about.body?.trim() && (
+          <section class="pg pg-prose" data-label={t.more} data-split tabindex="-1">
+            <p class="pg-head">{about.data.title}</p>
+            <AboutText />
+          </section>
+        )}
       </article>
       {[...works, ...journal, ...archive].map(r => <Note r={r} t={t} />)}
     </div>

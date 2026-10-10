@@ -72,7 +72,7 @@ export async function buildIndex(lang, t) {
       summary: d.indexSummary,
       category: d.category,
       year: d.year,
-      meta: [d.year, label[d.category], d.series === 'redux' && t.redux].filter(Boolean).join(' · '),
+      meta: [d.year, label[d.category]].filter(Boolean).join(' · '),
       cover: d.cover,
       lead: d.lead,
       take: isWork ? d.take : undefined,

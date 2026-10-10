@@ -34,7 +34,7 @@ const inner = $('[data-panel-inner]');
 const announce = $('[data-announce]');
 const notes = new Map($$('[data-note]').map(n => [n.dataset.note!, n]));
 const siteTitle = document.title;
-const narrow = matchMedia('(max-width: 50.99rem)');
+const narrow = matchMedia('(max-width: 52.49rem)');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const smooth = (): ScrollBehavior => (reduceMotion.matches ? 'auto' : 'smooth');
 

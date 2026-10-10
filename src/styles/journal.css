@@ -193,7 +193,7 @@
 
 /* The home page's frame: the entry in the wide column, its details and
    contents holding still in the panel. Narrow screens keep one column. */
-@media (min-width: 51rem) {
+@media (min-width: 52.5rem) {
   [data-layout="panel"] .entry {
     display: grid;
     grid-template-columns: minmax(0, 1fr) calc(var(--panel) + var(--panel-gap) / 2);

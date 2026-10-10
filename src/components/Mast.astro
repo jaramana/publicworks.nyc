@@ -7,7 +7,7 @@
    render in `astro dev`, where Trial.astro switches between them. */
 import Langs from './Langs.astro';
 import { copy } from '@site/copy.js';
-import { defaultLang, languages, languageNames, siteName, githubUrl } from '@site/site.js';
+import { defaultLang, languages, languageNames, siteName } from '@site/site.js';
 import { localizePath } from '../i18n.js';
 import { getJournal } from '../entries.js';
 const { lang = defaultLang, home = false, bare = '/', available = languages } = Astro.props;
@@ -25,7 +25,6 @@ const multi = languages.length > 1;
     {hasJournal && <a href={root + '#journal'}>{t.journal}</a>}
     <a href={root + '#archive'}>{t.archive}</a>
     <a href={root + '#record-about'} data-open={home ? 'about' : undefined}>{t.about}</a>
-    <a href={githubUrl}>{t.github}</a>
   </nav>
   {multi && import.meta.env.DEV && (
     <details class="langs-menu">

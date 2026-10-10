@@ -36,7 +36,7 @@ const projects = defineCollection({
     // works: a product in the public-works folder. archive: everything else.
     status: z.enum(['works', 'archive']),
 
-    // redux: a past professional project rebuilt independently from public sources.
+    // redux: a past professional project rebuilt independently from public sources. Not shown.
     series: z.enum(['redux']).optional(),
 
     // The ?p= value.

@@ -3,7 +3,7 @@
 [publicworks.nyc](https://publicworks.nyc) is the index for this portfolio of
 independent public-record tools and earlier data, GIS and website projects. It
 is one page. The Works grid shows the current products, and the Archive lists
-earlier projects, tools and the Cidade Labs maps. On a wide screen each record
+earlier projects and tools. Cidade Labs' maps are listed on its own site. On a wide screen each record
 opens in the panel beside the grid; on a narrow one it opens under its tile.
 `?p=<recordId>` links to a record.
 

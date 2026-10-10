@@ -20,7 +20,7 @@ indexSummary: "One line, under the title on the tile and in the archive row."
 description: "Not shown. Kept for a later cleanup."
 category: "Data"          # Data, Map, Essay, Site or Tools
 status: "works"           # works: a product in the public-works folder; archive: everything else
-series: "redux"           # only for a past professional project rebuilt from public sources
+series: "redux"           # only for a past professional project rebuilt from public sources; not shown
 recordId: "short-slug"    # the ?p= value
 year: 2026
 keywords: ["up", "to", "five", "words"]
@@ -48,9 +48,8 @@ and Chopper Noise keep their old narratives there for reference. A work's own
 words go in `take:`, which the author writes. Never draft a take for them.
 
 Screenshots live in `sites/publicworks/media/` and are converted to AVIF and WebP at
-build time. A Redux record shows Redux in its meta line. About's Redux section
-says it was rebuilt from public sources only and names it, so add each new one
-there.
+build time. `series: "redux"` is kept in the record but not shown on the
+page. A rebuilt project says so on its own site.
 
 Categories are ordered in `src/entries.js`, and their labels live in
 `sites/publicworks/copy.js`.
@@ -92,12 +91,12 @@ below. The styles are in `src/styles/works.css`.
 | Color | White page (`#fff`), `#161616` ink, `#6c6c70` muted, hairlines. Black and white only; the screenshots carry the color. Dark mode follows the system. |
 | Type | PW Heros, regular weight. The wordmark and section titles are bold. Labels are 11px uppercase, tracked .08em, muted. |
 | Project color | None. Records have no `accent` and the page has no `--spot`. |
-| Tiles | Fluid. Each row shares its width, and no tile drops below 17rem, so rows always reach both edges. 8px radius, soft shadow, full-color screenshots. They lift 2px on hover, on devices that can hover. |
+| Tiles | Fluid. Each row shares its width, and no tile drops below 11.5rem, so rows always reach both edges. 2px radius and a hairline, with no shadow. Full-color screenshots. On hover, on devices that can hover, the hairline, title, year line and summary go to full ink and the title underlines. Nothing moves. |
 | Glass | The sticky masthead only: white at 72%, `saturate(180%) blur(18px)`. Opaque under reduced transparency. A hairline appears once the page scrolls. |
-| Grid | Tiles and panel form one centered frame, up to 100rem wide. Columns follow from the 17rem minimum: one beside the panel from 51rem, two from about 71.5rem, three from about 94rem. |
-| Panel | 25rem, from 51rem wide. It sticks under the masthead, fills the window's height and never scrolls. At rest it shows About. |
+| Grid | Tiles and panel form one centered frame, up to 68rem wide. Columns follow from the 11.5rem minimum. Beside the panel there are two from 52.5rem and three from about 67.4rem. Below 52.5rem there is one, two from about 27.75rem and three from about 42.4rem. |
+| Panel | 19rem, from 52.5rem wide. It sticks under the masthead, fills the window's height and never scrolls. At rest it shows About. |
 | Pages | A note turns in pages: Overview, then Details and Take where the record has them. About turns by its sections. In a short window Overview drops its thumbnail first; a page that still overflows continues on a "continued" page. |
-| Under 51rem | A note opens whole under its tile, with no thumbnail and no pager. About sits after the archive. |
+| Under 52.5rem | A note opens whole under its tile, with no thumbnail and no pager. About sits after the archive. |
 | Masthead | Nav links are ink, because tiles scroll under the glass on narrow screens. Under 30rem tall the masthead scrolls away. |
 | Images | The tile's `sizes` in `Tile.astro` mirrors the grid. Change both together. Only the first tile's image has high priority. |
 | Order | By `order`, lowest first. Ties, and records with no `order`, go by title. |

@@ -16,15 +16,12 @@ export const siteName = 'Cidade Labs';
 // sitemap all build from it.
 export const siteUrl = 'https://cidadelabs.org';
 
-export const githubUrl = 'https://github.com/cidade-labs';
-export const repoUrl = 'https://github.com/jaramana/publicworks.nyc';
 
 // The maps have no About or Data pages of their own.
 export const workPages = false;
 
-// The footer's sister-site line. Its wording lives in copy.js. The lab
-// carries no personal byline.
-export const byline = null;
+// The footer's byline and sister-site lines. Their wording lives in copy.js.
+export const byline = { name: 'Allen Shaibani', url: 'https://allenshaibani.com' };
 export const sister = { name: 'publicworks.nyc', url: 'https://publicworks.nyc' };
 
 export const languageNames = { gl: 'Galego', es: 'Español', en: 'English' };

@@ -5,12 +5,13 @@ const { r, eager = false, priority = false } = Astro.props;
 // The tile's rendered width at each step of the fluid grid in works.css.
 // Change both together.
 const sizes = [
-  '(min-width: 108rem) 21.5rem',
-  '(min-width: 93.75rem) calc(30.67vw - 11.83rem)',
-  '(min-width: 71.5rem) calc(44.5vw - 14.75rem)',
-  '(min-width: 51rem) calc(92vw - 29.5rem)',
-  '(min-width: 39.25rem) calc(46vw - 1rem)',
-  '92vw',
+  '(min-width: 73.9rem) 13.5rem',
+  '(min-width: 67.4rem) calc(30.67vw - 9.17rem)',
+  '(min-width: 52.5rem) calc(46vw - 12.63rem)',
+  '(min-width: 42.4rem) calc(30.67vw - 1.5rem)',
+  '(min-width: 31.25rem) calc(46vw - 1.13rem)',
+  '(min-width: 27.75rem) calc(50vw - 2.38rem)',
+  'calc(100vw - 2.5rem)',
 ].join(', ');
 ---
 <li class="tile" data-item={r.key} data-find={r.find}>

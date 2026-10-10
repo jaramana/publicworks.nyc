@@ -17,8 +17,6 @@ export const siteName = 'publicworks.nyc';
 // sitemap all build from it.
 export const siteUrl = 'https://publicworks.nyc';
 
-export const githubUrl = 'https://github.com/jaramana';
-export const repoUrl = 'https://github.com/jaramana/publicworks.nyc';
 
 // Every work has an About and a Data page at its url + about.html and data.html.
 export const workPages = true;

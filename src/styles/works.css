@@ -15,7 +15,6 @@
   --line-strong: rgba(0, 0, 0, .3);
   --shot-line: rgba(0, 0, 0, .07);
   --soft: 0 1px 2px rgba(0, 0, 0, .04), 0 14px 32px -18px rgba(0, 0, 0, .22);
-  --soft-lift: 0 1px 2px rgba(0, 0, 0, .05), 0 22px 44px -18px rgba(0, 0, 0, .28);
   --glass: rgba(255, 255, 255, .72);
   --glass-blur: saturate(180%) blur(18px);
   --radius: 8px;
@@ -26,11 +25,11 @@
   /* The frame: tiles and panel as one centered block, up to --max wide.
      Tiles share each row and never drop below --tile-min, so a row always
      reaches both edges. The masthead and footer line up with the frame. */
-  --tile-min: 17rem;
-  --tile-gap: clamp(2rem, 3vw, 3rem);
-  --panel: 25rem;
-  --panel-gap: 4.5rem;
-  --max: 100rem;
+  --tile-min: 11.5rem;
+  --tile-gap: 2.25rem;
+  --panel: 19rem;
+  --panel-gap: 4rem;
+  --max: 68rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,7 +43,6 @@
     --line-strong: rgba(255, 255, 255, .34);
     --shot-line: rgba(255, 255, 255, .09);
     --soft: 0 14px 32px -18px rgba(0, 0, 0, .7);
-    --soft-lift: 0 22px 44px -18px rgba(0, 0, 0, .8);
     --glass: rgba(12, 12, 13, .72);
   }
 }
@@ -135,7 +133,7 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .langs-list a { padding: .45rem 1rem; text-decoration: none; }
 .langs-list a:hover { background: var(--surface); }
 .langs-list a[aria-current] { text-decoration: underline; }
-@media (max-width: 50.99rem) {
+@media (max-width: 52.49rem) {
   [data-langs="menu"] .mast .nav { order: 2; flex-basis: 100%; }
   [data-langs="menu"] .mast .find { order: 3; }
 }
@@ -180,34 +178,37 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 
 /* ---- tiles ---------------------------------------------------------- */
 
-.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--tile-min)), 1fr)); gap: clamp(3rem, 5vw, 4.5rem) var(--tile-gap); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--tile-min)), 1fr)); gap: 3.25rem var(--tile-gap); }
 
 .tile { position: relative; display: grid; gap: .3rem; align-content: start; }
 .tile-media {
-  margin-bottom: .9rem;
+  margin-bottom: .75rem;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: var(--radius);
+  border-radius: 2px;
   background: var(--surface);
-  box-shadow: 0 0 0 1px var(--shot-line), var(--soft);
+  box-shadow: 0 0 0 1px var(--shot-line);
   outline: 1.5px solid transparent;
   outline-offset: 5px;
-  transition: box-shadow .3s var(--ease), transform .3s var(--ease), outline-color .2s var(--ease);
+  transition: box-shadow .2s var(--ease), outline-color .2s var(--ease);
 }
 .tile-media img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
 .tile-meta { font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.tile-title { font-size: 1.0625rem; font-weight: 400; line-height: 1.25; }
+.tile-title { font-size: .9375rem; font-weight: 400; line-height: 1.25; }
 .tile-link { text-decoration: none; }
 .tile-link::after { content: ""; position: absolute; inset: 0; }
 .tile-link:focus-visible { outline: none; }
-.tile-summary { max-width: 40ch; font-size: .875rem; line-height: 1.45; color: var(--muted); }
+.tile-summary { max-width: 40ch; font-size: .8125rem; line-height: 1.45; color: var(--muted); }
+.tile-meta, .tile-summary { transition: color .2s var(--ease); }
 
 /* Addresses show only in print, where the links can't be followed. */
 .tile-addr, .row-addr { display: none; }
 
+/* Hover brings the tile to full ink: hairline, title, year line and summary. Nothing moves. */
 @media (hover: hover) {
-  .tile:hover .tile-media { box-shadow: 0 0 0 1px var(--shot-line), var(--soft-lift); transform: translateY(-2px); }
   .tile:hover .tile-link { text-decoration: underline; }
+  .tile:hover :is(.tile-meta, .tile-summary) { color: var(--ink); }
+  .tile:hover .tile-media { box-shadow: 0 0 0 1px var(--ink); }
 }
 .tile.is-current .tile-link { text-decoration: underline; }
 .tile.is-current .tile-media { outline-color: var(--ink); }
@@ -263,8 +264,6 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .pg-title, .pg-prose h2 { font-size: .9375rem; font-weight: 700; }
 .pg-prose { font-size: .9375rem; line-height: 1.55; }
 .pg-prose p { max-width: 60ch; }
-.pg-prose .byline { margin-top: .9rem; padding-top: .9rem; border-top: 1px solid var(--line); font-size: .8125rem; color: var(--muted); }
-.pg-prose .byline a { color: var(--ink); }
 .note-thumb.is-dropped { display: none; }
 
 /* ---- panel ---------------------------------------------------------- */
@@ -292,10 +291,10 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
 
 /* ---- frame ---------------------------------------------------------- */
 
-/* The panel joins once one tile fits beside it. The wordmark lines up
+/* The panel joins once two tiles fit beside it. The wordmark lines up
    with the first tile, and the nav ends at the panel's right edge. A
    hairline runs down the middle of the gap. */
-@media (min-width: 51rem) {
+@media (min-width: 52.5rem) {
   .mast { padding-inline: max(var(--pad), calc((100% - var(--max)) / 2)); }
   .page, .foot { max-width: calc(var(--max) + 2 * var(--pad)); margin-inline: auto; }
   #works { padding-top: clamp(2rem, 4vw, 3.5rem); }
