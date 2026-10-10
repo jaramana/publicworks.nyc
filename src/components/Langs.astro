@@ -1,9 +1,9 @@
 ---
-/* Links to this page in each of the site's languages. A language without
-   this page links to its home page. `names` shows full names, not codes. */
+/* Links to this page in each of the site's languages, by name. A language
+   without this page links to its home page. */
 import { defaultLang, languages, languageNames } from '@site/site.js';
 import { localizePath } from '../i18n.js';
-const { lang = defaultLang, bare = '/', available = languages, names = false } = Astro.props;
+const { lang = defaultLang, bare = '/', available = languages } = Astro.props;
 ---
 {languages.map(code => (
   <a
@@ -11,7 +11,6 @@ const { lang = defaultLang, bare = '/', available = languages, names = false } =
     lang={code}
     hreflang={code}
     data-language
-    aria-label={names ? undefined : `${code}, ${languageNames[code]}`}
     aria-current={code === lang ? 'page' : undefined}
-  >{names ? languageNames[code] : code}</a>
+  >{languageNames[code]}</a>
 ))}

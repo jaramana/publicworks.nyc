@@ -64,7 +64,7 @@ site into `dist-<folder>/`; publicworks.nyc builds into `dist/`. Shared code
 imports the chosen site's files as `@site/site.js` and `@site/copy.js`.
 
 A site's first language is served at `/`, and each other language at
-`/<lang>/`. The masthead shows language links once a site has more than one.
+`/<lang>/`. The masthead shows a language menu once a site has more than one.
 
 `sites/cidadelabs/` holds Cidade Labs, in Galician at `/` and in Spanish and
 English under `/es/` and `/en/`. `npm run dev:cidade` previews it and

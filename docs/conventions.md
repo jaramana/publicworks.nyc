@@ -97,7 +97,7 @@ below. The styles are in `src/styles/works.css`.
 | Panel | 19rem, from 52.5rem wide. It sticks under the masthead, fills the window's height and never scrolls. At rest it shows About. |
 | Pages | A note turns in pages: Overview, then Details and Take where the record has them. About turns by its sections. In a short window Overview drops its thumbnail first; a page that still overflows continues on a "continued" page. |
 | Under 52.5rem | A note opens whole under its tile, with no thumbnail and no pager. About sits after the archive. |
-| Masthead | Nav links are ink, because tiles scroll under the glass on narrow screens. Under 30rem tall the masthead scrolls away. |
+| Masthead | Nav links are ink, because tiles scroll under the glass on narrow screens. Under 30rem tall the masthead scrolls away. A site in more than one language has a language menu after the nav, showing the current language by name. Under 52.5rem the nav takes its own row. |
 | Images | The tile's `sizes` in `Tile.astro` mirrors the grid. Change both together. Only the first tile's image has high priority. |
 | Order | By `order`, lowest first. Ties, and records with no `order`, go by title. |
 | Print | A plain list. Each work and archive row prints its address under the title; the panel and screenshots are hidden. |

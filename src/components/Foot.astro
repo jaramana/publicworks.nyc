@@ -1,20 +1,15 @@
 ---
 /* The footer: the independence notice, then the colophon. Every page ends with it. */
-import Langs from './Langs.astro';
-import Trial from './Trial.astro';
 import { copy } from '@site/copy.js';
-import { defaultLang, languages, byline, sister } from '@site/site.js';
+import { defaultLang, byline, sister } from '@site/site.js';
 import { fill } from '../i18n.js';
-const { lang = defaultLang, bare = '/', available = languages } = Astro.props;
+const { lang = defaultLang } = Astro.props;
 const t = copy[lang];
-const multi = languages.length > 1;
 ---
 <footer class="foot">
   <p class="notice" set:html={t.notice} />
   <div class="colophon">
-    {multi && import.meta.env.DEV && <p class="langs-foot"><Langs lang={lang} bare={bare} available={available} names /></p>}
     {byline && <p set:html={fill(t.byline, byline)} />}
     <p set:html={fill(t.sister, sister)} />
   </div>
 </footer>
-{multi && import.meta.env.DEV && <Trial />}

@@ -3,6 +3,7 @@ export const copy = {
   "en": {
     "intro": "Tools and maps built from public records in and around New York City.",
     "skip": "Skip to works",
+    "language": "Language",
     "sections": "Sections",
     "works": "Works",
     "archive": "Archive",

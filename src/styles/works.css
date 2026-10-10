@@ -110,22 +110,10 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .nav a { text-decoration: none; }
 .nav a:hover, .nav a[aria-current] { text-decoration: underline; }
 
-/* Language links sit beside the wordmark, across the masthead from the nav. */
-.mast:has(.langs-beside) .wordmark { margin-right: 0; }
-.langs { display: flex; gap: 1rem; font-size: .8125rem; }
-.langs-beside { margin-right: auto; }
-.langs a { text-decoration: none; }
-.langs a:hover, .langs a[aria-current] { text-decoration: underline; }
-
-/* On trial in `astro dev` only: a menu after the nav, or the footer. */
-.langs-menu, .langs-foot { display: none; }
-[data-langs="menu"] .langs-beside, [data-langs="footer"] .langs-beside { display: none; }
-[data-langs="menu"] .mast .wordmark, [data-langs="footer"] .mast .wordmark { margin-right: auto; }
-[data-langs="menu"] .langs-menu { display: block; }
-[data-langs="footer"] .langs-foot { display: flex; }
-
+/* The language menu sits after the nav. Its padding makes a 24px target
+   without moving anything. On narrow screens the nav takes its own row. */
 .langs-menu { position: relative; font-size: .8125rem; }
-.langs-menu summary { display: flex; align-items: baseline; gap: .45rem; list-style: none; cursor: pointer; }
+.langs-menu summary { display: flex; align-items: baseline; gap: .45rem; padding-block: .3rem; margin-block: -.3rem; list-style: none; cursor: pointer; }
 .langs-menu summary::-webkit-details-marker { display: none; }
 .langs-menu summary::after { content: ""; width: .36em; height: .36em; border: solid currentColor; border-width: 0 1px 1px 0; transform: translateY(-.2em) rotate(45deg); }
 .langs-menu[open] summary::after { transform: translateY(.05em) rotate(-135deg); }
@@ -134,12 +122,9 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .langs-list a:hover { background: var(--surface); }
 .langs-list a[aria-current] { text-decoration: underline; }
 @media (max-width: 52.49rem) {
-  [data-langs="menu"] .mast .nav { order: 2; flex-basis: 100%; }
-  [data-langs="menu"] .mast .find { order: 3; }
+  .mast:has(.langs-menu) .nav { order: 2; flex-basis: 100%; }
+  .mast:has(.langs-menu) .find { order: 3; }
 }
-
-.langs-foot { gap: 1rem; }
-.langs-foot a[aria-current] { color: var(--muted); text-decoration: none; }
 
 /* Find's muted label and placeholder need a solid background. */
 .mast:has(.find:not([hidden])) { background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; }
@@ -340,7 +325,7 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
 
 /* Touch: taller hit areas for the small links, without moving anything. */
 @media (pointer: coarse) {
-  .nav a, .langs a, .note-links a { display: inline-block; padding-block: .6rem; margin-block: -.6rem; }
+  .nav a, .note-links a { display: inline-block; padding-block: .6rem; margin-block: -.6rem; }
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -361,7 +346,7 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
   :root { --bg: #fff; --surface: #fff; --ink: #000; --muted: #444; --line: #bbb; color-scheme: light; }
   body { background: #fff; color: #000; font-size: 10pt; }
   .mast { position: static; padding-inline: 0 !important; border-bottom: 1px solid #000; background: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
-  .nav, .langs, .langs-menu, .find, .skip, .side, .drop, .tile-media, .find-hits, .tile-link::after { display: none !important; }
+  .nav, .langs-menu, .find, .skip, .side, .drop, .tile-media, .find-hits, .tile-link::after { display: none !important; }
   .page, .foot { display: block !important; max-width: none; padding-inline: 0; }
   .band { padding-top: 1.5rem; }
   .tiles { display: block; }

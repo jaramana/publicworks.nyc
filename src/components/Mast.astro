@@ -1,10 +1,7 @@
 ---
 /* The masthead. On the home page its links jump within the page; on any
-   other page they lead back to it. The home page slots find in after the nav.
-
-   Language links, on trial until the owner picks: beside the wordmark (the
-   default), a menu after the nav, or the footer. The menu and footer only
-   render in `astro dev`, where Trial.astro switches between them. */
+   other page they lead back to it. A site in more than one language has a
+   language menu after the nav. The home page slots find in after that. */
 import Langs from './Langs.astro';
 import { copy } from '@site/copy.js';
 import { defaultLang, languages, languageNames, siteName } from '@site/site.js';
@@ -19,17 +16,16 @@ const multi = languages.length > 1;
 <div class="mast-sentinel" aria-hidden="true"></div>
 <header class="mast" data-mast>
   <a class="wordmark" href={localizePath('/', lang)} data-home>{siteName}</a>
-  {multi && <span class="langs langs-beside"><Langs lang={lang} bare={bare} available={available} /></span>}
   <nav class="nav" aria-label={t.sections}>
     <a href={root + '#works'}>{t.works}</a>
     {hasJournal && <a href={root + '#journal'}>{t.journal}</a>}
     <a href={root + '#archive'}>{t.archive}</a>
     <a href={root + '#record-about'} data-open={home ? 'about' : undefined}>{t.about}</a>
   </nav>
-  {multi && import.meta.env.DEV && (
+  {multi && (
     <details class="langs-menu">
-      <summary>{languageNames[lang]}</summary>
-      <div class="langs-list"><Langs lang={lang} bare={bare} available={available} names /></div>
+      <summary>{languageNames[lang]}<span class="sr-only"> ({t.language})</span></summary>
+      <div class="langs-list"><Langs lang={lang} bare={bare} available={available} /></div>
     </details>
   )}
   <slot />

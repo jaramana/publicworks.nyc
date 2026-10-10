@@ -93,13 +93,14 @@ The first full run, before and after that day's fixes. Each cell gives a site's 
 | publicworks.nyc | 99 | 100 | 100 | 100 | 0.00 | 2.3 s | 0 |
 | Cidade Labs | 99 → 100 | 100 | 96 | 100 | 0.00 | 2.0 s → 1.9 s | 0 |
 
+On 10 October the portfolio's language menu took Cidade Labs' phone accessibility from 96 to 100.
+
 What still holds a score down:
 
 - Wealth NYC and Wealth NJ, phone performance. The map's largest paint waits for its GeoJSON. The map file now carries only the fields the map reads, 496 KB compressed for New Jersey, and a preload starts it at once. Shapes are most of what remains.
 - Hazard Historian's Event page, largest paint 2.6 s. The event file waits behind MapLibre, which loads first.
 - The Blue Pages, phone performance 95. The agency rail loads full-size logos into 30-pixel thumbnails, about 1.3 MB more than it needs.
 - Chopper Noise, phone performance 92. The map page's scripts block the main thread for about 350 ms on Lighthouse's slower phone.
-- Cidade Labs, accessibility 96. The language links beside the wordmark are under 24 pixels on a phone. They are on trial until the owner picks a placement.
 
 ## Deliberate, not to fix
 

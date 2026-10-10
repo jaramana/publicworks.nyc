@@ -31,7 +31,6 @@ const shareAlt = `${siteName}. ${copy[defaultLang].intro}`;
 <meta name="theme-color" content="#0c0c0d" media="(prefers-color-scheme: dark)" />
 <meta name="color-scheme" content="light dark" />
 <title>{title}</title>
-{import.meta.env.DEV && languages.length > 1 && <script is:inline>try { const v = new URLSearchParams(location.search).get('langs') || localStorage.getItem('langs-trial'); if (v) document.documentElement.dataset.langs = v; } catch {}</script>}
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={siteName} />
 <meta property="og:title" content={title} />

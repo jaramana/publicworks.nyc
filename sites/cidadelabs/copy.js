@@ -3,6 +3,7 @@ export const copy = {
   "gl": {
     "intro": "Ferramentas e mapas feitos con datos públicos de Galicia.",
     "skip": "Saltar aos traballos",
+    "language": "Idioma",
     "sections": "Seccións",
     "works": "Traballos",
     "archive": "Arquivo",
@@ -57,6 +58,7 @@ export const copy = {
   "es": {
     "intro": "Herramientas y mapas hechos con datos públicos de Galicia.",
     "skip": "Saltar a los trabajos",
+    "language": "Idioma",
     "sections": "Secciones",
     "works": "Trabajos",
     "archive": "Archivo",
@@ -111,6 +113,7 @@ export const copy = {
   "en": {
     "intro": "Tools and maps built from public records in Galicia.",
     "skip": "Skip to works",
+    "language": "Language",
     "sections": "Sections",
     "works": "Works",
     "archive": "Archive",
