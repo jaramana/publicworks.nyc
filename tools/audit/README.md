@@ -95,6 +95,8 @@ The first full run, before and after that day's fixes. Each cell gives a site's 
 
 On 10 October the portfolio's language menu took Cidade Labs' phone accessibility from 96 to 100.
 
+On 11 October the work tiles changed to pre-cut close-ups of larger screenshots. Phone performance held: 98 on publicworks.nyc (LCP 2.3 s) and 100 on Cidade Labs. A trial that zoomed the full screenshots instead scored 84 and 94, because each tile loaded a picture several times its size.
+
 What still holds a score down:
 
 - Wealth NYC and Wealth NJ, phone performance. The map's largest paint waits for its GeoJSON. The map file now carries only the fields the map reads, 496 KB compressed for New Jersey, and a preload starts it at once. Shapes are most of what remains.
