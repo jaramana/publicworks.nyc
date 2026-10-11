@@ -74,6 +74,7 @@ export async function buildIndex(lang, t) {
       year: d.year,
       meta: [d.year, label[d.category]].filter(Boolean).join(' · '),
       cover: d.cover,
+      focus: d.focus,
       lead: d.lead,
       take: isWork ? d.take : undefined,
       repository: code,

@@ -10,6 +10,7 @@ keywords: ["payroll", "open data", "r", "salaries"]
 builtWith: "R, dplyr, Claude"
 url: "https://paygap.publicworks.nyc"
 cover: "../media/thepaygap.png"
+focus: { x: 85, y: 30, zoom: 2.5 }
 repository: "https://github.com/jaramana/paygap.publicworks.nyc"
 source: "NYC Citywide Payroll Data"
 lead: "The Pay Gap brings New York City payroll into a search by title and agency, with overtime, tenure, inflation and rent comparisons."

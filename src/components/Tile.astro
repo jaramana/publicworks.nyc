@@ -13,9 +13,14 @@ const sizes = [
   '(min-width: 27.75rem) calc(50vw - 2.38rem)',
   'calc(100vw - 2.5rem)',
 ].join(', ');
+
+// A tile with a focus rests on a close-up, so it asks for a picture that
+// many times wider to keep the close-up sharp.
+const f = r.focus;
+const shotSizes = f ? sizes.split(', ').map(s => s.replace(/^(\([^)]*\) )?(.*)$/, (_, m = '', len) => `${m}calc(${len} * ${f.zoom})`)).join(', ') : sizes;
 ---
 <li class="tile" data-item={r.key} data-find={r.find}>
-  <div class="tile-media"><Cover src={r.cover} sizes={sizes} eager={eager} priority={priority} /></div>
+  <div class="tile-media" data-zoom={f ? '' : undefined} style={f && `--fx: ${f.x}%; --fy: ${f.y}%; --zoom: ${f.zoom}`}><Cover src={r.cover} sizes={shotSizes} eager={eager} priority={priority} /></div>
   <p class="tile-meta">{r.meta}</p>
   <h3 class="tile-title"><a class="tile-link" href={'#record-' + r.key} data-open={r.key} data-repo={r.repository}>{r.title}</a></h3>
   {r.address && <p class="tile-addr">{r.address}</p>}

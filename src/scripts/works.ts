@@ -497,6 +497,21 @@ document.addEventListener('keydown', event => {
   }
 });
 
+/* ---- zoom ------------------------------------------------------------ */
+
+// A tile's close-up eases out the first time a mouse crosses its picture, and stays out.
+for (const media of $$('.tile-media[data-zoom]')) {
+  const tile = media.closest<HTMLElement>('.tile')!;
+  const zoomOut = (event: PointerEvent) => {
+    if (event.pointerType === 'touch') return;
+    const box = media.getBoundingClientRect();
+    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) return;
+    media.classList.add('is-out');
+    tile.removeEventListener('pointermove', zoomOut);
+  };
+  tile.addEventListener('pointermove', zoomOut);
+}
+
 /* ---- load ------------------------------------------------------------ */
 
 // A shared link opens on its note, with its tile at the top of the window.

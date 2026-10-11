@@ -10,6 +10,7 @@ keywords: ["schools", "nycps", "python", "statistics"]
 builtWith: "Python, MapLibre, Claude"
 url: "https://schools.publicworks.nyc"
 cover: "../media/schoolsfinder.png"
+focus: { x: 62, y: 45, zoom: 3 }
 repository: "https://github.com/jaramana/schools.publicworks.nyc"
 source: "School Quality Reports, Demographic Snapshot"
 order: 5

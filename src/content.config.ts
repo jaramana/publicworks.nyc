@@ -69,6 +69,15 @@ const projects = defineCollection({
     // Screenshot under src/assets. Required for works.
     cover: image().optional(),
 
+    // Where a work's tile rests: a close-up of its cover that eases out to the
+    // whole screenshot on first hover. x and y are the point held in place, in
+    // percent from the top-left corner; zoom is how far in the tile starts.
+    focus: z.object({
+      x: z.number().min(0).max(100),
+      y: z.number().min(0).max(100),
+      zoom: z.number().min(1).max(4),
+    }).optional(),
+
     // Not shown on the page. Kept for a later cleanup.
     gallery: z.array(z.object({ src: image(), alt: z.string(), caption: z.string() })).max(4).optional(),
 

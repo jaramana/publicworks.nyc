@@ -11,6 +11,7 @@ keywords: ["hazards", "events", "open data", "weather service"]
 builtWith: "Python, MapLibre, Claude"
 url: "https://hazardhistorian.publicworks.nyc"
 cover: "../media/hazardhistorian.png"
+focus: { x: 3, y: 18, zoom: 3 }
 repository: "https://github.com/jaramana/hazardhistorian.publicworks.nyc"
 source: "NYC Emergency Management, National Weather Service"
 order: 4
