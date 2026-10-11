@@ -30,6 +30,7 @@ aboutUrl: "https://..."              # works only, when About is not url/about.h
 dataUrl: "https://..."               # works only, when Data is not url/data.html
 cover: "../media/short-slug.png"     # required for works
 focus: { x: 50, y: 40, zoom: 2.4 }   # the tile's close-up; optional
+closeUp: "../media/close/short-slug.png"  # written by tools/closeups.mjs
 repository: "https://github.com/..." # omit when url is already the repository
 source: "Who publishes the data"     # omit where the project names none
 lead: "One sentence under the title in the note."  # without it the note repeats indexSummary
@@ -51,7 +52,9 @@ words go in `take:`, which the author writes. Never draft a take for them.
 Screenshots live in `sites/publicworks/media/` and are converted to AVIF and WebP at
 build time. A work's screenshot is a 1200×900 window captured at 2× (2400×1800), so
 its close-up stays sharp. `focus: { x, y, zoom }` sets the close-up: the point held
-in place, in percent from the top-left, and how far in the tile starts. `series: "redux"` is kept in the record but not shown on the
+in place, in percent from the top-left, and how many times smaller than the cover it
+is. Run `node tools/closeups.mjs` after changing a cover or a focus; it writes the
+close-up to `media/close/` and the record's `closeUp` line. `series: "redux"` is kept in the record but not shown on the
 page. A rebuilt project says so on its own site.
 
 Categories are ordered in `src/entries.js`, and their labels live in
@@ -94,7 +97,7 @@ below. The styles are in `src/styles/works.css`.
 | Color | White page (`#fff`), `#161616` ink, `#6c6c70` muted, hairlines. Black and white only; the screenshots carry the color. Dark mode follows the system. |
 | Type | PW Heros, regular weight. The wordmark and section titles are bold. Labels are 11px uppercase, tracked .08em, muted. |
 | Project color | None. Records have no `accent` and the page has no `--spot`. |
-| Tiles | Fluid. Each row shares its width, and no tile drops below 11.5rem, so rows always reach both edges. 2px radius and a hairline, with no shadow. Full-color screenshots. On hover, on devices that can hover, the hairline, title, year line and summary go to full ink and the title underlines. A work with a `focus` rests on a close-up of its screenshot; the first time a mouse crosses it, it eases out to the whole screen over 1.25 s and stays there. Phones keep the close-up. |
+| Tiles | Fluid. Each row shares its width, and no tile drops below 11.5rem, so rows always reach both edges. 2px radius and a hairline, with no shadow at rest. Full-color screenshots. On hover, on devices that can hover, the picture lifts 2px on a soft shadow, and the title, year line and summary go to full ink and the title underlines. A work with a `focus` shows a close-up of its screenshot; its note shows the whole screen. |
 | Glass | The sticky masthead only: white at 72%, `saturate(180%) blur(18px)`. Opaque under reduced transparency. A hairline appears once the page scrolls. |
 | Grid | Tiles and panel form one centered frame, up to 68rem wide. Columns follow from the 11.5rem minimum. Beside the panel there are two from 52.5rem and three from about 67.4rem. Below 52.5rem there is one, two from about 27.75rem and three from about 42.4rem. |
 | Panel | 19rem, from 52.5rem wide. It sticks under the masthead, fills the window's height and never scrolls. At rest it shows About. |

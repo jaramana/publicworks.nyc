@@ -11,6 +11,7 @@ builtWith: "Python, MapLibre, Claude"
 url: "https://schools.publicworks.nyc"
 cover: "../media/schoolsfinder.png"
 focus: { x: 62, y: 45, zoom: 3 }
+closeUp: "../media/close/schoolsfinder.png"
 repository: "https://github.com/jaramana/schools.publicworks.nyc"
 source: "School Quality Reports, Demographic Snapshot"
 order: 5

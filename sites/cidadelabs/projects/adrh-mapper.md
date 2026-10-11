@@ -12,6 +12,7 @@ builtWith: "R, sf, MapLibre GL"
 url: "https://adrh.cidadelabs.org/?lang=gl"
 cover: "../media/adrh.png"
 focus: { x: 50, y: 40, zoom: 2.2 }
+closeUp: "../media/close/adrh.png"
 repository: "https://github.com/cidade-labs/adrh-mapper"
 source: "Instituto Nacional de Estadística (INE)"
 limit: "Atlas de renda dos fogares do INE · Datos de 2023"

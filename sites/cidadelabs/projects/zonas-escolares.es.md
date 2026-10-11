@@ -12,6 +12,7 @@ builtWith: "Python, MapLibre GL"
 url: "https://escolares.cidadelabs.org/?lang=es"
 cover: "../media/escolares.png"
 focus: { x: 96, y: 6, zoom: 3 }
+closeUp: "../media/close/escolares.png"
 repository: "https://github.com/cidade-labs/zonas-escolares"
 source: "Xunta de Galicia"
 limit: "La cobertura sigue los datos de áreas de influencia de la Xunta."

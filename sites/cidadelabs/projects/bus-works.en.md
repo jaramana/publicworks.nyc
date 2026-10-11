@@ -12,6 +12,7 @@ builtWith: "MapLibre GL, JavaScript"
 url: "https://busworks.cidadelabs.org/?lang=en"
 cover: "../media/busworks.png"
 focus: { x: 52, y: 28, zoom: 2.4 }
+closeUp: "../media/close/busworks.png"
 repository: "https://github.com/cidade-labs/bus-works"
 source: "Compañía de Tranvías de A Coruña"
 limit: "Bus positions are simulated along published routes; they are not live vehicle locations."

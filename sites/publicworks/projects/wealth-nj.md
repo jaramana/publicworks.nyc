@@ -11,6 +11,7 @@ builtWith: "Python, MapLibre, Claude, Codex"
 url: "https://wealthnj.publicworks.nyc"
 cover: "../media/wealthnj.png"
 focus: { x: 72, y: 30, zoom: 2.4 }
+closeUp: "../media/close/wealthnj.png"
 repository: "https://github.com/jaramana/wealthnj.publicworks.nyc"
 source: "IRS Statistics of Income, Census Bureau ACS"
 order: 8

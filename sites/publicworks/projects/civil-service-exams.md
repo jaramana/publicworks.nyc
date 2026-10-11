@@ -11,6 +11,7 @@ builtWith: "Python, JavaScript, Claude"
 url: "https://civilservice.publicworks.nyc"
 cover: "../media/civilservice.png"
 focus: { x: 12, y: 25, zoom: 1.8 }
+closeUp: "../media/close/civilservice.png"
 repository: "https://github.com/jaramana/civilservice.publicworks.nyc"
 source: "DCAS, NYC Open Data"
 order: 6

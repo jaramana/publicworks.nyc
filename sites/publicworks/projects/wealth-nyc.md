@@ -11,6 +11,7 @@ builtWith: "Python, MapLibre, Claude, Codex"
 url: "https://wealth.publicworks.nyc"
 cover: "../media/wealth.png"
 focus: { x: 66, y: 42, zoom: 2.4 }
+closeUp: "../media/close/wealth.png"
 repository: "https://github.com/jaramana/wealth.publicworks.nyc"
 source: "IRS Statistics of Income, Census Bureau ACS"
 lead: "Wealth NYC compares New York City income in tax records and in Census Bureau data, across 177 ZIP areas on one scale."
