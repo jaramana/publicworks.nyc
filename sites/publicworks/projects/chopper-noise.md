@@ -19,13 +19,13 @@ specs:
   - label: "Data"
     value: "adsb.lol flight archive, 2020 Census blocks, FAA aircraft registry, LaGuardia air pressure from the Iowa Environmental Mesonet, UK CAA helicopter noise database"
   - label: "Days"
-    value: "2 August, 15 August and 16 September 2026"
+    value: "2 August, 15 August, 16 September and 5 to 11 October 2026"
   - label: "Method"
     value: "Peak level at 150 m from each type's certified flyover level, less spherical spreading and 2 dB per km of air absorption, every 10 seconds along a flight"
   - label: "Built with"
     value: "Python standard library, MapLibre GL JS, OpenFreeMap tiles, Claude"
 limit: "Levels are modeled outdoor peaks, not measurements. No measured flyover has checked them yet."
-updated: 2026-10-05
+updated: 2026-10-14
 order: 2
 lang: "en"
 ---
@@ -36,7 +36,7 @@ Helicopters fly low over New York City and the Hudson waterfront. Tours and char
 
 ## What it shows
 
-The map replays three recorded days: Sunday 2 August, Saturday 15 August and Wednesday 16 September 2026. Replay plays a day at one minute every two seconds, with rings at 60, 70 and 80 dBA around each helicopter. Whole day colors each Census block by the loudest level it heard ten or more times.
+The map replays ten recorded days: Sunday 2 August, Saturday 15 August, Wednesday 16 September and Monday 5 to Sunday 11 October 2026. Replay plays a day at one minute every two seconds, with rings at 60, 70 and 80 dBA around each helicopter. Whole day colors each Census block by the loudest level it heard ten or more times.
 
 Headline counts start at 60 dBA, about as loud as a conversation. Each 10 dB step sounds about twice as loud, so the rows read 2×, 4× and 8× as loud as 50 dBA, the level that marks a helicopter you can hear.
 
