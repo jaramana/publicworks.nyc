@@ -1,6 +1,6 @@
 # Audit kit
 
-A standards audit for the eight products, publicworks.nyc and Cidade Labs. It runs on this machine only, never in GitHub Actions. Run it before publishing a change to any site.
+A standards audit for the nine products, publicworks.nyc and Cidade Labs. It runs on this machine only, never in GitHub Actions. Run it before publishing a change to any site.
 
 ## Install
 
@@ -18,7 +18,7 @@ Build the portfolio first if it is in scope: `npm run build` and `npm run build:
 node run.mjs paygap schools
 ```
 
-With no site names it audits all ten. Site names, folders, ports and the pages audited are in `sites.mjs`. Each detail page carries a real ID from that site's data. Reports go to `reports/<date>/`, which Git ignores: one JSON file per site and `summary.md`. A full run takes about 35 minutes; one site takes three to five.
+With no site names it audits all eleven. Site names, folders, ports and the pages audited are in `sites.mjs`. Each detail page carries a real ID from that site's data. Reports go to `reports/<date>/`, which Git ignores: one JSON file per site and `summary.md`. A full run takes about 35 minutes; one site takes three to five.
 
 | Option | Effect |
 | --- | --- |
@@ -90,10 +90,13 @@ The first full run, before and after that day's fixes. Each cell gives a site's 
 | Wealth NYC | 84 → 91 | 99 → 100 | 98 → 100 | 100 | 0.14 → 0.02 | 3.7 s → 3.5 s | 2 → 1 |
 | Wealth NJ | 71 → 80 | 98 → 100 | 98 → 100 | 100 | 0.16 → 0.02 | 6.0 s → 5.6 s | 2 → 1 |
 | Chopper Noise | 91 → 92 | 100 | 98 → 100 | 100 | 0.06 → 0.00 | 2.3 s → 1.2 s | 6 → 0 |
+| Cable Turf | 98 | 100 | 100 | 100 | 0.00 | 2.5 s | 0 |
 | publicworks.nyc | 99 | 100 | 100 | 100 | 0.00 | 2.3 s | 0 |
 | Cidade Labs | 99 → 100 | 100 | 96 | 100 | 0.00 | 2.0 s → 1.9 s | 0 |
 
 On 10 October the portfolio's language menu took Cidade Labs' phone accessibility from 96 to 100.
+
+Cable Turf joined on 17 October, the day it launched, and its row comes from that day's run. Best practices scored 100 on every page, html-validate found nothing, and all 6 links checked resolved. Its slowest phone LCP is the front page's.
 
 On 11 October the work tiles changed to pre-cut close-ups of larger screenshots. Phone performance held: 98 on publicworks.nyc (LCP 2.3 s) and 100 on Cidade Labs. A trial that zoomed the full screenshots instead scored 84 and 94, because each tile loaded a picture several times its size.
 

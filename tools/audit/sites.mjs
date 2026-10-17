@@ -59,6 +59,10 @@ export const SITES = [
     pages: [['/', 'home'], ['/data.html', 'data'], ['/about.html', 'about'], ['/missing-page', '404']],
   },
   {
+    id: 'cableturf', name: 'Cable Turf', root: 'cableturf.publicworks.nyc/docs', port: 4411,
+    pages: [['/', 'home'], ['/data.html', 'data'], ['/about.html', 'about'], ['/missing-page', '404']],
+  },
+  {
     id: 'portfolio', name: 'publicworks.nyc', root: 'publicworks.nyc/dist', port: 4409, portfolio: true,
     pages: [['/', 'home'], ['/missing-page', '404']],
   },
