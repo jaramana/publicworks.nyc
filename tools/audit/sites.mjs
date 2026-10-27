@@ -56,7 +56,7 @@ export const SITES = [
   },
   {
     id: 'choppernoise', name: 'Chopper Noise', root: 'helicopters.publicworks.nyc/docs', port: 4408,
-    pages: [['/', 'home'], ['/data.html', 'data'], ['/about.html', 'about'], ['/missing-page', '404']],
+    pages: [['/', 'home'], ['/report.html', 'report'], ['/data.html', 'data'], ['/about.html', 'about'], ['/missing-page', '404']],
   },
   {
     id: 'cableturf', name: 'Cable Turf', root: 'cableturf.publicworks.nyc/docs', port: 4411,
