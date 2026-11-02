@@ -330,6 +330,53 @@ html:not(.has-js) .note { padding: 2.5rem 0; border-top: 1px solid var(--line); 
   .nav a, .note-links a { display: inline-block; padding-block: .6rem; margin-block: -.6rem; }
 }
 
+/* On a phone the nav folds behind a menu button. Open, the links fill the
+   screen under the masthead on a sheet that covers the page without moving
+   it, and the page stops scrolling. The languages sit at the foot of the
+   sheet instead of in their own menu. The glass goes while the sheet is open,
+   because a blurred parent would trap the sheet inside the masthead. */
+.nav-toggle, .nav-end { display: none; }
+@media (max-width: 40rem) {
+  .nav-toggle {
+    display: inline-flex; align-items: center; justify-content: center; align-self: center;
+    width: 2.2rem; height: 2.14rem; margin: -.5rem -.45rem -.5rem 0; padding: 0;
+    color: var(--ink); background: none; border: 0; border-radius: var(--radius); cursor: pointer;
+    transition: background-color .2s var(--ease);
+  }
+  .nav-toggle:hover, .menu-open .nav-toggle { background: var(--surface); }
+  .nav-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .nav-toggle svg { width: 1.35rem; height: 1.35rem; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; }
+  .nav-toggle path {
+    transform-box: view-box; transform-origin: 12px 12px;
+    transition: transform .28s cubic-bezier(.2, .7, .2, 1), opacity .18s ease;
+  }
+  .menu-open .nav-toggle .bar-top { transform: rotate(45deg) translateY(5px); }
+  .menu-open .nav-toggle .bar-mid { opacity: 0; }
+  .menu-open .nav-toggle .bar-bottom { transform: rotate(-45deg) translateY(-5px); }
+
+  .mast.menu-open { background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom-color: var(--line); }
+  .mast .nav {
+    position: fixed; top: var(--sheet-top, var(--mast-h)); left: 0; right: 0; bottom: 0;
+    flex-direction: column; flex-wrap: nowrap; align-items: flex-start; gap: 0; margin: 0;
+    padding: .5rem var(--pad) max(1.25rem, env(safe-area-inset-bottom));
+    overflow-y: auto; overscroll-behavior: contain;
+    background: var(--bg); font-size: 1rem;
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+  }
+  .mast.menu-open .nav { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+  .mast .nav a { display: block; padding-block: .6rem; margin-block: 0; }
+  .mast .nav-end {
+    display: flex; flex-wrap: wrap; gap: 0 1.5rem; align-self: stretch;
+    margin-top: auto; padding-top: .5rem; border-top: 1px solid var(--line); font-size: .875rem;
+  }
+  .mast .langs-menu { display: none; }
+  html.menu-locked { overflow: hidden; }
+}
+@media (max-width: 40rem) and (prefers-reduced-motion: reduce) {
+  .mast .nav, .nav-toggle, .nav-toggle path { transition: none; }
+}
+
 @media (prefers-reduced-transparency: reduce) {
   .mast { background: var(--bg) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 }

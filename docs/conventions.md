@@ -103,7 +103,7 @@ below. The styles are in `src/styles/works.css`.
 | Panel | 19rem, from 52.5rem wide. It sticks under the masthead, fills the window's height and never scrolls. At rest it shows About. |
 | Pages | A note turns in pages: Overview, then Details and Take where the record has them. About turns by its sections. In a short window Overview drops its thumbnail first; a page that still overflows continues on a "continued" page. |
 | Under 52.5rem | A note opens whole under its tile, with no thumbnail and no pager. About sits after the archive. |
-| Masthead | Nav links are ink, because tiles scroll under the glass on narrow screens. Under 30rem tall the masthead scrolls away. A site in more than one language has a language menu after the nav, showing the current language by name. Under 52.5rem the nav takes its own row. |
+| Masthead | Nav links are ink, because tiles scroll under the glass on narrow screens. Under 30rem tall the masthead scrolls away. A site in more than one language has a language menu after the nav, showing the current language by name. Under 52.5rem the nav takes its own row. Under 40rem the nav folds behind the suite's menu button, and the languages move from their menu to the foot of the sheet. |
 | Images | The tile's `sizes` in `Tile.astro` mirrors the grid. Change both together. Only the first tile's image has high priority. |
 | Order | By `order`, lowest first. Ties, and records with no `order`, go by title. |
 | Print | A plain list. Each work and archive row prints its address under the title; the panel and screenshots are hidden. |
@@ -168,13 +168,25 @@ folds" in `site.css`.
   `aria-controls`, and a visually hidden "Menu" label.
 - It is 2.2rem wide and 2.14rem tall, which keeps the row at 52.81px. Its
   three lines turn into a cross while open, over .28s.
-- Open, the links sit on a full-width panel that covers the page under the
-  masthead, with `.7rem .6rem` padding, a bottom hairline and a soft shadow.
-  The page does not move. The panel fades in over .18s with a 4px drop.
-  Closed, its links are `visibility: hidden` once the fade ends, so they
+- Open, `.nav` becomes a sheet that fills the screen from the masthead's
+  bottom edge down. The script measures that edge into `--sheet-top`. The
+  page does not move, and it stops scrolling while the sheet is open
+  (`html.menu-locked`). The sheet fades in over .18s with a 4px drop.
+- The links keep the desktop's order, labels and current-page style. They
+  sit in one column at 1rem with `.7rem .6rem` padding.
+- Anything after the links goes in `span.nav-end`, which sits at the foot of
+  the sheet behind a hairline. That is the place for a theme control (The
+  Pay Gap) and for languages (Cidade Labs). On a desktop `.nav-end` is
+  `display: contents`, so the control stays inline.
+- Closed, the links are `visibility: hidden` once the fade ends, so they
   leave the tab order. Reduced motion turns the transitions off.
 - Escape closes it and returns focus to the button. A tap outside the
-  masthead, or a window that widens past 40rem, closes it.
+  masthead, a tap on a link, or a window that widens past 40rem closes it.
+- The phone rules come after the desktop `.nav a` rules in the stylesheet.
+  Earlier, the desktop rule wins and the links stay at .9rem.
+- Civil Service Exams and The Blue Pages fit the same sheet to their own
+  layouts. The button sits at the top right, and the masthead keeps its
+  tagline or subtitle, so it runs taller than one row.
 
 The wordmark is the product name in plain English. It does not spell the
 site's own address, and it does not carry `publicworks.nyc`: the portfolio is

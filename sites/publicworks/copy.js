@@ -4,6 +4,7 @@ export const copy = {
     "intro": "Tools and maps built from public records in and around New York City.",
     "skip": "Skip to works",
     "language": "Language",
+    "menu": "Menu",
     "sections": "Sections",
     "works": "Works",
     "archive": "Archive",

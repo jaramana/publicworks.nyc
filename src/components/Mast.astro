@@ -1,7 +1,9 @@
 ---
 /* The masthead. On the home page its links jump within the page; on any
    other page they lead back to it. A site in more than one language has a
-   language menu after the nav. The home page slots find in after that. */
+   language menu after the nav. The home page slots find in after that.
+   On a phone the nav folds behind a menu button, and the languages move to
+   the foot of the open menu. */
 import Langs from './Langs.astro';
 import { copy } from '@site/copy.js';
 import { defaultLang, languages, languageNames, siteName } from '@site/site.js';
@@ -16,11 +18,18 @@ const multi = languages.length > 1;
 <div class="mast-sentinel" aria-hidden="true"></div>
 <header class="mast" data-mast>
   <a class="wordmark" href={localizePath('/', lang)} data-home>{siteName}</a>
-  <nav class="nav" aria-label={t.sections}>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+    <span class="sr-only">{t.menu}</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path class="bar-top" d="M4 7h16" /><path class="bar-mid" d="M4 12h16" /><path class="bar-bottom" d="M4 17h16" />
+    </svg>
+  </button>
+  <nav class="nav" id="site-nav" aria-label={t.sections}>
     <a href={root + '#works'}>{t.works}</a>
     {hasJournal && <a href={root + '#journal'}>{t.journal}</a>}
     <a href={root + '#archive'}>{t.archive}</a>
     <a href={root + '#record-about'} data-open={home ? 'about' : undefined}>{t.about}</a>
+    {multi && <span class="nav-end" aria-label={t.language} role="group"><Langs lang={lang} bare={bare} available={available} /></span>}
   </nav>
   {multi && (
     <details class="langs-menu">
