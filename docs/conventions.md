@@ -1,8 +1,8 @@
 # Conventions
 
 Notes that used to live in the README. The shared header, footer, boxes and
-announcement banner apply to The Pay Gap, Hazard Historian, Schools Finder and
-Chopper Noise. Wealth NYC and Wealth NJ use the same footer structure without a
+announcement banner apply to The Pay Gap, Hazard Historian, Schools Finder,
+Chopper Noise and Cable Turf. Wealth NYC and Wealth NJ use the same footer structure without a
 Sources column, and their own masthead styling. Civil Service Exams and The
 Blue Pages have their own chrome. The portfolio index has its own layout too. Follow each site's implementation
 for those exceptions; do not copy the shared chrome into them by default.
@@ -118,7 +118,7 @@ repository, and typing 1999 shows the page as a plain list.
 
 ## The shared header
 
-The three sites named above use the same masthead. The reference
+The five sites named above use the same masthead. The reference
 implementation is `paygap.publicworks.nyc`. Copy it from there rather than
 from memory. The index itself does not carry it: it is the cabinet, not one
 of the drawers.
@@ -153,6 +153,28 @@ Two things, and only two, are allowed to differ between projects.
 - **Controls the project actually needs.** The Pay Gap carries a theme toggle
   because it is the only site with a dark mode. A control like that sits
   inside `.nav`, after the links, and must not change the header's height.
+
+The wordmark links home, so the home page gets no nav item of its own. The
+exception is a home page that is a tool no other page covers, such as Chopper
+Noise's and Cable Turf's maps.
+
+Under 40rem the nav folds behind a menu button, so the masthead stays one row
+at 52.81px on every phone. The reference implementation is
+`schools.publicworks.nyc`: `menu()` in `site.js` and "On a phone the nav
+folds" in `site.css`.
+
+- The button sits at the masthead's right, after the wordmark and before
+  `.nav`. It is `button.nav-toggle` with `aria-expanded` and
+  `aria-controls`, and a visually hidden "Menu" label.
+- It is 2.2rem wide and 2.14rem tall, which keeps the row at 52.81px. Its
+  three lines turn into a cross while open, over .28s.
+- Open, the links sit on a full-width panel that covers the page under the
+  masthead, with `.7rem .6rem` padding, a bottom hairline and a soft shadow.
+  The page does not move. The panel fades in over .18s with a 4px drop.
+  Closed, its links are `visibility: hidden` once the fade ends, so they
+  leave the tab order. Reduced motion turns the transitions off.
+- Escape closes it and returns focus to the button. A tap outside the
+  masthead, or a window that widens past 40rem, closes it.
 
 The wordmark is the product name in plain English. It does not spell the
 site's own address, and it does not carry `publicworks.nyc`: the portfolio is
@@ -191,7 +213,7 @@ the page under it does not jump. Each site keeps these rules in a "Stable first
 paint" block in its stylesheet.
 
 - The masthead slot, `header[data-chrome="masthead"]:empty`, holds the height
-  the drawn masthead has at each width: one row, or the nav wrapping.
+  of the drawn masthead. With the phone menu that is one row at every width.
 - Status lines, search boxes and other filled lines hold their measured height
   the same way.
 - `main` is at least a screen tall, so the footer starts below the fold.
@@ -240,23 +262,28 @@ belong beside the data or in the source notes, never in the portfolio line.
 
 ## About pages
 
-The eight products share the same core sections, in this order: Why,
+The nine products share the same core sections, in this order: Why,
 Scope, Built, Independence, Credits, Reuse and Contact. A one-sentence lead sits
 under the heading. Keep product-specific sections between Scope and Built where
 they carry necessary facts: The Pay Gap has History, Schools Finder has Language
 and Wealth NYC has Read the map. Sources, update schedules, data limits and
 column definitions belong on the Data page, never on About.
 
-Built describes tools and data methods. Updates belong on the Data page or in
-the README. Independence says "No agency reviewed this site."
+Built describes tools and data methods. It names the pipeline's language and
+libraries and what they do, then reads "The website uses static HTML, CSS and
+JavaScript, served from GitHub Pages", adding any map library. Updates belong on
+the Data page or in the README. Independence says "No agency reviewed this site."
 Credits names the data publishers and says "Claude was used in development."
 Reuse covers the code license, source terms and any guidance needed to
-republish figures. Contact points to the project's issue tracker.
+republish figures. Contact reads "If you find an error, open an issue", linked to
+the project's issue tracker, and may add what a data report should include.
 
 Each product README uses the same section names for Data sources, Method and
-limits, Updates, Tools, and License and reuse. Wealth NYC adds Verification
-because it has tests. Its Tools paragraph matches
-the About page's Built paragraph. The portfolio records use frontmatter only;
+limits, Updates, Tools, and License and reuse. Extra sections sit before License
+and reuse, which comes last: The Pay Gap adds Corrections to earlier figures,
+both Wealth sites add Verification because they have tests, and Wealth NYC adds
+Regional parity. Updates ends with the preview command. Tools matches the About
+page's Built paragraph. The portfolio records use frontmatter only;
 extra Markdown body copy is not displayed by the index.
 
 ## Data pages
@@ -295,6 +322,7 @@ page and the redirect stubs are the exceptions.
 
 | Tag | Content |
 | --- | --- |
+| `title` | `Page · Product`, with a middle dot. The home page is the product name, and may add `· Tagline`. |
 | `link rel="canonical"` | The page's `https://` address, `/` for the home page and the `.html` name for the rest |
 | `og:title` | The page's `<title>` |
 | `og:description` | The page's meta description |
@@ -333,6 +361,11 @@ transition: border-color .15s ease;
 Used by `.panel` and `.jump a` (Hazard Historian), `.chapters a` (Pay Gap,
 Schools Finder), `.download` and `.entry` (Schools Finder).
 
+Exception: Schools Finder softens the plain panel for its parent audience. Its
+panels use a 14px radius and its controls 12px. Its home borough cards
+(`.entry`) also lift 2px on hover with an accent arrow. The border, fill and
+hover border color match the standard above. Set 31 October 2026.
+
 **Result card** — one row of a result set, where the left bar says "this is one
 of many" and lights up as you move down the list.
 
@@ -357,9 +390,10 @@ and for surfaces that genuinely float, like a search dropdown.
 
 ## The announcement banner
 
-Each of the three sites covered by these conventions carries the same notice,
-in a `.note-box` on the home page and nowhere else. Repeating it on Method or
-About in different words reads as two different claims about one site.
+Each of the five sites covered by these conventions carries the same notice,
+in the footer and nowhere else. A second copy in the page body read as
+redundant once the footers grew, and it competed with the page for attention.
+Set 31 October 2026.
 
 ```html
 <p><strong>This is not an official product.</strong> It is an independent
@@ -368,20 +402,10 @@ initiative, not affiliated with, endorsed by, or produced by
 authoritative information.</p>
 ```
 
-It appears in exactly two places, and the words are identical in both:
-
-- the home page, wrapped in a `.note-box`;
-- the footer, as the `.colophon`, on every page.
-
-The Blue Pages follows the same two placements in its own layout: a muted
-notice below the four data counts on the directory home view, and the same
-wording in the footer on every view. Its About view lists sources without
-repeating the notice.
-
-The `.note-box` is `max-width: 46rem` with `.85rem 1rem` padding, and it must
-carry `.note-box p { max-width: none }`. Without that line the global
-`p { max-width: var(--measure) }` holds the text to 34rem inside a 46rem box,
-and the paragraph stops short of the box it sits in.
+It appears once, as the footer's `.colophon`, on every page. No home page,
+About, Data or 404 body repeats it. Civil Service Exams and The Blue Pages
+follow the same rule in their own layouts. A view that fills the window
+carries only the portfolio line in its foot bar.
 
 One thing changes per project: **AGENCY**, the body that publishes the official
 version, linked to it. New York City Emergency Management; New York City Public

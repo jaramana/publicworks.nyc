@@ -98,6 +98,8 @@ On 10 October the portfolio's language menu took Cidade Labs' phone accessibilit
 
 Cable Turf joined on 17 October, the day it launched, and its row comes from that day's run. Best practices scored 100 on every page, html-validate found nothing, and all 6 links checked resolved. Its slowest phone LCP is the front page's.
 
+On 28 October the whole suite ran again, from a snapshot, and every site held its row above except two. Chopper Noise's new Report page shifted 0.26 on a phone and 0.33 on a desktop (performance 87 and 84) and failed two axe rules; after that day's fixes it scores 98 and 100 with no findings. Hazard Historian's Event page scored 93 on a phone in two runs, with the same 2.6 s LCP as before and no code change since 9 October, so the drop is likely the machine. Accessibility, best practices and SEO were 100 on every site.
+
 On 11 October the work tiles changed to pre-cut close-ups of larger screenshots. Phone performance held: 98 on publicworks.nyc (LCP 2.3 s) and 100 on Cidade Labs. A trial that zoomed the full screenshots instead scored 84 and 94, because each tile loaded a picture several times its size.
 
 What still holds a score down:
@@ -117,6 +119,7 @@ What still holds a score down:
 - GitHub Pages can't set security headers. A `<meta>` CSP is optional and of low value for pages that load nothing from other hosts but map tiles.
 - A page audited with a query string, such as a school or an exam, is not asked for a canonical, and neither is The Blue Pages, which serves every view from one page. No page is asked for `og:image` until the sites have share images.
 - The Blue Pages' agency rail holds 307 links on every view, so the keyboard walk passes 250 stops, and its group headings come before the view's `h1`. The skip link jumps past the rail. Wealth NJ's Data table does the same with 598 rows.
+- Wealth NYC and Wealth NJ carry no independence notice on the map, by the owner's choice on 9 October 2026, so the kit reports their home pages as lacking it.
 - Wealth's map pages put "Use the data table" beside the skip link, outside any landmark, so a keyboard user reaches the table before the map. axe calls this `region`.
 - Schools clamps a long school description with a "Read the full description" button, and The Blue Pages' Org Chart is a clipped pan-and-zoom canvas. Text spacing clips both by design, and the full text stays reachable.
 - The journal's images carry inline `aspect-ratio` styles from Astro, so pictures hold their space while loading.

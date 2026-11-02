@@ -14,6 +14,6 @@ source: "Cidade Labs"
 
 Las ciudades e instituciones gallegas publican muchos datos públicos: posiciones de los autobuses, datos censales, límites escolares, registros de planeamiento. La mayoría queda en hojas de cálculo y PDF difíciles de usar en el día a día.
 
-Cidade Labs existe para convertir esos datos en mapas y herramientas que cualquiera pueda abrir en un navegador, de forma gratuita. El modelo está tomado e inspirado en oficinas de tecnología cívica del Ayuntamiento de Nueva York y de BetaNYC: construir herramientas bien hechas y de código abierto sobre datos públicos, y regalarlas.
+Cidade Labs existe para convertir esos datos en mapas y herramientas que cualquiera pueda abrir en un navegador, de forma gratuita. El enfoque parte del trabajo de tecnología cívica del Ayuntamiento de Nueva York y de BetaNYC: herramientas gratuitas y de código abierto hechas con datos públicos.
 
-Consulta [Sobre nosotros](/es/about) para saber cómo funciona cada proyecto y qué datos usa.
+Cada proyecto de la [página de inicio](/es/) enlaza con su sitio y sus datos.

@@ -7,7 +7,7 @@ status: "works"
 recordId: "bluepages"
 year: 2026
 keywords: ["agencies", "directory", "org chart", "open data", "python"]
-builtWith: "HTML, CSS, JavaScript, Python, Claude"
+builtWith: "Python, D3, Claude"
 url: "https://bluepages.publicworks.nyc"
 aboutUrl: "https://bluepages.publicworks.nyc/?view=about"
 dataUrl: "https://bluepages.publicworks.nyc/?view=data"
@@ -16,6 +16,7 @@ focus: { x: 86, y: 74, zoom: 2.2 }
 closeUp: "../media/close/bluepages.png"
 repository: "https://github.com/jaramana/bluepages.publicworks.nyc"
 source: "NYC Agencies and Governance Organizations, Green Book, Citywide Payroll"
+updated: 2026-09-25
 order: 7
 lang: "en"
 ---

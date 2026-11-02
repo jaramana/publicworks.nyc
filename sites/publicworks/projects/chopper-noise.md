@@ -25,7 +25,7 @@ specs:
   - label: "Built with"
     value: "Python standard library, MapLibre GL JS, OpenFreeMap tiles, Claude"
 limit: "Levels are modeled outdoor peaks, not measurements. No measured flyover has checked them yet."
-updated: 2026-10-14
+updated: 2026-10-27
 order: 2
 lang: "en"
 ---

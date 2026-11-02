@@ -7,7 +7,7 @@ status: "works"
 recordId: "civilservice"
 year: 2026
 keywords: ["exams", "job titles", "open data", "python"]
-builtWith: "Python, JavaScript, Claude"
+builtWith: "Python, pandas, Claude"
 url: "https://civilservice.publicworks.nyc"
 cover: "../media/civilservice.png"
 focus: { x: 12, y: 25, zoom: 1.8 }

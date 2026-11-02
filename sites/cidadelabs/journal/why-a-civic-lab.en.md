@@ -14,6 +14,6 @@ source: "Cidade Labs"
 
 Galician cities and institutions publish a lot of public data: bus positions, census figures, school boundaries, planning records. Most of it stays in spreadsheets and PDFs that are hard to use day to day.
 
-Cidade Labs exists to turn that data into maps and tools anyone can open in a browser, for free. The model is borrowed and inspired from civic-technology offices within the City of New York and BetaNYC: build well-made, open-source tools on public data, and give them away.
+Cidade Labs exists to turn that data into maps and tools anyone can open in a browser, for free. The approach draws on civic-technology work within the City of New York and at BetaNYC: free, open-source tools built from public data.
 
-See [About](/en/about) for how each project works and what data it draws on.
+Each project on the [home page](/en/) links to its own site and data.

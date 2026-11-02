@@ -19,7 +19,7 @@ export const SITES = [
     id: 'hazardhistorian', name: 'NYC Hazard Historian', root: 'hazardhistorian.publicworks.nyc/docs', port: 4402,
     pages: [
       ['/', 'home'], ['/explore.html', 'tool'], ['/event.html?id=E20211016-163389', 'tool'],
-      ['/compare.html', 'tool'], ['/dataflow.html', 'tool'],
+      ['/compare.html?e=E20121029-sandy,E20210901-163555', 'tool'], ['/dataflow.html', 'tool'],
       ['/data.html', 'data'], ['/about.html', 'about'], ['/missing-page', '404'],
     ],
   },

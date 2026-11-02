@@ -15,6 +15,7 @@ focus: { x: 3, y: 18, zoom: 3 }
 closeUp: "../media/close/hazardhistorian.png"
 repository: "https://github.com/jaramana/hazardhistorian.publicworks.nyc"
 source: "NYC Emergency Management, National Weather Service"
+updated: 2026-08-14
 order: 4
 lang: "en"
 ---
