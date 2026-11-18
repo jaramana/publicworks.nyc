@@ -56,9 +56,10 @@ const projects = defineCollection({
     url: z.string().url().optional(),
 
     // The product's About and Data pages. Works default to
-    // url + about.html and url + data.html.
-    aboutUrl: z.string().url().optional(),
-    dataUrl: z.string().url().optional(),
+    // url + about.html and url + data.html. false drops the link
+    // for a work that has no such page.
+    aboutUrl: z.union([z.string().url(), z.literal(false)]).optional(),
+    dataUrl: z.union([z.string().url(), z.literal(false)]).optional(),
 
     // Omit when url already points at the repository.
     repository: z.string().url().optional(),

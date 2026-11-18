@@ -26,8 +26,8 @@ year: 2026
 keywords: ["up", "to", "five", "words"]
 builtWith: "What it was made with"   # omit the line entirely if nothing to list
 url: "https://where-it-lives"
-aboutUrl: "https://..."              # works only, when About is not url/about.html
-dataUrl: "https://..."               # works only, when Data is not url/data.html
+aboutUrl: "https://..."              # works only, when About is not url/about.html; false when there is none
+dataUrl: "https://..."               # works only, when Data is not url/data.html; false when there is none
 cover: "../media/short-slug.png"     # required for works
 focus: { x: 50, y: 40, zoom: 2.4 }   # the tile's close-up; optional
 closeUp: "../media/close/short-slug.png"  # written by tools/closeups.mjs
