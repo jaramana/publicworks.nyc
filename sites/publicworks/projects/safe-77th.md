@@ -1,14 +1,14 @@
 ---
 title: "Safe 77th"
 indexSummary: "Families on two Bay Ridge blocks make their case for a safe street."
-description: "One long page by the families of 77th Street between 5th and 7th Avenues, on speeding, trucks and the highway shortcut through their blocks. It sets residents' accounts and photos beside City records, maps the shortcut, lists the changes the block asks for and ends in a petition."
+description: "One long page by the families of 77th Street between 5th and 7th Avenues, on speeding, trucks and the highway shortcut through their blocks. It sets residents' accounts and photos beside City records, maps the shortcut, suggests changes and ends in a petition."
 category: "Essay"
 status: "works"
 recordId: "safe77"
 year: 2026
 keywords: ["streets", "safety", "traffic", "brooklyn", "python"]
 builtWith: "Python, HTML, CSS, JavaScript, Claude"
-url: "https://safe77.publicworks.nyc"
+url: "https://jaramana.github.io/safe77th/"
 aboutUrl: false
 dataUrl: false
 cover: "../media/safe77.png"
