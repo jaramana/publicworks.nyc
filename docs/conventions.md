@@ -97,7 +97,9 @@ below. The styles are in `src/styles/works.css`.
 | Color | White page (`#fff`), `#161616` ink, `#6c6c70` muted, hairlines. Black and white only; the screenshots carry the color. Dark mode follows the system. |
 | Type | PW Heros, regular weight. The wordmark and section titles are bold. Labels are 11px uppercase, tracked .08em, muted. |
 | Project color | None. Records have no `accent` and the page has no `--spot`. |
-| Tiles | Fluid. Each row shares its width, and no tile drops below 11.5rem, so rows always reach both edges. 2px radius and a hairline, with no shadow at rest. Full-color screenshots. On hover, on devices that can hover, the picture lifts 2px on a soft shadow, and the title, year line and summary go to full ink and the title underlines. A work with a `focus` shows a close-up of its screenshot; its note shows the whole screen. |
+| Tiles | Fluid. Each row shares its width, and no tile drops below 11.5rem, so rows always reach both edges. Square corners and a `--line-strong` frame, with no shadow. Full-color screenshots. On hover, on devices that can hover, the frame darkens to muted, the title, year line and summary go to full ink and the title underlines. Nothing moves. The tile's last line is its address. A work with a `focus` shows a close-up of its screenshot; its note shows the whole screen. |
+| Headings | Works, Journal and Archive labels sit on a `--line` hairline. |
+| Rows | Archive rows show the address under the title. Journal rows don't, because they link to the same site. |
 | Glass | The sticky masthead only: white at 72%, `saturate(180%) blur(18px)`. Opaque under reduced transparency. A hairline appears once the page scrolls. |
 | Grid | Tiles and panel form one centered frame, up to 68rem wide. Columns follow from the 11.5rem minimum. Beside the panel there are two from 52.5rem and three from about 67.4rem. Below 52.5rem there is one, two from about 27.75rem and three from about 42.4rem. |
 | Panel | 19rem, from 52.5rem wide. It sticks under the masthead, fills the window's height and never scrolls. At rest it shows About. |
@@ -106,7 +108,7 @@ below. The styles are in `src/styles/works.css`.
 | Masthead | Nav links are ink, because tiles scroll under the glass on narrow screens. Under 30rem tall the masthead scrolls away. A site in more than one language has a language menu after the nav, showing the current language by name. Under 52.5rem the nav takes its own row. Under 40rem the nav folds behind the suite's menu button, and the languages move from their menu to the foot of the sheet. |
 | Images | The tile's `sizes` in `Tile.astro` mirrors the grid. Change both together. Only the first tile's image has high priority. |
 | Order | By `order`, lowest first. Ties, and records with no `order`, go by title. |
-| Print | A plain list. Each work and archive row prints its address under the title; the panel and screenshots are hidden. |
+| Print | A plain list with each work's and archive row's address. The panel and screenshots are hidden. |
 | Share image | `sites/publicworks/public/og.png`, 1200×630: the wordmark, the intro and the works by name, drawn by `npm run og`. Names that don't fit on two lines end in "and N more". |
 | Not found | `src/pages/404.astro`, with the shared masthead and footer. GitHub Pages serves it for any missing address. |
 | Journal | A band between Works and the archive, rows like the archive's, newest first. A row opens a note whose first link is the entry. Entry pages share the masthead and footer; wide figures reach past the text to the frame. Two entry layouts are on trial until the owner picks: one centered column, and `?v=panel` with details and contents in the side panel. |
