@@ -15,7 +15,6 @@
   --line-strong: rgba(0, 0, 0, .3);
   --shot-line: rgba(0, 0, 0, .07);
   --soft: 0 1px 2px rgba(0, 0, 0, .04), 0 14px 32px -18px rgba(0, 0, 0, .22);
-  --soft-lift: 0 1px 2px rgba(0, 0, 0, .05), 0 22px 44px -18px rgba(0, 0, 0, .28);
   --glass: rgba(255, 255, 255, .72);
   --glass-blur: saturate(180%) blur(18px);
   --radius: 8px;
@@ -44,7 +43,6 @@
     --line-strong: rgba(255, 255, 255, .34);
     --shot-line: rgba(255, 255, 255, .09);
     --soft: 0 14px 32px -18px rgba(0, 0, 0, .7);
-    --soft-lift: 0 22px 44px -18px rgba(0, 0, 0, .8);
     --glass: rgba(12, 12, 13, .72);
   }
 }
@@ -154,7 +152,7 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .page { padding-inline: var(--pad); }
 .band { padding-top: clamp(4rem, 9vw, 8rem); }
 .band:focus { outline: none; }
-.band-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1.5rem; margin-bottom: 1.5rem; padding-top: .1rem; }
+.band-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1.5rem; margin-bottom: 1.5rem; padding-top: .1rem; padding-bottom: .55rem; border-bottom: 1px solid var(--line); }
 .band-body { min-width: 0; container-type: inline-size; }
 
 /* Find dims the rest. Nothing disappears. */
@@ -172,15 +170,14 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
   margin-bottom: .75rem;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: 2px;
   background: var(--surface);
-  box-shadow: 0 0 0 1px var(--shot-line);
+  box-shadow: 0 0 0 1px var(--line-strong);
   outline: 1.5px solid transparent;
   outline-offset: 5px;
-  transition: box-shadow .3s var(--ease), transform .3s var(--ease), outline-color .2s var(--ease);
+  transition: box-shadow .3s var(--ease), outline-color .2s var(--ease);
 }
 .tile-media img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
-.tile-meta { font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.tile-meta { font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tile-title { font-size: .9375rem; font-weight: 400; line-height: 1.25; }
 .tile-link { text-decoration: none; }
 .tile-link::after { content: ""; position: absolute; inset: 0; }
@@ -188,14 +185,14 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .tile-summary { max-width: 40ch; font-size: .8125rem; line-height: 1.45; color: var(--muted); }
 .tile-meta, .tile-summary { transition: color .2s var(--ease); }
 
-/* Addresses show only in print, where the links can't be followed. */
-.tile-addr, .row-addr { display: none; }
+/* The address is the last line of a tile or row. */
+.tile-addr { order: 1; padding-top: .35rem; font-size: .6875rem; letter-spacing: .02em; color: var(--muted); overflow-wrap: anywhere; }
 
-/* Hover lifts the picture on a soft shadow and brings the title, year line and summary to full ink. */
+/* Hover darkens the frame and brings the title, year line and summary to full ink. */
 @media (hover: hover) {
   .tile:hover .tile-link { text-decoration: underline; }
   .tile:hover :is(.tile-meta, .tile-summary) { color: var(--ink); }
-  .tile:hover .tile-media { box-shadow: 0 0 0 1px var(--shot-line), var(--soft-lift); transform: translateY(-2px); }
+  .tile:hover .tile-media { box-shadow: 0 0 0 1px var(--muted); }
 }
 .tile.is-current .tile-link { text-decoration: underline; }
 .tile.is-current .tile-media { outline-color: var(--ink); }
@@ -209,7 +206,10 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 .row-link { display: grid; grid-template-columns: minmax(0, 1fr) 4ch; gap: .1rem 1.5rem; padding: .65rem 0; border-top: 1px solid var(--line); text-decoration: none; }
 .row-summary { grid-column: 1; font-size: .875rem; color: var(--muted); }
 .row-year { grid-row: 1; grid-column: 2; text-align: right; font-size: .8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-.row-link:hover .row-title, .row.is-current .row-title { text-decoration: underline; }
+.row-addr { grid-column: 1; font-size: .75rem; color: var(--muted); overflow-wrap: anywhere; }
+
+/* A journal entry lives on this site, so its address adds nothing. */
+#journal .row-addr { display: none; }.row-link:hover .row-title, .row.is-current .row-title { text-decoration: underline; }
 @container (min-width: 44rem) {
   .row-link { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) 4ch; }
   .row-summary { grid-row: 1; grid-column: 2; }
@@ -228,9 +228,9 @@ button { padding: 0; border: 0; background: none; color: inherit; font: inherit;
 
 .note { display: grid; gap: 2rem; align-content: start; }
 .note-thumb { width: 100%; max-width: 18rem; }
-.note-thumb img { border-radius: calc(var(--radius) - 2px); box-shadow: 0 0 0 1px var(--shot-line), var(--soft); }
+.note-thumb img { box-shadow: 0 0 0 1px var(--line-strong); }
 .note-main { display: grid; gap: .75rem; align-content: start; min-width: 0; }
-.note-meta { font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.note-meta { font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
 .note-title { font-size: 1.5rem; font-weight: 400; line-height: 1.12; letter-spacing: -.015em; }
 .note-title:focus { outline: none; }
 .note-lead { max-width: 44ch; font-size: 1rem; line-height: 1.45; }
